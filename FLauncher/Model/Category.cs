@@ -8,15 +8,14 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.EntityFrameworkCore;
 namespace FLauncher.Model
 {
-    [Collection("Categories")]
-    public class Categories
+    [Collection("Category")]
+    public class Category
     {
         public ObjectId Id { get; set; }
 
-   
-        public string NameCategory { get; set; }
+ 
+        public string GamerId { get; set; }
 
-   
-        public string GameId { get; set; }
+        public string NameCategories { get; set; }
     }
 }
