@@ -14,11 +14,19 @@
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.30.0" />
     <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="assets\" />
     <Folder Include="Views\" />
     <Folder Include="ViewModel\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
