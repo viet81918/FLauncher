@@ -9,7 +9,7 @@ using MongoDB.EntityFrameworkCore;
 namespace FLauncher.Model
 {
     [Collection("GamePublishers")]
-    public class GamePublishers
+    public class GamePublisher
     {
         [BsonId] // Marks this as the primary key in MongoDB
         [BsonRepresentation(BsonType.ObjectId)] // Maps MongoDB ObjectId to a C# string
@@ -44,9 +44,14 @@ namespace FLauncher.Model
 
         [BsonElement("Role")] // Maps to "Role" in MongoDB
         public int Role { get; set; }
+        [BsonElement("RegistrationDate")]
+        public string RegistrationDateString { get; set; } // Store as string in MongoDB
 
-        [BsonElement("RegistrationDate")] // Maps to "RegistrationDate" in MongoDB
-        public string RegistrationDate { get; set; }
+        [BsonIgnore]
+        public DateTime RegistrationDate
+        {
+            get => DateTime.ParseExact(RegistrationDateString, "dd/MM/yyyy", null); // Converts string to DateTime
+            set => RegistrationDateString = value.ToString("dd/MM/yyyy"); // Converts DateTime to string
+        }
     }
-}
 }

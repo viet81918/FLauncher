@@ -10,7 +10,7 @@ namespace FLauncher.Model
 {
 
     [Collection("Admins")]
-    public class Admins
+    public class Admin
     {
 
         [BsonId]

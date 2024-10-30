@@ -26,6 +26,16 @@ namespace FLauncher.Model
         public string UpdateContent { get; set; }
 
         [BsonElement("UpdateTime")]
-        public DateTime UpdateTime { get; set; }
+        public string UpdateTimeString { get; set; }
+
+        // Converts UpdateTime to DateTime when accessed
+        [BsonIgnore]
+        public DateTime UpdateTime
+        {
+            get => DateTime.Parse(UpdateTimeString); // Converts string to DateTime
+            set => UpdateTimeString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Formats DateTime as string
+        }
+
+      
     }
 }

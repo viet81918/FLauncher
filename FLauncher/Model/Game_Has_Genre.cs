@@ -10,7 +10,7 @@ using MongoDB.EntityFrameworkCore;
 namespace FLauncher.Model
 {
     [Collection("Game_Has_Genre")]
-    internal class Game_Has_Genre
+    public class Game_Has_Genre
     {
         [BsonId] // Marks this as the primary key in MongoDB
         [BsonRepresentation(BsonType.ObjectId)] // Maps MongoDB ObjectId to a C# string

@@ -21,10 +21,17 @@ namespace FLauncher.Model
     [BsonElement("Game_id")] // Matches the JSON key "Game_id"
     public string GameId { get; set; }
 
-    [BsonElement("TimeDownload")] // Matches the JSON key "TimeDownload"
-    public string TimeDownload { get; set; }
+        [BsonElement("TimeDownload")]
+        public string TimeDownloadString { get; set; } // Stores the date as a string in MongoDB
 
-    [BsonElement("Storage")] // Matches the JSON key "Storage"
+        [BsonIgnore]
+        public DateTime TimeDownload
+        {
+            get => DateTime.ParseExact(TimeDownloadString, "yyyy-MM-dd HH:mm:ss", null); // Converts string to DateTime
+            set => TimeDownloadString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Converts DateTime to string
+        }
+
+        [BsonElement("Storage")] // Matches the JSON key "Storage"
     public string Storage { get; set; }
 
     [BsonElement("Directory")] // Matches the JSON key "Directory"

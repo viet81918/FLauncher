@@ -21,10 +21,11 @@ namespace FLauncher.Model
 
         public string Name { get; set; }
 
-        public int Price { get; set; }
+        public Double Price { get; set; }
 
         [BsonElement("Publish_day")]
-        public string PublishDay { get; set; }  // Store as string or DateTime if parsing is required
+        [BsonDateTimeOptions(Representation = BsonType.String, DateOnly = true)]
+        public DateTime PublishDay { get; set; }  // Stored as DateTime for better date manipulation
 
         [BsonElement("Number_of_buyers")]
         public int NumberOfBuyers { get; set; }

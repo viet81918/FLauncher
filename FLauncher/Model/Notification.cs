@@ -20,7 +20,17 @@ namespace FLauncher.Model
         [BsonElement("User_id")]
         public string UserId { get; set; }
 
-        public string TimeNotification { get; set; }  // Store as string or convert to DateTime if needed
+        [BsonElement("TimeNotification")]
+        public string TimeNotificationString { get; set; }
+
+        // Converts TimeNotification to DateTime when accessed
+        [BsonIgnore]
+        public DateTime TimeNotification
+        {
+            get => DateTime.Parse(TimeNotificationString); // Converts string to DateTime
+            set => TimeNotificationString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Formats DateTime as string
+        }
+
 
         public string Content { get; set; }
     }

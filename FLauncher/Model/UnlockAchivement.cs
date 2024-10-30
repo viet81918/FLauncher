@@ -26,6 +26,14 @@ namespace FLauncher.Model
         public string AchievementId { get; set; }
 
         [BsonElement("DateUnlock")]
-        public DateTime DateUnlock { get; set; }
+        public string DateUnlockString { get; set; }
+
+        // Converts DateUnlock to DateTime when accessed
+        [BsonIgnore]
+        public DateTime DateUnlock
+        {
+            get => DateTime.Parse(DateUnlockString); // Converts string to DateTime
+            set => DateUnlockString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Formats DateTime as string
+        }
     }
 }
