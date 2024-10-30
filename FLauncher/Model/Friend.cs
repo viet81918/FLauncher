@@ -21,8 +21,15 @@ namespace FLauncher.Model
         [BsonElement("Accept_id")] // Maps to "Accept_id" in MongoDB
         public string AcceptId { get; set; }
 
-        [BsonElement("InvitationTime")] // Maps to "InvitationTime" in MongoDB
-        public DateTime InvitationTime { get; set; }
+        [BsonElement("InvitationTime")]
+        public string InvitationTimeString { get; set; } // Stores as string in MongoDB
+
+        [BsonIgnore]
+        public DateTime InvitationTime
+        {
+            get => DateTime.ParseExact(InvitationTimeString, "yyyy-MM-dd HH:mm:ss", null); // Converts string to DateTime
+            set => InvitationTimeString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Converts DateTime to string
+        }
 
         [BsonElement("isAccept")] // Maps to "isAccept" in MongoDB, nullable bool
         public bool? IsAccept { get; set; }

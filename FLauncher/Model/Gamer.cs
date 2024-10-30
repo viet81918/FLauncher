@@ -37,10 +37,25 @@ namespace FLauncher.Model
         [BsonElement("Role")] // Maps to "Role" in MongoDB
         public int Role { get; set; }
 
-        [BsonElement("RegistrationDate")] // Maps to "RegistrationDate" in MongoDB
-        public string RegistrationDate { get; set; }
+        [BsonElement("RegistrationDate")]
+        public string RegistrationDateString { get; set; }
 
-        [BsonElement("Date of Birth")] // Maps to "Date of Birth" in MongoDB
-        public DateTime DateOfBirth { get; set; }
+        [BsonIgnore]
+        public DateTime RegistrationDate
+        {
+            get => DateTime.ParseExact(RegistrationDateString, "dd/MM/yyyy", null); // Parses the string to DateTime
+            set => RegistrationDateString = value.ToString("dd/MM/yyyy"); // Converts DateTime to string
+        }
+
+        // Maps to "Date of Birth" in MongoDB as a DateTime property
+        [BsonElement("Date of Birth")]
+        public string DateOfBirthString { get; set; } // Stores as string
+
+        [BsonIgnore]
+        public DateTime DateOfBirth
+        {
+            get => DateTime.Parse(DateOfBirthString); // Parses the string to DateTime
+            set => DateOfBirthString = value.ToString("yyyy-MM-dd"); // Converts DateTime to string
+        }
     }
 }

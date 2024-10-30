@@ -22,7 +22,7 @@ namespace FLauncher.Model
         [BsonElement("ID_Game")]
         public string GameId { get; set; }
 
-        public int Rating { get; set; }
+        public double Rating { get; set; }
 
         public string Description { get; set; }
   

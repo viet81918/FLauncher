@@ -24,17 +24,16 @@ namespace FLauncher.Model
         public string GameId { get; set; }
 
         [BsonElement("Buy_time")]
-        public string BuyTimeString { get; set; }  // Store as string
+        public string BuyTimeString { get; set; }  // Store as string in MongoDB
 
-        // Add a property to convert Buy_time to DateTime when needed
         [BsonIgnore]
         public DateTime BuyTime
         {
-            get => DateTime.Parse(BuyTimeString);  // Convert string to DateTime
+            get => DateTime.ParseExact(BuyTimeString, "yyyy-MM-dd HH:mm:ss", null);  // Convert string to DateTime
             set => BuyTimeString = value.ToString("yyyy-MM-dd HH:mm:ss");  // Convert DateTime to string
         }
 
         [BsonElement("Buy_price")]
-        public decimal BuyPrice { get; set; }
+        public double BuyPrice { get; set; }
     }
 }

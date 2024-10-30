@@ -25,7 +25,6 @@ namespace FLauncher.Model
 
         [BsonElement("Email")]
         public string Email { get; set; }
-
         public int Role { get; set; }
     }
 }

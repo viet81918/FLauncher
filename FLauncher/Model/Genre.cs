@@ -9,8 +9,8 @@ using MongoDB.EntityFrameworkCore;
 
 namespace FLauncher.Model
 {
-    [Collection("Games")]
-    public  class Genres
+    [Collection("Genres")]
+    public  class Genre
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
