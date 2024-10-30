@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace FLauncher.Services
 {
     public class FlauncherDbContext : DbContext
     {
+
+        private readonly IMongoDatabase _database;
         public DbSet<Achivement> Achivements { get; init; }
         public DbSet<Admin> Admins { get; init; }
         public DbSet<Buy> Bills { get; init; }
@@ -30,11 +33,9 @@ namespace FLauncher.Services
         public DbSet<User> Users { get; init; }
         public DbSet<Gamer> Gamers { get; init; }
 
-
-
-        public FlauncherDbContext(DbContextOptions options)
-     : base(options)
+        public FlauncherDbContext(IMongoDatabase database)
         {
+            _database = database;
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
