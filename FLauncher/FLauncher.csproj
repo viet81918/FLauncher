@@ -9,6 +9,52 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\bf1.jpg" />
+    <None Remove="Assets\cod.jpg" />
+    <None Remove="Assets\dh2.jpg" />
+    <None Remove="Assets\div.jpg" />
+    <None Remove="Assets\fh.png" />
+    <None Remove="Assets\frh.jpg" />
+    <None Remove="Assets\gg.png" />
+    <None Remove="Assets\wd2.jpg" />
+    <None Remove="Assets\witcher.jpg" />
+    <None Remove="Assets\wt.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\bf1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\cod.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\dh2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\div.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\fh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\frh.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\gg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\wd2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\witcher.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\wt.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="MongoDB.Bson" Version="3.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
@@ -17,7 +63,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\" />
     <Folder Include="ViewModel\" />
   </ItemGroup>
 
