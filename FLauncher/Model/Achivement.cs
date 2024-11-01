@@ -27,8 +27,8 @@ namespace FLauncher.Model
         [BsonElement("LockImageLink")]
         public string LockImageLink { get; set; }
 
-        [BsonIgnoreIfNull] // Sets this property to be nullable in MongoDB
         [BsonElement("IsPrivate")]
-        public bool? IsPrivate { get; set; }
+        public bool IsPrivate { get; set; } = false;
+
     }
 }
