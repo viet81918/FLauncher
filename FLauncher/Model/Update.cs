@@ -28,6 +28,7 @@ namespace FLauncher.Model
         [BsonElement("UpdateTime")]
         public string UpdateTimeString { get; set; }
 
+        [BsonIgnoreIfNull]
         // Converts UpdateTime to DateTime when accessed
         [BsonIgnore]
         public DateTime UpdateTime

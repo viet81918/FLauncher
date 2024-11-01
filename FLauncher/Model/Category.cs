@@ -20,9 +20,8 @@ namespace FLauncher.Model
 
         [BsonElement("NameCategories")] // Matches the JSON key "NameCategories"
         public string NameCategories { get; set; }
+        [BsonElement("GameIds")]
+        public List<string> GameIds { get; set; } = new List<string>(); // Holds IDs of games
 
-        [BsonElement("GameList")] // Matches the JSON key for the list of games
-        public virtual ICollection<Game> GameList { get; set; } = new List<Game>(); // Initializes the list
-    
-}
+    }
 }
