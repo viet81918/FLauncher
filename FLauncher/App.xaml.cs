@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 namespace FLauncher
 {
     /// <summary>
@@ -20,40 +21,8 @@ namespace FLauncher
     {
         private IServiceProvider _serviceProvider;
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-
-            // Build configuration
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-            var configuration = builder.Build();
-
-            // Set up dependency injection
-            var services = new ServiceCollection();
-            services.Configure<MongoDBSettings>(configuration.GetSection("MongoDBSettings"));
-
-            services.AddSingleton<IMongoClient>(sp =>
-            {
-                var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-                return new MongoClient(settings.AtlasURI);
-            });
-
-            services.AddScoped<FlauncherDbContext>(sp =>
-            {
-                var settings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-                var client = sp.GetRequiredService<IMongoClient>();
-                return new FlauncherDbContext(client.GetDatabase(settings.DatabaseName));
-            });
-
-            _serviceProvider = services.BuildServiceProvider();
-
-            // Start your main window
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
-        }
+       
+        
 
         protected override void OnExit(ExitEventArgs e)
         {
@@ -64,4 +33,5 @@ namespace FLauncher
             base.OnExit(e);
         }
     }
+
 }

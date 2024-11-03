@@ -17,7 +17,7 @@ namespace FLauncher.Model
         public string Id { get; set; }
 
         [BsonElement("ID")]
-        public string AdminID { get; set; }
+        public string ID { get; set; }
 
         public string Name { get; set; }
 

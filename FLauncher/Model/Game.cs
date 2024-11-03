@@ -24,9 +24,15 @@ namespace FLauncher.Model
         public Double Price { get; set; }
 
         [BsonElement("Publish_day")]
-        [BsonDateTimeOptions(Representation = BsonType.String, DateOnly = true)]
-        public DateTime PublishDay { get; set; }  // Stored as DateTime for better date manipulation
+        public string PublishDayString { get; set; }
 
+        // Public property to interact with PublishDay as DateTime
+        [BsonIgnore]
+        public DateTime PublishDay
+        {
+            get => DateTime.ParseExact(PublishDayString, "dd-MM-yyyy", null);
+            set => PublishDayString = value.ToString("dd-MM-yyyy");
+        }
         [BsonElement("Number_of_buyers")]
         public int NumberOfBuyers { get; set; }
 
@@ -55,5 +61,6 @@ namespace FLauncher.Model
 
         [BsonElement("Maximum_GPU")]
         public string MaximumGPU { get; set; }
+
     }
 }
