@@ -19,9 +19,10 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using static System.Net.WebRequestMethods;
 using FLauncher.Services;
+using Microsoft.VisualBasic.ApplicationServices;
 
 
-namespace FLauncher
+namespace FLauncher.Views
 {
     public partial class Login : Window
     {
@@ -37,12 +38,16 @@ namespace FLauncher
         {
             PerformLogin();
         }
+        private void LoginGG_Click(object sender, RoutedEventArgs e)
+        {
+            //add sau
+        }
 
-        private  string  CheckLogin(string emailUser, string password)
+        private async Task<string> CheckLogin(string emailUser, string password)
         {
             try
             {
-                User user = _userService.GetUserByEmailPass(emailUser, password);
+                User user = await _userService.GetUserByEmailPass(emailUser, password);
 
                 if (user != null)
                 {
@@ -51,8 +56,9 @@ namespace FLauncher
                     {
                         return "admin";
                     }
-                    else if (user.Role == 3)
+                    else if (user.Role == 3 || user.Role == 2)
                     {
+                        //SaveUserInfoToJson(user.Email);
                         return "customer";
                     }
                 }
@@ -64,6 +70,22 @@ namespace FLauncher
             {
                 MessageBox.Show("Lỗi khi kết nối với cơ sở dữ liệu: " + ex.Message);
                 return null;
+            }
+        }
+
+        private void SaveUserInfoToJson()
+        {
+            try
+            {
+                // Convert user object to JSON format
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(user, Formatting.Indented);
+
+                // Save JSON to file
+                System.IO.File.WriteAllText("userInfo.json", json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi lưu thông tin người dùng: " + ex.Message);
             }
         }
 
@@ -83,12 +105,12 @@ namespace FLauncher
             }
         }
 
-        private  void PerformLogin()
+        private async void PerformLogin()
         {
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
-            string  accountType =  CheckLogin(enteredUserEmail, enteredPassword);
+            string  accountType = await CheckLogin(enteredUserEmail, enteredPassword);
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -96,24 +118,32 @@ namespace FLauncher
                 MessageBox.Show("Đăng nhập thành công với tư cách quản trị viên!");
                 MainWindow adminWindow = new MainWindow();
                 adminWindow.Show();
+
+                // Close the Login window
+                this.Close();
             }
             else if (accountType == "customer")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
-                CustomerWindow customerWindow = new CustomerWindow();
+                Model.User loggedInUser = await _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser.Id);
                 customerWindow.Show();
+
+                this.Close();
             }
             else
             {
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
+                /*
+                 // Close the Login window
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    parentWindow.Close();
+                }
+                 */
             }
 
-            // Close the Login window
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
-            {
-                parentWindow.Close();
-            }
         }
     }
 
