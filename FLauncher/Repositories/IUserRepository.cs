@@ -9,7 +9,7 @@ namespace FLauncher.Repositories
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetUsers();
-        Task<User> GetUserByEmailPass(string Email, string Pass);
+       List<User> GetUsers();
+       User GetUserByEmailPass(string Email, string Pass);
     }
 }
