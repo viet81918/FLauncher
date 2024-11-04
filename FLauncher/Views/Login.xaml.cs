@@ -58,7 +58,7 @@ namespace FLauncher.Views
                     }
                     else if (user.Role == 3 || user.Role == 2)
                     {
-                        //SaveUserInfoToJson(user.Email);
+                        SaveUserInfoToJson(user);
                         return "customer";
                     }
                 }
@@ -73,7 +73,7 @@ namespace FLauncher.Views
             }
         }
 
-        private void SaveUserInfoToJson()
+        private void SaveUserInfoToJson(Model.User user)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace FLauncher.Views
         }
 
         private  void PerformLogin()
-        {
+        { 
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
@@ -126,7 +126,7 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
                 Model.User loggedInUser = _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
-                CustomerWindow customerWindow = new CustomerWindow(loggedInUser.Id);
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
                 this.Close();
@@ -142,9 +142,8 @@ namespace FLauncher.Views
                     parentWindow.Close();
                 }
                  */
-            }
 
+            }
         }
     }
-
 }
