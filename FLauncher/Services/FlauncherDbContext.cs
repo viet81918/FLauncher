@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
+using MongoDB.EntityFrameworkCore.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,7 @@ namespace FLauncher.Services
                 modelBuilder.Entity<UnlockAchivement>();
                 modelBuilder.Entity<Genre>();
                 modelBuilder.Entity<Update>();
-                modelBuilder.Entity<User>();
+                modelBuilder.Entity<User>().ToCollection("Users");
                 modelBuilder.Entity<Gamer>();
             
             }

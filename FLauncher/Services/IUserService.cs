@@ -11,7 +11,7 @@ namespace FLauncher.Services
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> GetUsers();
-        Task<User> GetUserByEmailPass(string email, string pass);
+        List<User> GetUsers();
+        User GetUserByEmailPass(string email, string pass);
     }
 }

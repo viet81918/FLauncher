@@ -38,11 +38,11 @@ namespace FLauncher
             PerformLogin();
         }
 
-        private async Task<string> CheckLogin(string emailUser, string password)
+        private  string  CheckLogin(string emailUser, string password)
         {
             try
             {
-                User user = await _userService.GetUserByEmailPass(emailUser, password);
+                User user = _userService.GetUserByEmailPass(emailUser, password);
 
                 if (user != null)
                 {
@@ -83,12 +83,12 @@ namespace FLauncher
             }
         }
 
-        private async void PerformLogin()
+        private  void PerformLogin()
         {
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
-            string  accountType = await CheckLogin(enteredUserEmail, enteredPassword);
+            string  accountType =  CheckLogin(enteredUserEmail, enteredPassword);
 
             // Check the result of CheckLogin
             if (accountType == "admin")

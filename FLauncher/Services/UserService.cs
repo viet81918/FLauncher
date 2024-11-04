@@ -19,15 +19,15 @@ namespace FLauncher.Services
             userRepository = new UserRepository(); // Replace with actual repository implementation
         }
 
-        public async Task<User> GetUserByEmailPass(string email, string pass)
+        public  User GetUserByEmailPass(string email, string pass)
         {
-           return  await userRepository.GetUserByEmailPass(email, pass);
+           return   userRepository.GetUserByEmailPass(email, pass);
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public  List<User> GetUsers()
         {
 
-           return  await userRepository.GetUsers();
+           return   userRepository.GetUsers();
         }
     }
 
