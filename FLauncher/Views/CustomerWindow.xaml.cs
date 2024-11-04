@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using FLauncher.Model;
+using System.Windows;
 using System.Windows.Input;
 
 namespace FLauncher
@@ -8,9 +9,11 @@ namespace FLauncher
     /// </summary>
     public partial class CustomerWindow : Window
     {
-        public CustomerWindow()
+        private User _user;
+        public CustomerWindow(User user)
         {
             InitializeComponent();
+            _user = user;
         }
 
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
