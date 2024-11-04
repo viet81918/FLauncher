@@ -43,11 +43,11 @@ namespace FLauncher.Views
             //add sau
         }
 
-        private async Task<string> CheckLogin(string emailUser, string password)
+        private string CheckLogin(string emailUser, string password)
         {
             try
             {
-                User user = await _userService.GetUserByEmailPass(emailUser, password);
+                Model.User user = _userService.GetUserByEmailPass(emailUser, password);
 
                 if (user != null)
                 {
@@ -105,12 +105,12 @@ namespace FLauncher.Views
             }
         }
 
-        private async void PerformLogin()
+        private  void PerformLogin()
         {
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
-            string  accountType = await CheckLogin(enteredUserEmail, enteredPassword);
+            string  accountType = CheckLogin(enteredUserEmail, enteredPassword);
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -125,7 +125,7 @@ namespace FLauncher.Views
             else if (accountType == "customer")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
-                Model.User loggedInUser = await _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
+                Model.User loggedInUser = _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser.Id);
                 customerWindow.Show();
 
