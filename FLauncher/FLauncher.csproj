@@ -9,13 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\bf1.jpg" />
+    <None Remove="assets\cod.jpg" />
+    <None Remove="assets\dh2.jpg" />
+    <None Remove="assets\div.jpg" />
     <None Remove="assets\fh.png" />
-    <None Remove="assets\google-icon.png" />
-    <None Remove="assets\logo.png" />
+    <None Remove="assets\frh.jpg" />
+    <None Remove="assets\gg.png" />
+    <None Remove="assets\wd2.jpg" />
+    <None Remove="assets\witcher.jpg" />
+    <None Remove="assets\wt.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="assets\google-icon.png">
+    <Resource Include="assets\gg.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -35,10 +42,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="assets\bf1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\cod.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\dh2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\div.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="assets\fh.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="assets\logo.png">
+    <Resource Include="assets\frh.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\wd2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\witcher.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assets\wt.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -14,34 +14,27 @@ namespace FLauncher.DAO
 {
     public class UserDAO : SingletonBase<UserDAO>
     {
-        private readonly IMongoCollection<User> _userCollection;
+        private readonly FlauncherDbContext _dbContext;
 
         public UserDAO()
         {
-            // Initialize MongoDB client and retrieve the "Users" collection
-            var client = new MongoClient("mongodb://localhost:27017/");
-            var database = client.GetDatabase("FPT");
-            _userCollection = database.GetCollection<User>("Users");
+            var connectionString = "mongodb://localhost:27017/";
+            var client = new MongoClient(connectionString);
+            _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
 
         // Retrieve all users
-        public async Task<IEnumerable<User>> GetUsers()
+        public List<User> GetUsers()
         {
-            // Use MongoDB's LINQ support to retrieve all users
-            return await _userCollection.Find(_ => true).ToListAsync();
+            return  _dbContext.Users.ToList();
         }
 
         // Retrieve a user by email and password
-        public async Task<User> GetUserByEmailPass(string email, string pass)
+        public User GetUserByEmailPass(string email, string pass)
         {
-            // Define filters for email and password
-            var filter = Builders<User>.Filter.And(
-                Builders<User>.Filter.Eq(u => u.Email, email),
-                Builders<User>.Filter.Eq(u => u.Password, pass)
-            );
-
-            return await _userCollection.Find(filter).FirstOrDefaultAsync();
+            return _dbContext.Users.First(c => c.Email.Equals(email) && c.Password.Equals(pass));
         }
     }
+
 
 }
