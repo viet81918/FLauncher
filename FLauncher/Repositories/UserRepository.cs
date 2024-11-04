@@ -10,14 +10,14 @@ namespace FLauncher.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public async Task<User> GetUserByEmailPass(string Email, string Pass)
+        public User GetUserByEmailPass(string Email, string Pass)
         {
-            return await UserDAO.Instance.GetUserByEmailPass(Email, Pass);
+            return  UserDAO.Instance.GetUserByEmailPass(Email, Pass);
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public  List<User> GetUsers()
         {
-            return await UserDAO.Instance.GetUsers();
+            return  UserDAO.Instance.GetUsers();
         }
     }
 }
