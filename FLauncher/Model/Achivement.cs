@@ -11,20 +11,24 @@ namespace FLauncher.Model
     [Collection("Achivement")]
     public class Achivement
     {
-        public ObjectId Id { get; set; }
-
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)] // Automatically maps to MongoDB ObjectId
+        public string Id { get; set; }
+        [BsonElement("Achivement_Id")]
         public string AchivementId { get; set; }
+        [BsonElement("Name")]
         public string Name { get; set; }
-
+        [BsonElement("Game_Id")]
         public string GameId { get; set; }
-
+        [BsonElement("Trigger")]
         public string Trigger { get; set; }
-
+        [BsonElement("UnlockImageLink")]
         public string UnlockImageLink { get; set; }
-
+        [BsonElement("LockImageLink")]
         public string LockImageLink { get; set; }
 
-        [BsonIgnoreIfNull] // Sets this property to be nullable in MongoDB
-        public bool? IsPrivate { get; set; }
+        [BsonElement("IsPrivate")]
+        public bool IsPrivate { get; set; } = false;
+
     }
 }
