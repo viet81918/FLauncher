@@ -73,7 +73,7 @@ namespace FLauncher.Views
             }
         }
 
-        private void SaveUserInfoToJson()
+        private void SaveUserInfoToJson(Model.User user)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
                 Model.User loggedInUser = _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
-                CustomerWindow customerWindow = new CustomerWindow(loggedInUser.Id);
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
                 this.Close();
