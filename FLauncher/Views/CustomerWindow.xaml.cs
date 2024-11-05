@@ -8,10 +8,11 @@ namespace FLauncher
     {
         private User _user;
 
-        public CustomerWindow(User user)  // Make sure this constructor exists in CustomerWindow.xaml.cs
+        public CustomerWindow(User user)
         {
             InitializeComponent();
             _user = user;
+
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
