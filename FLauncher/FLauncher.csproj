@@ -19,10 +19,18 @@
     <None Remove="assets\wd2.jpg" />
     <None Remove="assets\witcher.jpg" />
     <None Remove="assets\wt.png" />
+    <None Remove="assets\google-icon.png" />
+    <None Remove="assets\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="assets\gg.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  <Resource Include="assets\google-icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  <Resource Include="assets\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
