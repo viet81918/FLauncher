@@ -260,21 +260,25 @@
                     Margin="0,0,20,0">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
-                            <!--Name-->
+                            <!-- Name -->
                             <RowDefinition/>
-                            <!--Level-->
+                            <!-- Money -->
                         </Grid.RowDefinitions>
 
+                        <!-- Gamer's Name -->
                         <TextBlock
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource SecondaryBrush}"
-                            Text="Sh@doWsBait"/>
+        FontWeight="SemiBold"
+        Foreground="{StaticResource SecondaryBrush}"
+        Text="{Binding Name}" />
+                        <!-- Bind to Name property -->
 
+                        <!-- Gamer's Money -->
                         <TextBlock
-                            Grid.Row="1"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource PrimaryBrush}"
-                            Text="Level 4"/>
+        Grid.Row="1"
+        FontWeight="SemiBold"
+        Foreground="{StaticResource PrimaryBrush}"
+        Text="{Binding Money, StringFormat=C}" />
+                        <!-- Bind to Money property and format as currency -->
                     </Grid>
 
                     <!--Notifications Icon With Count-->

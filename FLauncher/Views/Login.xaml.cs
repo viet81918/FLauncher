@@ -20,18 +20,19 @@ using MongoDB.Driver;
 using static System.Net.WebRequestMethods;
 using FLauncher.Services;
 using Microsoft.VisualBasic.ApplicationServices;
+using FLauncher.Repositories;
 
 
 namespace FLauncher.Views
 {
     public partial class Login : Window
     {
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepo;
 
         public Login()
         {
             InitializeComponent(); // Make sure this is called first
-            _userService = new UserService();
+            _userRepo = new UserRepository();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -47,7 +48,7 @@ namespace FLauncher.Views
         {
             try
             {
-                Model.User user = _userService.GetUserByEmailPass(emailUser, password);
+                Model.User user = _userRepo.GetUserByEmailPass(emailUser, password);
 
                 if (user != null)
                 {
@@ -125,7 +126,7 @@ namespace FLauncher.Views
             else if (accountType == "customer")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
-                Model.User loggedInUser = _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
+                Model.User loggedInUser = _userRepo.GetUserByEmailPass(enteredUserEmail, enteredPassword);
                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 

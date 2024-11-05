@@ -1,4 +1,5 @@
 ﻿using FLauncher.Model;
+using FLauncher.Repositories;
 using System.Windows;
 using System.Windows.Input;
 
@@ -6,13 +7,15 @@ namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
-        private User _user;
-
+        private Gamer _gamer ;
+        private readonly GamerRepository _gamerRepo;
         public CustomerWindow(User user)
         {
             InitializeComponent();
-            _user = user;
-
+            _gamerRepo = new GamerRepository();
+            _gamer = _gamerRepo.GetGamerByUser(user);
+            // Set DataContext to the gamer object for data binding
+            DataContext = _gamer;
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
