@@ -23,5 +23,14 @@ namespace FLauncher.Views
         {
             InitializeComponent();
         }
+        private void logout_click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Ready to out B*tch");
+            Login _login = new Login();
+            _login.Show();
+
+            this.Close();
+
+        }
     }
 }

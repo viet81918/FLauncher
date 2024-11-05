@@ -40,7 +40,7 @@ namespace FLauncher.Views
         }
         private void LoginGG_Click(object sender, RoutedEventArgs e)
         {
-            //add sau
+            
         }
 
         private string CheckLogin(string emailUser, string password)
@@ -81,7 +81,7 @@ namespace FLauncher.Views
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(user, Formatting.Indented);
 
                 // Save JSON to file
-                System.IO.File.WriteAllText("userInfo.json", json);
+                System.IO.File.WriteAllText("D:\\userInfo.json", json);
             }
             catch (Exception ex)
             {
