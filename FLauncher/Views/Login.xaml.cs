@@ -126,7 +126,7 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
                 Model.User loggedInUser = _userService.GetUserByEmailPass(enteredUserEmail, enteredPassword);
-                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
+                CustomerWindow customerWindow = new(loggedInUser);
                 customerWindow.Show();
 
                 this.Close();
