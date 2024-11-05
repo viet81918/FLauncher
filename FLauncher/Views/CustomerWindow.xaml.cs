@@ -4,18 +4,16 @@ using System.Windows.Input;
 
 namespace FLauncher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class CustomerWindow : Window
     {
         private User _user;
+
         public CustomerWindow(User user)
         {
             InitializeComponent();
             _user = user;
-        }
 
+        }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
