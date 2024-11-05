@@ -58,7 +58,7 @@ namespace FLauncher.Views
                     }
                     else if (user.Role == 3 || user.Role == 2)
                     {
-                        //SaveUserInfoToJson(user.Email);
+                        SaveUserInfoToJson(user);
                         return "customer";
                     }
                 }
@@ -106,7 +106,7 @@ namespace FLauncher.Views
         }
 
         private  void PerformLogin()
-        {
+        { 
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
@@ -142,9 +142,8 @@ namespace FLauncher.Views
                     parentWindow.Close();
                 }
                  */
-            }
 
+            }
         }
     }
-
 }
