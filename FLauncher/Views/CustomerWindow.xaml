@@ -269,69 +269,67 @@
                         <TextBlock
         FontWeight="SemiBold"
         Foreground="{StaticResource SecondaryBrush}"
-        Text="{Binding Name}" />
-                        <!-- Bind to Name property -->
+        Text="{Binding Gamer.Name}" />
+                        <!-- Binding to Name property of Gamer -->
 
                         <!-- Gamer's Money -->
                         <TextBlock
         Grid.Row="1"
         FontWeight="SemiBold"
         Foreground="{StaticResource PrimaryBrush}"
-        Text="{Binding Money, StringFormat=C}" />
+        Text="{Binding Gamer.Money, StringFormat=C}" />
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 
                     <!--Notifications Icon With Count-->
                     <StackPanel
-                    Orientation="Horizontal"
-                    VerticalAlignment="Bottom"
-                    Margin="0,0,20,0">
-                        <Path
-    Data="{StaticResource notification_icon}"
-    Fill="{StaticResource PrimaryBrush}"
+    Orientation="Horizontal"
     VerticalAlignment="Bottom"
-                            Stretch="Uniform"
-                            Width="16"/>
+    Margin="0,0,20,0">
+                        <Path
+        Data="{StaticResource notification_icon}"
+        Fill="{StaticResource PrimaryBrush}"
+        VerticalAlignment="Bottom"
+        Stretch="Uniform"
+        Width="16"/>
 
-                        <!--Count-->
+                        <!-- Count -->
                         <Grid
-                            VerticalAlignment="Top"
-                            Margin="-8,0,0,15">
+        VerticalAlignment="Top"
+        Margin="-8,0,0,15">
                             <Ellipse
-                                Fill="{StaticResource TertiaryBrush}"
-                                StrokeThickness="1"
-                                Stroke="{StaticResource CanvasBrush}"
-                                Height="15"
-                                Width="15"/>
+            Fill="{StaticResource TertiaryBrush}"
+            StrokeThickness="1"
+            Stroke="{StaticResource CanvasBrush}"
+            Height="15"
+            Width="15"/>
 
-                            <!--Count-->
+                            <!-- Notification Count -->
                             <TextBlock
-                                FontSize="8"
-                                Foreground="{StaticResource SecondaryBrush}"
-                                Margin="0,0,0,.5"
-                                HorizontalAlignment="Center"
-                                Text="2"
-                                VerticalAlignment="Center"/>
+            FontSize="8"
+            Foreground="{StaticResource SecondaryBrush}"
+            Margin="0,0,0,.5"
+            HorizontalAlignment="Center"
+            Text="{Binding UnreadNotificationCount}" />
+                            <!-- Binding the unread notification count -->
                         </Grid>
                     </StackPanel>
 
                     <!--Friends Icon and Count-->
-                    <StackPanel
-                        Orientation="Horizontal"
-                        VerticalAlignment="Bottom">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
                         <Path
-                            Data="{StaticResource friends_icon}"
-                            Fill="{StaticResource PrimaryBrush}"
-                            Margin="5,0"
-                            Stretch="Uniform"
-                            Height="16"/>
+        Data="{StaticResource friends_icon}"
+        Fill="{StaticResource PrimaryBrush}"
+        Margin="5,0"
+        Stretch="Uniform"
+        Height="16"/>
 
-                        <!--Count-->
+                        <!-- Count for Friend Invitations -->
                         <TextBlock
-                            Text="15"
-                            Foreground="{StaticResource SecondaryBrush}"
-                            FontWeight="SemiBold"
-                            VerticalAlignment="Center"/>
+        Text="{Binding FriendInvitationCount}"
+        Foreground="{StaticResource SecondaryBrush}"
+        FontWeight="SemiBold"
+        VerticalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
                 <!--#endregion-->
@@ -757,102 +755,32 @@
                         VerticalAlignment="Center"/>
                 </Grid>
                 <!--Cards-->
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="0,10,0,0">
-                    <cc:TrendingCards
-                        ImageSource="/assets/cod.jpg"
-                        Title="Call of Duty: Infinite Warfare"
-                        Genre="Action, Shooter"
-                        Price="€59.90"
-                        WindowsCompatible="True"
-                        MacCompatible="True"
-                        SteamCompatible="True"
-                        Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <ItemsControl ItemsSource="{Binding TrendingGames}">
+                        <ItemsControl.ItemsPanel>
+                            <!-- Set a horizontal StackPanel for horizontal layout -->
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                    <!--Repeat...-->
-                    <cc:TrendingCards
-                ImageSource="/assets/div.jpg"
-                Title="Divinity Original Sin 2"
-                Genre="Role-Playing, Co-Op"
-                Price="€49.90"
-                WindowsCompatible="True"
-                MacCompatible="True"
-                SteamCompatible="False"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/witcher.jpg"
-                Title="The Witcher 3"
-                Genre="Fighting, Action"
-                Price="€54.90"
-                WindowsCompatible="True"
-                MacCompatible="False"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/wd2.jpg"
-                Title="Watch Dogs 2"
-                Genre="Action, Open World"
-                Price="€64.49"
-                WindowsCompatible="True"
-                MacCompatible="True"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/bf1.jpg"
-                Title="Battlefield 1"
-                Genre="Action, Shooter"
-                Price="€59.90"
-                WindowsCompatible="True"
-                MacCompatible="False"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/dh2.jpg"
-                Title="Dishonored 2"
-                Genre="Action, Stealth"
-                Price="€59.90"
-                WindowsCompatible="True"
-                MacCompatible="True"
-                SteamCompatible="False"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/frh.jpg"
-                Title="For Honor"
-                Genre="Action, History"
-                Price="€69.99"
-                WindowsCompatible="True"
-                MacCompatible="True"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/witcher.jpg"
-                Title="The Witcher 3"
-                Genre="Fighting, Action"
-                Price="€54.90"
-                WindowsCompatible="True"
-                MacCompatible="False"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
-                    <cc:TrendingCards
-                ImageSource="/assets/wd2.jpg"
-                Title="Watch Dogs 2"
-                Genre="Action, Open World"
-                Price="€64.49"
-                WindowsCompatible="True"
-                MacCompatible="True"
-                SteamCompatible="True"
-                Margin="0,0,15,0"
-            Effect="{StaticResource BottomShadowEffect}"/>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <cc:TrendingCards
+                    ImageSource="{Binding AvatarLink}"
+                    Title="{Binding Name}"
+                    Genre="{Binding Description}"
+                    Price="{Binding Price, StringFormat=C}"
+                    WindowsCompatible="True"
+                    MacCompatible="True"
+                    SteamCompatible="True"
+                    Margin="0,0,15,0"
+                    Effect="{StaticResource BottomShadowEffect}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
+
                 <!--#endregion-->
             </StackPanel>
         </ScrollViewer>
