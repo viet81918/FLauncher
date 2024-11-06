@@ -33,5 +33,6 @@ namespace FLauncher.Model
 
 
         public string Content { get; set; }
+        public bool isRead { get; set; } = false;
     }
 }
