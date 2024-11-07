@@ -152,7 +152,7 @@
                 FontSize="30" Grid.ColumnSpan="2">
                 <Run FontWeight="SemiBold"
                      Text="Welcome"/>
-                <Run Text="Back!"
+                <Run Text=""
                      Foreground="#FF01A3ff"
                      FontWeight="Bold"
                      x:Name="userName"/>
@@ -186,17 +186,21 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock
                         Style="{StaticResource linkText}">
-                        <Run Text="I'm not"/>
+                        <!--<Run Text="I'm not"/>-->
                         <Run Text="{Binding Text, ElementName=userName}"/>
-                        <Hyperlink/>
+                        <Hyperlink NavigateUri="http://localhost:9999/FPTeam/Register.jsp" RequestNavigate="Hyperlink_RequestNavigate">
+                            <Run Text="I'm not"/>
+                        </Hyperlink>
                 </TextBlock>
 
                 <!--Forgot pass-->
                 <TextBlock
                         Grid.Column="1"
                         Style="{StaticResource linkText}"
-                        Text="Forgot Password">
-                        <Hyperlink/>
+                        >
+                        <Hyperlink NavigateUri="http://localhost:9999/FPTeam/ForgetPass.jsp" RequestNavigate="Hyperlink_RequestNavigate">
+                            <Run Text="Forgot Password"/>
+                        </Hyperlink>
                 </TextBlock>
 
                 <!--Login button-->

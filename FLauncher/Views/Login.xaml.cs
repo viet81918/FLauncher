@@ -237,5 +237,12 @@ namespace FLauncher.Views
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");               
             }
         }
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            // Mở URL trong trình duyệt mặc định
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true; // Đảm bảo sự kiện không bị xử lý thêm
+        }
+
     }
 }
