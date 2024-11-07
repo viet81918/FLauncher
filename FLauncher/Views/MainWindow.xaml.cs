@@ -25,7 +25,7 @@ namespace FLauncher.Views
         }
         private void logout_click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Ready to out B*tch");
+            MessageBox.Show("Bye");
             Login _login = new Login();
             _login.Show();
 
