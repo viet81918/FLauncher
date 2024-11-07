@@ -71,7 +71,7 @@
                             CornerRadius="10">
                             <StackPanel>
                                 <!-- Thêm Image để hiển thị icon Google -->
-                                <Image Source="/assets/google-icon.png" Width="40" Height="40" Margin="-400,5,5,0"/>
+                                <Image Source="/assets/google-icon.png" Width="40" Height="40" Margin="-420,5,5,0"/>
                                 <!-- ContentPresenter hiển thị văn bản của Button -->
                                 <ContentPresenter 
                                     HorizontalAlignment="{TemplateBinding 
@@ -242,7 +242,7 @@
                    Click="LoginGG_Click"
                    Style="{StaticResource googlebutton}"/>
                 <TextBlock
-                    Text="Login"
+                    Text="Login with Google"
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Center"
                     FontWeight="Bold"
