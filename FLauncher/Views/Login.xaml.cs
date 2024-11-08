@@ -234,7 +234,19 @@ namespace FLauncher.Views
             }
             else
             {
-                MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");               
+
+                MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
+                
+                 // Close the Login window
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    parentWindow.Close();
+                }
+                 
+
+          
+
             }
         }
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
