@@ -19,12 +19,14 @@ namespace FLauncher.ViewModel
         // Add the TrendingGames property
         public List<Game> TrendingGames { get; }
 
-        public CustomerWindowViewModel(Gamer gamer, List<Notification> unreadNotifications, List<Friend> friendInvitations, List<Game> trendingGames)
+        public List<Genre> Genres {  get; } 
+        public CustomerWindowViewModel(Gamer gamer, List<Notification> unreadNotifications, List<Friend> friendInvitations, List<Game> trendingGames, List<Genre> genres) 
         {
             Gamer = gamer;
             UnreadNotifications = unreadNotifications;
             FriendInvitations = friendInvitations;
             TrendingGames = trendingGames;
+            Genres = genres;
         }
     }
 

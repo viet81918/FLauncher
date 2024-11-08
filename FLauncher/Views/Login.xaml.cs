@@ -135,14 +135,14 @@ namespace FLauncher.Views
             else
             {
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
-                /*
+                
                  // Close the Login window
                 Window parentWindow = Window.GetWindow(this);
                 if (parentWindow != null)
                 {
                     parentWindow.Close();
                 }
-                 */
+                 
 
             }
         }
