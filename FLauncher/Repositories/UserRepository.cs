@@ -19,5 +19,9 @@ namespace FLauncher.Repositories
         {
             return  UserDAO.Instance.GetUsers();
         }
+        public User GetUserByEmail(string Email)
+        {
+            return UserDAO.Instance.GetUserByEmail(Email);
+        }
     }
 }
