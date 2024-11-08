@@ -1,68 +1,70 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.ViewModel;
-using FLauncher.Views;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace FLauncher
+namespace FLauncher.Views
 {
-    public partial class CustomerWindow : Window
+    /// <summary>
+    /// Interaction logic for GameDetail.xaml
+    /// </summary>
+    public partial class GameDetail : Window
+       
+
     {
         private Gamer _gamer;
-        private readonly GamerRepository _gamerRepo;
+     
         private readonly NotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
-        private readonly GameRepository _gameRepo;
+
         private readonly GenreRepository _genreRepo;
-        public CustomerWindow(User user)
+        private readonly ReviewRepository _reviewRepo;
+        private readonly PublisherRepository _publisherRepo;
+        public GameDetail(Game game, Gamer gamer)
         {
             InitializeComponent();
-            _gamerRepo = new GamerRepository();
+
+    
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
-            _gameRepo = new GameRepository(); // Game repository to fetch games
-            _genreRepo = new GenreRepository(); 
-            // Fetch gamer details
-            _gamer = _gamerRepo.GetGamerByUser(user);
+         
+            _genreRepo = new GenreRepository();
+            _reviewRepo = new ReviewRepository();
+            _publisherRepo = new PublisherRepository();
+            _gamer = gamer;
 
-            // Fetch unread notifications, friend invitations, and games
             var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
             var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
-
-            // Fetch all games and sort by NumberOfBuyers in descending order to get the top 9
-            var allGames = _gameRepo.GetGames();
-            var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
-            var genres = _genreRepo.GetGenres();
-            
-            DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+            var genres = _genreRepo.GetGenresFromGame(game); // Get genres from your repository
+            var reviews = _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
+            var publisher = _publisherRepo.GetPublisherByGame(game);
+            var updates = _publisherRepo.getUpdatesForGame(game);
+            // Set the DataContext to your ViewModel
+            DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates);
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
-               if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
 
         private void minimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
-        }
-
-        private void TrendingCard_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Get the clicked game from the data context
-            var clickedGame = ((FrameworkElement)sender).DataContext as Game;
-
-            if (clickedGame != null)
-            {
-                // Get the current gamer from the DataContext
-                var currentGamer = _gamer;
-                // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer);
-                gameDetailPage.Show();
-            }
         }
 
         private void maximizeButton_Click(object sender, RoutedEventArgs e)
@@ -80,7 +82,6 @@ namespace FLauncher
             Close();
         }
 
-    
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchTextBox.Text == "Search the store")
@@ -97,7 +98,6 @@ namespace FLauncher
                 SearchTextBox.Text = "Search the store";
             }
         }
-
 
     }
 }

@@ -25,6 +25,6 @@ namespace FLauncher.Model
         [BsonElement("ID_Admin")]
         public string AdminId { get; set; }
 
-        public bool IsPublishable { get; set; }
+        public Boolean isPublishable { get; set; }
     }
 }
