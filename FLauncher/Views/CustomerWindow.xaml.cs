@@ -11,6 +11,8 @@ namespace FLauncher
     public partial class CustomerWindow : Window
     {
         private Gamer _gamer;
+        private GamePublisher _gamePublisher;
+        private readonly PublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
         private readonly NotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
@@ -19,24 +21,48 @@ namespace FLauncher
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            //get userID == 2
+            if (user.Role == 2)
+            {
+                settingsIconListBoxItem.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                settingsIconListBoxItem.Visibility = Visibility.Collapsed;
+            }
+            //end 
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
             _gameRepo = new GameRepository(); // Game repository to fetch games
-            _genreRepo = new GenreRepository(); 
-            // Fetch gamer details
-            _gamer = _gamerRepo.GetGamerByUser(user);
+            _genreRepo = new GenreRepository();
 
+            _publisherRepo = new PublisherRepository();
+            // Fetch gamer details
+            
+            
             // Fetch unread notifications, friend invitations, and games
-            var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-            var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
+            //var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
+            //var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
 
             // Fetch all games and sort by NumberOfBuyers in descending order to get the top 9
             var allGames = _gameRepo.GetGames();
             var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
             var genres = _genreRepo.GetGenres();
-            
-            DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+            if(user.Role == 3)
+            {
+                _gamer = _gamerRepo.GetGamerByUser(user);
+                var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
+                var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
+                DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+
+            }
+            else if(user.Role == 2)
+            {
+                _gamePublisher = _publisherRepo.GetPublisherByUser(user);
+
+                DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
+            }
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -59,8 +85,9 @@ namespace FLauncher
             {
                 // Get the current gamer from the DataContext
                 var currentGamer = _gamer;
+                var currentPublisher = _gamePublisher;
                 // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer);
+                var gameDetailPage = new GameDetail(clickedGame, currentGamer, currentPublisher);
                 gameDetailPage.Show();
             }
         }

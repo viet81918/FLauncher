@@ -265,19 +265,19 @@
                             <!-- Money -->
                         </Grid.RowDefinitions>
 
-                        <!-- Gamer's Name -->
+                        <!-- Name -->
                         <TextBlock
         FontWeight="SemiBold"
         Foreground="{StaticResource SecondaryBrush}"
-        Text="{Binding Gamer.Name}" />
+        Text="{Binding Name}" />
                         <!-- Binding to Name property of Gamer -->
 
-                        <!-- Gamer's Money -->
+                        <!-- Money -->
                         <TextBlock
         Grid.Row="1"
         FontWeight="SemiBold"
         Foreground="{StaticResource PrimaryBrush}"
-        Text="{Binding Gamer.Money, StringFormat=C}" />
+        Text="{Binding Money, StringFormat=C}" />
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 
@@ -399,6 +399,8 @@
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem
                     Content="{StaticResource profile_icon}"/>
+                <!--demo phân quyền-->
+                <ListBoxItem x:Name="settingsIconListBoxItem" Content="{StaticResource settings_icon}" />
 
             </ListBox>
         </Grid>
