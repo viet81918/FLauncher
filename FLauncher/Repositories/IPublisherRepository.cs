@@ -11,5 +11,6 @@ namespace FLauncher.Repositories
     {
         GamePublisher GetPublisherByGame(Game game);
         List<Update> getUpdatesForGame(Game game);
+        GamePublisher GetPublisherByUser(User user);
     }
 }

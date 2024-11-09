@@ -19,5 +19,9 @@ namespace FLauncher.Repositories
         {
             return PublisherDAO.Instance.getUpdatesForGame(game);
         }
+        public GamePublisher GetPublisherByUser(User user)
+        {
+            return PublisherDAO.Instance.GetPublisherByUser(user);
+        }
     }
 }
