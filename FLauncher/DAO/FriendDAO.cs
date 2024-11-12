@@ -56,13 +56,21 @@ namespace FLauncher.DAO
                 .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
 
+        public List<Friend> GetFriendsForAGamer(Gamer gamer)
+        {
+            // Synchronous query to fetch friends for the given gamer
+            return _dbContext.Friends
+                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
+                .ToList(); // Using ToList for synchronous operation
+        }
+
 
         public List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer)
         {
             var gamerDAO = new GamerDAO();
 
             // Lấy danh sách bạn bè của gamer
-            var friends = GetFriendsForGamer(gamer);
+            var friends = GetFriendsForAGamer(gamer);
 
             // Danh sách người chơi có cùng game
             var friendsWithSameGame = new List<Gamer>();

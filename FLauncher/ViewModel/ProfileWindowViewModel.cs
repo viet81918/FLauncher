@@ -69,7 +69,7 @@ namespace FLauncher.ViewModel
         public async Task LoadProfileData(string gamerId)
         {
             // Fetch the gamer data from the repository
-            var gamer = await _gamerRepository.GetGamerById(gamerId);
+            var gamer =  _gamerRepository.GetGamerById(gamerId);
 
             if (gamer != null)
             {
@@ -78,7 +78,7 @@ namespace FLauncher.ViewModel
                 AvatarLink = gamer.AvatarLink;
 
                 // Fetch friend count
-                var friends = await _friendRepository.GetFriendsForGamer(gamer);
+                var friends =  await _friendRepository.GetFriendsForGamer(gamer);
                 FriendCount = friends.Count;
             }
             else
@@ -94,7 +94,7 @@ namespace FLauncher.ViewModel
         public async Task RefreshFriendCount(string gamerId)
         {
             // Fetch the updated friend count for the gamer
-            var gamer = await _gamerRepository.GetGamerById(gamerId);
+            var gamer =  _gamerRepository.GetGamerById(gamerId);
 
             if (gamer != null)
             {
