@@ -1,4 +1,6 @@
 ﻿using FLauncher.Model;
+
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MongoDB.Driver;
@@ -37,6 +39,47 @@ namespace FLauncher.DAO
         {
             await _mongoDbContext.Friends.InsertOneAsync(friendRequest);
         }
+        public List<Friend> GetFriendsForGamer(Gamer gamer)
+        {
+            // Lấy tất cả các mối quan hệ bạn bè mà người chơi có thể là RequestId hoặc AcceptId
+            var friends = _dbContext.Friends.Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
+                          .ToList();
+            return friends;
+        }
+
+        public List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer)
+        {
+            var gamerDAO = new GamerDAO();
+
+            // Lấy danh sách bạn bè của gamer
+            var friends = GetFriendsForGamer(gamer);
+
+            // Danh sách người chơi có cùng game
+            var friendsWithSameGame = new List<Gamer>();
+
+            // 1. Lấy danh sách bạn bè theo ID
+            var friendIds = friends.Select(f => f.RequestId == gamer.GamerId ? f.AcceptId : f.RequestId).ToList();
+
+            // 2. Lấy danh sách các Bill mà những người bạn này đã mua game từ bảng Bills
+            var purchasedGameBills = _dbContext.Bills
+                                               .Where(b => friendIds.Contains(b.GamerId) && b.GameId == game.GameID)
+                                               .ToList();
+
+            // 3. Lấy danh sách gamer từ các IDs đã mua game
+            var gamerIdsWithPurchasedGame = purchasedGameBills
+                .Select(b => b.GamerId)
+                .Distinct()
+                .ToList();
+
+            // Truy vấn các gamer từ các gamerIds
+            var friendsWithPurchasedGame = gamerDAO.GetGamersByIds(gamerIdsWithPurchasedGame);
+
+            // Trả về danh sách bạn bè đã mua game
+            return friendsWithPurchasedGame;
+        }
+
+
+
 
         public async Task<Friend> FindFriendRequest(string requestId, string acceptId)
         {

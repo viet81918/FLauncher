@@ -23,5 +23,23 @@ namespace FLauncher.DAO
         {
             return _dbContext.Games.ToList();
         }
+        public List<Game> GetGamesByGamer(Gamer gamer)
+        {
+            // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
+            var purchasedGameIds = _dbContext.Bills
+                                              .Where(b => b.GamerId == gamer.Id)
+                                              .Select(b => b.GameId)
+                                              .ToList();
+
+            // Lấy thông tin các game từ bảng Games dựa trên danh sách GameID đã mua
+            var games = _dbContext.Games
+                                  .Where(g => purchasedGameIds.Contains(g.GameID))
+                                  .ToList();
+
+            return games;
+        }
+      
+
+
     }
 }

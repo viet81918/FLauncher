@@ -20,10 +20,12 @@ namespace FLauncher.ViewModel
         public double AverageRating => Reviews?.Any() == true ? Reviews.Average(r => r.Rating) : 0;
         public GamePublisher GamePublisher { get; }
         public List<Update> Updates { get; }
-        // Common properties for both Gamer and GamePublisher
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
-        public GameDetailViewModel(Game game, Gamer gamer, List<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates)
+        public List<Gamer> Friendwiththesamegame {  get; }
+        public GameDetailViewModel(Game game, Gamer gamer, List<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates, List<Gamer> friendwiththesamegame)
+
+  
         {
             Game = game;
             Gamer = gamer;
@@ -33,6 +35,7 @@ namespace FLauncher.ViewModel
             FriendInvitations = friendInvitations;
             GamePublisher = gamePublisher;
             Updates = updates;
+            Friendwiththesamegame = friendwiththesamegame;
         }
 
         public GameDetailViewModel(Game game, List<Genre> genres, List<Review> reviews, GamePublisher gamePublisher, List<Update> updates)
