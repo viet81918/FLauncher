@@ -269,7 +269,7 @@ FontSize="15">
                         <TextBlock
         FontWeight="SemiBold"
         Foreground="{StaticResource SecondaryBrush}"
-        Text="{Binding Gamer.Name}" />
+        Text="{Binding Name}" />
                         <!-- Binding to Name property of Gamer -->
 
                         <!-- Gamer's Money -->
@@ -277,7 +277,7 @@ FontSize="15">
         Grid.Row="1"
         FontWeight="SemiBold"
         Foreground="{StaticResource PrimaryBrush}"
-        Text="{Binding Gamer.Money, StringFormat=C}" />
+        Text="{Binding Money, StringFormat=C}" />
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 

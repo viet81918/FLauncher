@@ -42,6 +42,9 @@ namespace FLauncher.DAO
         {
             return _dbContext.Updates.Where(c => c.GameId == game.GameID).ToList();
         }
-
+        public GamePublisher GetPublisherByUser(User user)
+        {
+            return _dbContext.GamePublishers.First(c => c.PublisherId == user.ID);
+        }
     }
 }
