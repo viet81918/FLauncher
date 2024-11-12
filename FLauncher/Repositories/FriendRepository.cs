@@ -31,13 +31,17 @@ namespace FLauncher.Repositories
 
         public List<Friend> GetFriendInvitationsForGamer(Gamer gamer)
         {
-            return _friendDAO.GetFriendInvitationsForGamer(gamer);
+            return _friendDAO.GetFriendInvitationsForGamer(gamer);  // Call the synchronous DAO method
         }
+
+
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
+            // Use the DAO method to retrieve the list of friends asynchronously
             return await _friendDAO.GetFriendsForGamer(gamer);
         }
+
         public async Task<Friend> GetFriendship(string gamerId1, string gamerId2)
         {
             return await _friendDAO.GetFriendship(gamerId1, gamerId2);

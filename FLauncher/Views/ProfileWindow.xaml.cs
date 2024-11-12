@@ -87,7 +87,7 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
-        private async void AddFriendButton_Click(object sender, RoutedEventArgs e)
+        private void AddFriendButton_Click(object sender, RoutedEventArgs e)
         {
             // Prompt user to enter the Gamer ID they want to add as a friend
             string acceptId = Microsoft.VisualBasic.Interaction.InputBox("Enter the ID of the gamer you want to add as a friend:", "Add Friend");
@@ -99,7 +99,7 @@ namespace FLauncher.Views
             }
 
             // Check if the users are already friends
-            bool areAlreadyFriends = await _friendService.AreGamersAlreadyFriends(_currentGamer.GamerId, acceptId);
+            bool areAlreadyFriends = _friendService.AreGamersAlreadyFriends(_currentGamer.GamerId, acceptId);
 
             if (areAlreadyFriends)
             {
@@ -108,7 +108,7 @@ namespace FLauncher.Views
             }
 
             // Check if there is already a pending invitation between the two gamers
-            var pendingInvitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
+            var pendingInvitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);
 
             bool isInvitationPending = pendingInvitations.Any(invitation =>
                 (invitation.RequestId == _currentGamer.GamerId && invitation.AcceptId == acceptId) ||
@@ -121,14 +121,14 @@ namespace FLauncher.Views
             }
 
             // Attempt to send the friend request
-            bool success = await _friendService.SendFriendRequest(_currentGamer.GamerId, acceptId);
+            bool success = _friendService.SendFriendRequest(_currentGamer.GamerId, acceptId);
 
             if (success)
             {
                 MessageBox.Show("Friend request sent successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Refresh the friend count for the current gamer
-                await _viewModel.RefreshFriendCount(_currentGamer.GamerId);
+                _viewModel.RefreshFriendCount(_currentGamer.GamerId);
             }
             else
             {
@@ -139,11 +139,14 @@ namespace FLauncher.Views
 
 
 
-        private async void InvitationButton_Click(object sender, RoutedEventArgs e)
+
+        private void InvitationButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
+                // Fetch the pending invitations synchronously
+                var invitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);  // Blocking call
+
                 if (invitations != null && invitations.Count > 0)
                 {
                     InvitationsListBox.ItemsSource = invitations;
@@ -189,7 +192,7 @@ namespace FLauncher.Views
         private async Task RefreshInvitationsList()
         {
             // Fetch the updated list of invitations
-            var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
+            var invitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);
 
             // Update the ListBox with the new list
             InvitationsListBox.ItemsSource = invitations;
