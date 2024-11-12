@@ -12,40 +12,50 @@ namespace FLauncher.DAO
 {
     public class FriendDAO : SingletonBase<FriendDAO>
     {
-        private readonly MongoDbContext _mongoDbContext;
+       
+        private readonly FlauncherDbContext _dbContext;
 
         public FriendDAO()
         {
-            _mongoDbContext = new MongoDbContext();
+            
+            var connectionString = "mongodb://localhost:27017/";
+            var client = new MongoClient(connectionString);
+            _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
 
         public List<Friend> GetFriendInvitationsForGamer(Gamer gamer)
-        {
-            if (gamer == null)
-            {
-                throw new ArgumentNullException(nameof(gamer), "Gamer cannot be null");
-            }
+{
+    if (gamer == null)
+    {
+        throw new ArgumentNullException(nameof(gamer), "Gamer cannot be null");
+    }
 
-            var invitations = _mongoDbContext.Friends
-                .Find(friend => friend.AcceptId == gamer.GamerId && friend.IsAccept == null)
-                .ToList();
+    // Use ToList() instead of ToListAsync() for synchronous execution
+    var invitations = _dbContext.Friends
+        .Where(friend => friend.AcceptId == gamer.GamerId && friend.IsAccept == null)
+        .ToList();  // This is now synchronous
 
-            Debug.WriteLine($"Fetched {invitations.Count} invitations for gamer {gamer.GamerId}");
+    Debug.WriteLine($"Fetched {invitations.Count} invitations for gamer {gamer.GamerId}");
 
-            return invitations;
-        }
+    return invitations;
+}
+
+
 
         public async Task InsertFriendRequest(Friend friendRequest)
         {
-            await _mongoDbContext.Friends.InsertOneAsync(friendRequest);
+            _dbContext.Friends.Add(friendRequest);
+            await _dbContext.SaveChangesAsync();  // Use async SaveChanges to avoid blocking the thread
         }
-        public List<Friend> GetFriendsForGamer(Gamer gamer)
+
+        public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
-            // Lấy tất cả các mối quan hệ bạn bè mà người chơi có thể là RequestId hoặc AcceptId
-            var friends = _dbContext.Friends.Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
-                          .ToList();
-            return friends;
+            // Use async query to fetch friends for the given gamer
+            return await _dbContext.Friends
+                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
+                .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
+
 
         public List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer)
         {
@@ -83,45 +93,37 @@ namespace FLauncher.DAO
 
         public async Task<Friend> FindFriendRequest(string requestId, string acceptId)
         {
-            return await _mongoDbContext.Friends
-                .Find(friend => friend.RequestId == requestId && friend.AcceptId == acceptId && friend.IsAccept == null)
+            return await _dbContext.Friends
+                .Where(friend => friend.RequestId == requestId && friend.AcceptId == acceptId && friend.IsAccept == null)
                 .FirstOrDefaultAsync();
         }
 
         public async Task UpdateFriendRequestStatus(string requestId, string acceptId, bool isAccepted)
         {
-            var filter = Builders<Friend>.Filter.Eq(f => f.RequestId, requestId) &
-                         Builders<Friend>.Filter.Eq(f => f.AcceptId, acceptId);
+            var friendRequest = await _dbContext.Friends
+                .FirstOrDefaultAsync(friend => friend.RequestId == requestId && friend.AcceptId == acceptId);
 
-            var update = Builders<Friend>.Update.Set(f => f.IsAccept, isAccepted);
-
-            var result = await _mongoDbContext.Friends.UpdateOneAsync(filter, update);
-
-            if (result.ModifiedCount == 0)
+            if (friendRequest == null)
             {
-                throw new Exception("Friend request not found or already updated.");
-            }
-        }
-        public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
-        {
-            if (gamer == null)
-            {
-                throw new ArgumentNullException(nameof(gamer), "Gamer cannot be null");
+                throw new Exception("Friend request not found.");
             }
 
-            // Query the database for friends where either RequestId or AcceptId matches the gamer
-            // and the IsAccept flag is true
-            return await _mongoDbContext.Friends
-                .Find(friend =>
-                    (friend.RequestId == gamer.GamerId || friend.AcceptId == gamer.GamerId) &&
-                    friend.IsAccept == true)
-                .ToListAsync();
+            friendRequest.IsAccept = isAccepted;
+
+            var result = await _dbContext.SaveChangesAsync();
+
+            if (result == 0)
+            {
+                throw new Exception("Friend request not updated.");
+            }
         }
+
+
 
         public async Task<Friend> GetFriendship(string gamerId1, string gamerId2)
         {
-            return await _mongoDbContext.Friends
-                .Find(friend =>
+            return await _dbContext.Friends
+                .Where(friend =>
                     (friend.RequestId == gamerId1 && friend.AcceptId == gamerId2 ||
                      friend.RequestId == gamerId2 && friend.AcceptId == gamerId1) &&
                     friend.IsAccept == true)

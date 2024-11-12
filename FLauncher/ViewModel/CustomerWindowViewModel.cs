@@ -22,7 +22,7 @@ namespace FLauncher.ViewModel
 
         public List<Genre> Genres {  get; }
 
-        // Common properties for both Gamer and GamePublisher
+        
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
         public CustomerWindowViewModel(Gamer gamer, List<Notification> unreadNotifications, List<Friend> friendInvitations, List<Game> trendingGames, List<Genre> genres) 

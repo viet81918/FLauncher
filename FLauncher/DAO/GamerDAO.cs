@@ -23,11 +23,14 @@ namespace FLauncher.DAO
         {
             return _dbContext.Gamers.First(c => c.GamerId == user.ID);
         }
+        public Gamer GetGamerById(string Id)
+        {
+            return _dbContext.Gamers.First(c => c.GamerId == Id);
+        }
 
 
         public List<Gamer> GetGamersByIds(List<string> gamerIds)
         {
-            // Truy vấn các gamer có GamerId trong danh sách gamerIds
             return _dbContext.Gamers
                              .Where(g => gamerIds.Contains(g.GamerId))
                              .ToList();

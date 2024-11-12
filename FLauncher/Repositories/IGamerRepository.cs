@@ -11,7 +11,7 @@ namespace FLauncher.Repositories
     {
         Gamer GetGamerByUser(User user);
 
-        Task<Gamer> GetGamerById(string gamerId);
+        Gamer GetGamerById(string gamerId);
        
     }
 }

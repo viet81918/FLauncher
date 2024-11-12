@@ -20,8 +20,8 @@ namespace FLauncher.Repositories
         {
            return GamerDAO.Instance.GetGamerByUser(user);
         }
-        public async Task<Gamer> GetGamerById(string gamerId) {
-            return await _gamerDAO.GetGamerById(gamerId);
+        public Gamer GetGamerById(string gamerId) {
+            return  _gamerDAO.GetGamerById(gamerId);
 
         }
     }
