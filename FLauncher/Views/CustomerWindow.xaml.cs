@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
 using FLauncher.ViewModel;
 using FLauncher.Views;
 using System.Windows;
@@ -17,7 +18,7 @@ namespace FLauncher
         private readonly NotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly GameRepository _gameRepo;
-        private readonly GenreRepository _genreRepo;
+
         public CustomerWindow(User user)
         {
             InitializeComponent();
@@ -37,24 +38,12 @@ namespace FLauncher
             _gameRepo = new GameRepository(); // Game repository to fetch games
             _genreRepo = new GenreRepository();
 
-            _publisherRepo = new PublisherRepository();
             // Fetch gamer details
             
             
             // Fetch unread notifications, friend invitations, and games
-            //var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-            //var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
-
-            // Fetch all games and sort by NumberOfBuyers in descending order to get the top 9
-            var allGames = _gameRepo.GetGames();
-            var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
-            var genres = _genreRepo.GetGenres();
-            if(user.Role == 3)
-            {
-                _gamer = _gamerRepo.GetGamerByUser(user);
-                var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
-                DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+            var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
+            var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
 
             }
             else if(user.Role == 2)
@@ -125,6 +114,15 @@ namespace FLauncher
             }
         }
 
+        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Create an instance of ProfileWindow and show it
+            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            profileWindow.Show();
+
+            // Optionally, close the current window (MainWindow)
+            // this.Close();
+        }
 
     }
 }
