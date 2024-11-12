@@ -20,7 +20,8 @@ namespace FLauncher.ViewModel
         public double AverageRating => Reviews?.Any() == true ? Reviews.Average(r => r.Rating) : 0;
         public GamePublisher GamePublisher { get; }
         public List<Update> Updates { get; }
-        public GameDetailViewModel(Game game, Gamer gamer, List<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates)
+        public List<Gamer> Friendwiththesamegame {  get; }
+        public GameDetailViewModel(Game game, Gamer gamer, List<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates, List<Gamer> friendwiththesamegame)
         {
             Game = game;
             Gamer = gamer;
@@ -30,6 +31,7 @@ namespace FLauncher.ViewModel
             FriendInvitations = friendInvitations;
             GamePublisher = gamePublisher;
             Updates = updates;
+            Friendwiththesamegame = friendwiththesamegame;
         }
     }
 

@@ -14,5 +14,10 @@ namespace FLauncher.Repositories
         {
            return FriendDAO.Instance.GetFriendInvitationsforGamer(gamer);
         }
+
+        public List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer)
+        {
+            return FriendDAO.Instance.GetFriendWithTheSameGame(game, gamer);
+        }
     }
 }
