@@ -21,7 +21,39 @@ namespace FLauncher.DAO
         }
         public Gamer GetGamerByUser(User user)
         {
-            return _dbContext.Gamers.First(c=> c.GamerId == user.ID);
+            return _dbContext.Gamers.First(c => c.GamerId == user.ID);
         }
+
+        public List<Gamer> GetGamersByIds(List<string> gamerIds)
+        {
+            // Truy vấn các gamer có GamerId trong danh sách gamerIds
+            return _dbContext.Gamers
+                             .Where(g => gamerIds.Contains(g.GamerId))
+                             .ToList();
+        }
+
+        public List<Game> GetGamesByGamer(Gamer gamer)
+        {
+            // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
+            var purchasedGameIds = _dbContext.Bills
+                                             .Where(b => b.GamerId == gamer.GamerId)
+                                             .Select(b => b.GameId)
+                                             .ToList();
+
+            // Lấy thông tin các game từ bảng Games dựa trên danh sách GameID đã mua
+            var games = _dbContext.Games
+                                  .Where(g => purchasedGameIds.Contains(g.GameID))
+                                  .ToList();
+
+            return games;
+        }
+
+        public List<Buy> GetBillsByGamerId(Gamer gamer)
+        {
+            return _dbContext.Bills
+                             .Where(b => b.GameId == gamer.GamerId)
+                             .ToList();
+        }
+
     }
 }

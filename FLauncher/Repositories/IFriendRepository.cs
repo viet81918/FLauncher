@@ -10,5 +10,6 @@ namespace FLauncher.Repositories
     public interface IFriendRepository
     {
         List<Friend> GetFriendInvitationsforGamer(Gamer gamer);
+        List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer);
     }
 }
