@@ -51,17 +51,20 @@ namespace FLauncher.Views
             var reviews = _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
             var publisher = _publisherRepo.GetPublisherByGame(game);
             var updates = _publisherRepo.getUpdatesForGame(game);
+
             // Set the DataContext to your ViewModel            
             if(_gamer != null)
             {
+                var friendwithsamegame = _friendRepo.GetFriendWithTheSameGame(game, _gamer );
                 var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
-                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates);
+                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer);
+                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame);
             }
             else if(_gamePublisher != null)
             {
                 DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates);
             }
+
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {

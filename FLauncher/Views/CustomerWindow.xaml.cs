@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
 using FLauncher.ViewModel;
 using FLauncher.Views;
 using MongoDB.Driver;
@@ -20,6 +21,8 @@ namespace FLauncher
         private readonly FriendRepository _friendRepo;
         private readonly GameRepository _gameRepo;
         private readonly GenreRepository _genreRepo;
+        private readonly FriendService _friendService;
+
         public CustomerWindow(User user)
         {
             InitializeComponent();
@@ -41,8 +44,8 @@ namespace FLauncher
 
             _publisherRepo = new PublisherRepository();
             // Fetch gamer details
-            
-            
+
+
             // Fetch unread notifications, friend invitations, and games
             //var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
             //var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
@@ -51,15 +54,15 @@ namespace FLauncher
             var allGames = _gameRepo.GetGames();
             var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
             var genres = _genreRepo.GetGenres();
-            if(user.Role == 3)
+            if (user.Role == 3)
             {
                 _gamer = _gamerRepo.GetGamerByUser(user);
                 var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
+                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer);
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
 
             }
-            else if(user.Role == 2)
+            else if (user.Role == 2)
             {
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user);
 
@@ -158,6 +161,15 @@ namespace FLauncher
             {
                 File.Delete(jsonFilePath);
             }
+        }
+        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Create an instance of ProfileWindow and show it
+            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            profileWindow.Show();
+
+            // Optionally, close the current window (MainWindow)
+            // this.Close();
         }
     }
 }
