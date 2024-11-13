@@ -6,11 +6,12 @@
         xmlns:local="clr-namespace:FLauncher.Views" xmlns:cc="clr-namespace:FLauncher.CC"
         mc:Ignorable="d"
         Background="WhiteSmoke"
-         HorizontalAlignment="Stretch"
-         VerticalAlignment="Stretch"
-         Height="Auto"
-         Width="Auto"
-         Title="LoginPage">
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Height="Auto"
+        Width="Auto"
+        Title="LoginPage"
+        Loaded="Window_Loaded">
     <Window.Resources>
         <Style x:Key="linkText" TargetType="{x:Type TextBlock}">
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -184,6 +185,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+                <CheckBox x:Name="RememberCheckBox" Content="Remember" Foreground="Black" FontWeight="Bold"/>
                 <TextBlock
                         Style="{StaticResource linkText}">
                         <!--<Run Text="I'm not"/>-->
