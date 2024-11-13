@@ -340,13 +340,13 @@
 
         <!--#region Left Navigation Menu-->
         <Grid
-            Background="{StaticResource CanvasBrush}"
-            Grid.Row="1"
-            Effect="{StaticResource RightShadowEffect}">
+    Background="{StaticResource CanvasBrush}"
+    Grid.Row="1"
+    Effect="{StaticResource RightShadowEffect}">
             <!--Menu Buttons-->
             <ListBox
-                Background="Transparent"
-                BorderThickness="0">
+        Background="Transparent"
+        BorderThickness="0">
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Height" Value="80"/>
@@ -359,32 +359,32 @@
 
                                         <!--Indicator for selected Item-->
                                         <Rectangle
-                                            x:Name="indicator"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Stretch"
-                                            Width="4"/>
+                                    x:Name="indicator"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Stretch"
+                                    Width="4"/>
 
                                         <!--Menu Icon-->
                                         <Path
-                                            x:Name="icon"
-                                            Data="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"
-                                            Fill="{StaticResource SecondaryBrush}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"/>
+                                    x:Name="icon"
+                                    Data="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"
+                                    Fill="{StaticResource SecondaryBrush}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <!--Set the fill for indicator when listboxitem is selected-->
                                             <Setter
-                                                TargetName="indicator"
-                                                Property="Fill"
-                                                Value="{StaticResource PrimaryBrush}"/>
+                                        TargetName="indicator"
+                                        Property="Fill"
+                                        Value="{StaticResource PrimaryBrush}"/>
 
                                             <!--Set the fill for icon when listboxitem is selected-->
                                             <Setter
-                                                TargetName="icon"
-                                                Property="Fill"
-                                                Value="{StaticResource PrimaryBrush}"/>
+                                        TargetName="icon"
+                                        Property="Fill"
+                                        Value="{StaticResource PrimaryBrush}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -392,18 +392,21 @@
                         </Setter>
                     </Style>
                 </ListBox.Resources>
+
                 <ListBoxItem
-                    Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
+            Content="{StaticResource home_icon}"
+            IsSelected="True"/>
+
                 <ListBoxItem
-                    Content="{StaticResource games_icon}"/>
+            Content="{StaticResource games_icon}"/>
+
+                <!-- Profile Icon Item with Click Event -->
                 <ListBoxItem
                     Content="{StaticResource profile_icon}"/>
-                <!--demo phân quyền-->
-                <ListBoxItem x:Name="settingsIconListBoxItem" Content="{StaticResource settings_icon}" />
 
             </ListBox>
         </Grid>
+
         <!--#endregion-->
 
         <!--#region Contents-->

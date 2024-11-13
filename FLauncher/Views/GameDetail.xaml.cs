@@ -57,7 +57,7 @@ namespace FLauncher.Views
             {
                 var friendwithsamegame = _friendRepo.GetFriendWithTheSameGame(game, _gamer );
                 var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
+                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer);
                 DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame);
             }
             else if(_gamePublisher != null)

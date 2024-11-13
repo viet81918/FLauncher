@@ -10,5 +10,8 @@ namespace FLauncher.Repositories
     public interface IGamerRepository
     {
         Gamer GetGamerByUser(User user);
+
+        Gamer GetGamerById(string gamerId);
+       
     }
 }
