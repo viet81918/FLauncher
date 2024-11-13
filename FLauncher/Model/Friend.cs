@@ -8,7 +8,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.EntityFrameworkCore;
 namespace FLauncher.Model
 {
-    [Collection("Friend")]
+    [Collection("Friends")]
     public class Friend
     {
         [BsonId]

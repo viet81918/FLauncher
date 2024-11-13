@@ -45,14 +45,14 @@ namespace FLauncher.DAO
         public async Task InsertFriendRequest(Friend friendRequest)
         {
             _dbContext.Friends.Add(friendRequest);
-            await _dbContext.SaveChangesAsync();  // Use async SaveChanges to avoid blocking the thread
+            await _dbContext.SaveChangesAsync(); 
         }
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
             // Use async query to fetch friends for the given gamer
             return await _dbContext.Friends
-                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
+                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId )
                 .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
 

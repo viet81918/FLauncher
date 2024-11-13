@@ -39,7 +39,6 @@ namespace FLauncher.Views
             // Load friend count
             _viewModel.LoadProfileData(_currentGamer.GamerId);
 
-            // Set the ViewModel as DataContext
             this.DataContext = _viewModel;
         }
 

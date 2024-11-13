@@ -10,9 +10,9 @@ namespace FLauncher.Repositories
 {
     public class GameRepository : IGameReposotory
     {
-        public List<Game> GetGames()
+        public  List<Game>GetTopGames()
         {
-           return GameDAO.Instance.GetGames();  
+           return GameDAO.Instance.GetTopGames();  
         }
     }
 }
