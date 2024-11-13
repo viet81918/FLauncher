@@ -404,7 +404,21 @@
                 <ListBoxItem x:Name="settingsIconListBoxItem" 
              Content="{StaticResource settings_icon}" />
                 <ListBoxItem MouseLeftButtonUp="ProfileIcon_Click"
-                    Content="{StaticResource profile_icon}"/>
+
+
+                <!--demo phân quyền-->
+                <ListBoxItem x:Name="settingsIconListBoxItem" 
+                             Content="{StaticResource settings_icon}" />
+                <ListBoxItem
+                    Content="{StaticResource message_icon}"
+                    MouseDoubleClick="messageButton_Click"/>
+                <!-- Add Log Out icon -->
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
+
+
+
             </ListBox>
         </Grid>
 
@@ -792,8 +806,8 @@
             </StackPanel>
         </ScrollViewer>
         <!--#endregion-->
-        
-        
-        
+
+
+
     </Grid>
 </Window>

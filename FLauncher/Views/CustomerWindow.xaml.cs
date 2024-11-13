@@ -3,6 +3,8 @@ using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
 using FLauncher.Views;
+using MongoDB.Driver;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -122,7 +124,39 @@ namespace FLauncher
                 SearchTextBox.Text = "Search the store";
             }
         }
+        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
+        {
+            MessageWindow mess = new MessageWindow();
+            var currentGamer = _gamer;
+            var messDetail = new MessageWindow(currentGamer);
+            mess.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void logoutButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
+            if (result == MessageBoxResult.Yes)
+            {
+                DeleteLoginInfoFile();
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+                
+                this.Close();
+            }
+        }
+        private void DeleteLoginInfoFile()
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+            if (File.Exists(jsonFilePath))
+            {
+                File.Delete(jsonFilePath);
+            }
+        }
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
             // Create an instance of ProfileWindow and show it
@@ -134,6 +168,5 @@ namespace FLauncher
             // Optionally, close the current window (MainWindow)
             // this.Close();
         }
-
     }
 }
