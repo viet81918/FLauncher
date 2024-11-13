@@ -19,7 +19,7 @@ namespace FLauncher
         private readonly FriendRepository _friendRepo;
         private readonly GameRepository _gameRepo;
         private readonly GenreRepository _genreRepo;
-        private readonly FriendService _friendService;
+        private  FriendService _friendService;
 
         public CustomerWindow(User user)
         {
@@ -27,11 +27,11 @@ namespace FLauncher
             //get userID == 2
             if (user.Role == 2)
             {
-                settingsIconListBoxItem.Visibility = Visibility.Visible;
+                //settingsIconListBoxItem.Visibility = Visibility.Visible;
             }
             else
             {
-                settingsIconListBoxItem.Visibility = Visibility.Collapsed;
+                //settingsIconListBoxItem.Visibility = Visibility.Collapsed;
             }
             //end 
             _gamerRepo = new GamerRepository();
@@ -42,21 +42,16 @@ namespace FLauncher
 
             _publisherRepo = new PublisherRepository();
             // Fetch gamer details
-
-
-            // Fetch unread notifications, friend invitations, and games
-            //var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-            //var friendInvitations = _friendRepo.GetFriendInvitationsforGamer(_gamer);
-
             // Fetch all games and sort by NumberOfBuyers in descending order to get the top 9
-            var allGames = _gameRepo.GetGames();
-            var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
+          
+            var topGames = _gameRepo.GetTopGames();
             var genres = _genreRepo.GetGenres();
             if (user.Role == 3)
             {
                 _gamer = _gamerRepo.GetGamerByUser(user);
                 var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer);
+                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer); 
+
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
 
             }
@@ -131,6 +126,8 @@ namespace FLauncher
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
             // Create an instance of ProfileWindow and show it
+            _friendService = new FriendService(_friendRepo, _gamerRepo);
+            
             ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
             profileWindow.Show();
 

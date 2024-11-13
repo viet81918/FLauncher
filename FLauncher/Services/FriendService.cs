@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace FLauncher.Services
 {
@@ -42,6 +43,7 @@ namespace FLauncher.Services
             // Create the friend request
             var friendRequest = new Friend
             {
+                Id = ObjectId.GenerateNewId().ToString(), // Sinh một ObjectId mới
                 RequestId = requestId,
                 AcceptId = acceptId,
                 InvitationTime = DateTime.Now,

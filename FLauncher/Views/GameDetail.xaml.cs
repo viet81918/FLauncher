@@ -37,7 +37,6 @@ namespace FLauncher.Views
         {
             InitializeComponent();
 
-    
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
          

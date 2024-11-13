@@ -1,11 +1,13 @@
 ﻿using FLauncher.Model;
 using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace FLauncher.DAO
 {
@@ -19,11 +21,14 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-        public List<Game> GetGames()
+        public List <Game> GetTopGames()
         {
-            return _dbContext.Games.ToList();
+            return  _dbContext.Games
+                .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
+                .Take(9) // Lấy ra 9 game đầu tiên
+                .ToList(); // Chuyển kết quả thành 
         }
-        public List<Game> GetGamesByGamer(Gamer gamer)
+            public List<Game> GetGamesByGamer(Gamer gamer)
         {
             // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
             var purchasedGameIds = _dbContext.Bills

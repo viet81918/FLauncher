@@ -9,6 +9,6 @@ namespace FLauncher.Repositories
 {
     public interface IGameReposotory
     {
-        List<Game> GetGames();
+     List<Game> GetTopGames();
     }
 }

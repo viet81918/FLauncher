@@ -10,14 +10,14 @@ namespace FLauncher.DAO
     public class GamerDAO : SingletonBase<GamerDAO>
     {
         private readonly FlauncherDbContext _dbContext;
-        private readonly MongoDbContext _mongoDbContext;
+   
 
         public GamerDAO()
         {
             var connectionString = "mongodb://localhost:27017/";
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
-            _mongoDbContext = new MongoDbContext();
+ 
         }
         public Gamer GetGamerByUser(User user)
         {
