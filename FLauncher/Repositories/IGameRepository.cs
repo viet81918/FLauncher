@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
-    public  interface INotiReposotory
+    public interface IGameRepository
     {
-        List<Notification> GetNotiforGamer(Gamer gamer);
-        List<Notification> GetUnreadNotiforGamer(Gamer gamer);
+      Task<IEnumerable<Game>> GetTopGames();
+        void Download_game(Game game, String saveLocation, Gamer gamer);
     }
 }

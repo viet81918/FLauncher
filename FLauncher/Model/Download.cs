@@ -37,7 +37,5 @@ namespace FLauncher.Model
     [BsonElement("Directory")] // Matches the JSON key "Directory"
     public string Directory { get; set; }
 
-    [BsonElement("isDownload")] // Matches the JSON key "isDownload"
-    public bool IsDownload { get; set; }
     }
 }

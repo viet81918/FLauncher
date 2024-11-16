@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,11 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-        public List<Genre> GetGenres()
+        public async Task<IEnumerable<Genre>> GetGenres()
         {
-            return _dbContext.Genres.ToList();
+            return await _dbContext.Genres.ToListAsync();
         }
-        public List<Genre> GetGenresFromGame(Game game)
+        public async Task<IEnumerable<Genre>> GetGenresFromGame(Game game)
         {
             // Step 1: Get all related Genre names from Game_Has_Genre
             var genreNames = _dbContext.GameHasGenres
@@ -32,9 +33,9 @@ namespace FLauncher.DAO
                 .ToList();
 
             // Step 2: Use the retrieved genre names to get Genre details from the Genres collection
-            var genres = _dbContext.Genres
+            var genres = await _dbContext.Genres
                 .Where(g => genreNames.Contains(g.TypeOfGenre)) // Use Contains to filter by multiple genres
-                .ToList();
+                .ToListAsync();
 
             return genres;
         }
