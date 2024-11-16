@@ -10,14 +10,14 @@ namespace FLauncher.Repositories
 {
     public class NotiRepository : INotiRepository
     {
-        public List<Notification> GetNotiforGamer(Gamer gamer)
+        public async Task<IEnumerable<Notification>> GetNotiforGamer(Gamer gamer)
         {
-           return NotiDAO.Instance.GetNotiforGamer(gamer);
+           return await NotiDAO.Instance.GetNotiforGamer(gamer);
         }
 
-        public List<Notification> GetUnreadNotiforGamer(Gamer gamer)
+        public async Task<IEnumerable<Notification>> GetUnreadNotiforGamer(Gamer gamer)
         {
-            return NotiDAO.Instance.GetUnreadNotiforGamer(gamer);
+            return await NotiDAO.Instance.GetUnreadNotiforGamer(gamer);
         }
     }
 }

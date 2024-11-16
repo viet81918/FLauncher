@@ -34,7 +34,7 @@ namespace FLauncher.DAO
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
 
-        public void DownloadRarFromFolder(Game game, string saveLocation, Gamer gamer)
+        public  void DownloadRarFromFolder(Game game, string saveLocation, Gamer gamer)
         {
             // 1. Tạo credential
             var credential = GoogleCredential.FromFile(PathtoServiceAccountKeyfile)

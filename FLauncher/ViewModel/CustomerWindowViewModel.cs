@@ -13,7 +13,7 @@ namespace FLauncher.ViewModel
         public GamePublisher GamePublisher { get; }
 
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
-        public List<Notification> UnreadNotifications { get; }
+        public ObservableCollection<Notification> UnreadNotifications { get; }
 
         public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
         public List<Friend> FriendInvitations { get; }
@@ -27,10 +27,10 @@ namespace FLauncher.ViewModel
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
         // Constructor for Gamer Role
-        public CustomerWindowViewModel(Gamer gamer, List<Notification> unreadNotifications, List<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
+        public CustomerWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, List<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
         {
             Gamer = gamer;
-            UnreadNotifications = unreadNotifications;
+            UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
             FriendInvitations = friendInvitations;
             TrendingGames = new ObservableCollection<Game>(trendingGames);  // ObservableCollection to notify UI changes
             Genres = new ObservableCollection<Genre>(genres);

@@ -10,14 +10,14 @@ namespace FLauncher.Repositories
 {
     public class PublisherRepository : IPublisherRepository
     {
-        public GamePublisher GetPublisherByGame(Game game)
+        public async Task <GamePublisher> GetPublisherByGame(Game game)
         {
-           return PublisherDAO.Instance.GetPublisherByGame(game);
+           return await PublisherDAO.Instance.GetPublisherByGame(game);
         }
 
-        public List<Update> getUpdatesForGame(Game game)
+        public async Task<IEnumerable<Update>> getUpdatesForGame(Game game)
         {
-            return PublisherDAO.Instance.getUpdatesForGame(game);
+            return await PublisherDAO.Instance.getUpdatesForGame(game);
         }
         public GamePublisher GetPublisherByUser(User user)
         {
