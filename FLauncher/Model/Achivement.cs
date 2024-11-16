@@ -9,7 +9,7 @@ using MongoDB.EntityFrameworkCore;
 namespace FLauncher.Model
 {
     [Collection("Achivement")]
-    public class Achivement
+    public class Achivement 
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)] // Automatically maps to MongoDB ObjectId

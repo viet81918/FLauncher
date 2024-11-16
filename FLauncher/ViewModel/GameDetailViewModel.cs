@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace FLauncher.ViewModel
     {
         public Game Game { get; }
         public Gamer Gamer { get; }
-        public List<Genre> Genres { get; }
+        public ObservableCollection<Genre> Genres { get; }
         public List<Review> Reviews { get; }
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
         public List<Notification> UnreadNotifications { get; }
@@ -23,13 +24,13 @@ namespace FLauncher.ViewModel
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
         public List<Gamer> Friendwiththesamegame {  get; }
-        public GameDetailViewModel(Game game, Gamer gamer, List<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates, List<Gamer> friendwiththesamegame)
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, List<Review> reviews, List<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher gamePublisher, List<Update> updates, List<Gamer> friendwiththesamegame)
 
   
         {
             Game = game;
             Gamer = gamer;
-            Genres = genres;
+            Genres = new ObservableCollection<Genre>(genres);
             Reviews = reviews;
             UnreadNotifications = unreadNotifications;
             FriendInvitations = friendInvitations;
@@ -38,10 +39,10 @@ namespace FLauncher.ViewModel
             Friendwiththesamegame = friendwiththesamegame;
         }
 
-        public GameDetailViewModel(Game game, List<Genre> genres, List<Review> reviews, GamePublisher gamePublisher, List<Update> updates)
+        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, List<Review> reviews, GamePublisher gamePublisher, List<Update> updates)
         {
             Game = game;
-            Genres = genres;
+            Genres = new ObservableCollection<Genre>(genres);
             Reviews = reviews;
             GamePublisher = gamePublisher;
             Updates = updates;

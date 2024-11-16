@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
-    public class NotiRepository : INotiReposotory
+    public class NotiRepository : INotiRepository
     {
         public List<Notification> GetNotiforGamer(Gamer gamer)
         {

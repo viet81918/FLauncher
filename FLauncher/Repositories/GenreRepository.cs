@@ -10,14 +10,14 @@ namespace FLauncher.Repositories
 {
     public class GenreRepository : IGenresRepository
     {
-        public List<Genre> GetGenres()
+        public async Task<IEnumerable<Genre>> GetGenres()
         {
-            return GenreDAO.Instance.GetGenres();   
+            return await GenreDAO.Instance.GetGenres();   
         }
 
-        public List<Genre> GetGenresFromGame(Game game)
+        public async Task<IEnumerable<Genre>> GetGenresFromGame(Game game)
         {
-            return GenreDAO.Instance.GetGenresFromGame(game);
+            return await GenreDAO.Instance.GetGenresFromGame(game);
         }
     }
 }

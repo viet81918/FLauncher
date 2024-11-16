@@ -15,56 +15,50 @@ namespace FLauncher
     {
         private Gamer _gamer;
         private GamePublisher _gamePublisher;
-        private readonly PublisherRepository _publisherRepo;
+        private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
-        private readonly NotiRepository _notiRepo;
-        private readonly FriendRepository _friendRepo;
-        private readonly GameRepository _gameRepo;
-        private readonly GenreRepository _genreRepo;
-        private  FriendService _friendService;
+        private  readonly INotiRepository _notiRepo;
+        private  readonly FriendRepository _friendRepo;
+        private  readonly IGameRepository _gameRepo;
+        private readonly IGenresRepository _genreRepo;
+        private FriendService _friendService;
 
         public CustomerWindow(User user)
         {
             InitializeComponent();
-            //get userID == 2
-            if (user.Role == 2)
-            {
-                //settingsIconListBoxItem.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                //settingsIconListBoxItem.Visibility = Visibility.Collapsed;
-            }
-            //end 
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
-            _gameRepo = new GameRepository(); // Game repository to fetch games
+            _gameRepo = new GameRepository();
             _genreRepo = new GenreRepository();
-
             _publisherRepo = new PublisherRepository();
-            // Fetch gamer details
-            // Fetch all games and sort by NumberOfBuyers in descending order to get the top 9
+            InitializeData(user);
+        }
+
+        private async void InitializeData(User user)
+        {
+            
           
-            var topGames = _gameRepo.GetTopGames();
-            var genres = _genreRepo.GetGenres();
-            if (user.Role == 3)
+            // Fetch top games and genres asynchronously
+            var topGames = await _gameRepo.GetTopGames();  // Assuming GetTopGames() is async
+            var genres = await  _genreRepo.GetGenres();    // Assuming GetGenres() is async
+
+            if (user.Role == 3) // Role 3 - Gamer
             {
-                _gamer = _gamerRepo.GetGamerByUser(user);
-                var unreadNotifications = _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer); 
+                _gamer =  _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
+                var unreadNotifications =  _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
+                var friendInvitations =  _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
 
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
-
             }
-            else if (user.Role == 2)
+            else if (user.Role == 2) // Role 2 - Publisher
             {
-                _gamePublisher = _publisherRepo.GetPublisherByUser(user);
-
+                _gamePublisher =  _publisherRepo.GetPublisherByUser(user); // Assuming async
                 DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
             }
         }
-        private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
+    
+    private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
                if (e.ChangedButton == MouseButton.Left)
@@ -126,10 +120,10 @@ namespace FLauncher
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
         {
-            MessageWindow mess = new MessageWindow();
+           
             var currentGamer = _gamer;
             var messDetail = new MessageWindow(currentGamer);
-            mess.Show();
+            messDetail.Show();
             this.Hide();
             this.Close();
         }

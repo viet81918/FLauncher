@@ -52,7 +52,7 @@ namespace FLauncher.DAO
         {
             // Use async query to fetch friends for the given gamer
             return await _dbContext.Friends
-                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId )
+                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId && f.IsAccept==true )
                 .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
 
