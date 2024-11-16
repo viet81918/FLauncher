@@ -10,9 +10,11 @@ namespace FLauncher.Repositories
 {
     public class ReviewRepository : IReviewRepository
     {
-        public List<Review> GetReviewsByGame(Game game)
+        public async Task<IEnumerable<Review>> GetReviewsByGame(Game game)
         {
-           return ReviewDAO.Instance.GetReviewsByGame(game);    
+           return await ReviewDAO.Instance.GetReviewsByGame(game);    
         }
+
+      
     }
 }

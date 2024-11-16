@@ -46,7 +46,7 @@ namespace FLauncher
             if (user.Role == 3) // Role 3 - Gamer
             {
                 _gamer =  _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
-                var unreadNotifications =  _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
+                var unreadNotifications = await  _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
                 var friendInvitations =  _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
 
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
