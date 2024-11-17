@@ -2,6 +2,7 @@
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace FLauncher.Views
 {
@@ -86,7 +89,7 @@ namespace FLauncher.Views
 
             if (string.IsNullOrWhiteSpace(location))
             {
-                MessageBox.Show("Please enter a valid Location.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                System.Windows.MessageBox.Show("Please enter a valid Location.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
          
@@ -99,9 +102,34 @@ namespace FLauncher.Views
         }
         private void Update_Click(object sender, RoutedEventArgs e)
         {
+            // Bước 1: Tạo OpenFileDialog để chọn file
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "All Files (*.*)|*.*";
 
-         
+            if (openFileDialog.ShowDialog() == true) // Đúng kiểu bool
+            {
+                // Lấy đường dẫn file đã chọn
+                string selectedFilePath = openFileDialog.FileName;
+
+                // Bước 2: Hiển thị InputBox để người dùng nhập message
+                string message = Microsoft.VisualBasic.Interaction.InputBox(
+                    "Please enter your message:",
+                    "Input Message",
+                    "Default message here...",
+                    -1, -1
+                );
+
+                if (string.IsNullOrWhiteSpace(message))
+                {
+                    System.Windows.MessageBox.Show("Message is empty or cancelled!", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Gọi hàm cập nhật game
+                _gameRepo.Upload_game(_gamePublisher,_game ,selectedFilePath, message);
+            }
         }
+
         private void minimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
@@ -127,7 +155,7 @@ namespace FLauncher.Views
             if (SearchTextBox.Text == "Search the store")
             {
                 SearchTextBox.Text = string.Empty;
-                SearchTextBox.Foreground = (System.Windows.Media.Brush)Application.Current.Resources["SecondaryBrush"];
+                SearchTextBox.Foreground = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["SecondaryBrush"];
             }
         }
 

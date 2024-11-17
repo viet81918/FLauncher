@@ -23,7 +23,7 @@ namespace FLauncher.DAO
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
 
-        public async Task<IEnumerable<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
+        public async Task<List<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
 {
     if (gamer == null)
     {

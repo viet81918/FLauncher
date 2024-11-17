@@ -19,6 +19,7 @@ using SharpCompress.Archives;
 using System.Windows;
 using MongoDB.Bson;
 using System.Diagnostics;
+using Google.Apis.Upload;
 
 namespace FLauncher.DAO
 {
@@ -26,7 +27,9 @@ namespace FLauncher.DAO
     {
 
         private const string PathtoServiceAccountKeyfile = @"E:\FPT UNI\OJT\MOCK\FLauncher\FLauncher\credentials.json";
+       
         private readonly FlauncherDbContext _dbContext;
+      
 
         public GameDAO()
         {
@@ -35,52 +38,96 @@ namespace FLauncher.DAO
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
 
-        public  void DownloadRarFromFolder(Game game, string saveLocation, Gamer gamer)
+
+        private string GetFileIdFromLink(string link)
         {
-            // 1. Tạo credential
-            var credential = GoogleCredential.FromFile(PathtoServiceAccountKeyfile)
-                .CreateScoped(new[] { DriveService.ScopeConstants.DriveReadonly });
-
-            // 2. Khởi tạo service
-            var service = new DriveService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential
-            });
-
-            // 3. Lấy folder ID từ link
-            string folderId = GetFolderIdFromLink(game.GameLink);
-            MessageBox.Show($"Folder ID: {folderId}");
-
-            // 4. Lấy file ID của file .rar duy nhất trong thư mục
-            string rarFileId = GetRarFileIdFromFolder(service, folderId);
-            if (string.IsNullOrEmpty(rarFileId))
-            {
-                MessageBox.Show("Không tìm thấy file RAR trong thư mục.");
-                return;
-            }
-
-            // 5. Tải file .rar xuống
-            string rarFilePath = Path.Combine(saveLocation, game.Name + ".rar");
-            var request = service.Files.Get(rarFileId);
-
-            // Đảm bảo thư mục lưu trữ tồn tại
-            if (!Directory.Exists(saveLocation))
-            {
-                Directory.CreateDirectory(saveLocation);
-                MessageBox.Show($"Thư mục lưu trữ không tồn tại, đã tạo thư mục: {saveLocation}");
-            }
-
-            MessageBox.Show("Bắt đầu tải file RAR...\nNhấn Ok để tắt thông báo, khi nào hoàn thành sẽ thông báo.");
-
             try
             {
+                var uri = new Uri(link);
+
+                // Log for debugging
+                Console.WriteLine($"URL: {link}");
+                Console.WriteLine($"Path: {uri.AbsolutePath}");
+
+                // Ensure the path contains "/d/" (which is part of the Google Drive link)
+                if (uri.AbsolutePath.Contains("/d/"))
+                {
+                    // Extract the part of the URL after "/d/" and before the next "/"
+                    var fileIdStart = uri.AbsolutePath.IndexOf("/d/") + 3;  // Skip "/d/"
+                    var fileIdEnd = uri.AbsolutePath.IndexOf("/", fileIdStart);
+
+                    // If no slash found, take till the end of the string
+                    if (fileIdEnd == -1)
+                    {
+                        fileIdEnd = uri.AbsolutePath.Length;
+                    }
+
+                    var fileId = uri.AbsolutePath.Substring(fileIdStart, fileIdEnd - fileIdStart);
+
+                    // Log the extracted file ID
+                    Console.WriteLine($"Extracted File ID: {fileId}");
+                    return fileId;
+                }
+
+                // If the pattern is not found, log the failure
+                Console.WriteLine("Link does not match expected pattern.");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that might occur during processing
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
+
+
+
+        public void DownloadRarFromLink(Game game, string saveLocation, Gamer gamer)
+        {
+            try
+            {
+                // 1. Tạo credential
+                var credential = GoogleCredential.FromFile(PathtoServiceAccountKeyfile)
+                    .CreateScoped(new[] { DriveService.ScopeConstants.DriveReadonly });
+
+                // 2. Khởi tạo service
+                var service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+
+                // 3. Lấy file ID từ link (for direct file download)
+                string fileId = GetFileIdFromLink(game.GameLink);
+                if (string.IsNullOrEmpty(fileId))
+                {
+                    MessageBox.Show("Không tìm thấy File ID từ link của game.");
+                    return;
+                }
+                MessageBox.Show($"File ID: {fileId}"); // Debug: Log the file ID
+
+                // 4. Tải file .rar xuống
+                string rarFilePath = Path.Combine(saveLocation, game.Name + ".rar");
+                var request = service.Files.Get(fileId);
+
+                // Đảm bảo thư mục lưu trữ tồn tại
+                if (!Directory.Exists(saveLocation))
+                {
+                    Directory.CreateDirectory(saveLocation);
+                    MessageBox.Show($"Thư mục lưu trữ không tồn tại, đã tạo thư mục: {saveLocation}");
+                }
+
+                MessageBox.Show("Bắt đầu tải file RAR...\nNhấn Ok để tắt thông báo, khi nào hoàn thành sẽ thông báo.");
+
+                // 5. Tải file xuống
                 using (var fileStream = new FileStream(rarFilePath, FileMode.Create, FileAccess.Write))
                 {
                     request.Download(fileStream);
                 }
+
                 // Tính kích thước file sau khi tải xong
                 FileInfo fileInfo = new FileInfo(rarFilePath);
-                double fileSizeInMB = Math.Round(fileInfo.Length / (1024.0 * 1024.0), 2); // Tính kích thước (MB), làm tròn đến 2 chữ số thập phân
+                double fileSizeInMB = Math.Round(fileInfo.Length / (1024.0 * 1024.0), 2); // Tính kích thước (MB)
 
                 // Notify on successful download
                 MessageBox.Show($"Tải file RAR hoàn tất: {rarFilePath}");
@@ -114,12 +161,6 @@ namespace FLauncher.DAO
                 MessageBox.Show($"Lỗi khi tải file hoặc giải nén: {ex.Message}");
             }
         }
-        private void SaveDownloadToDatabase(Download download)
-        {
-           _dbContext.Downloads.Add(download);  
-            _dbContext.SaveChanges();
-        }
-        // Hàm lấy ID từ link
         private string ExtractRarFile(string rarFilePath, string extractFolderPath)
         {
             try
@@ -183,62 +224,29 @@ namespace FLauncher.DAO
                 return null;
             }
         }
-        private string GetFolderIdFromLink(string link)
+        private bool DoesFileExist(DriveService service, string fileId)
         {
-            var uri = new Uri(link);
-            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            string folderId = query.Get("id");
-
-            if (string.IsNullOrEmpty(folderId))
-            {
-                var segments = uri.Segments;
-                if (segments.Length >= 4 && segments[1] == "drive/" && segments[2] == "folders/")
-                {
-                    folderId = segments[3].TrimEnd('/');
-                }
-            }
-
-            return folderId;
-        }
-
-        // Hàm lấy file ID từ thư mục Google Drive
-        private string GetRarFileIdFromFolder(DriveService service, string folderId)
-        {
-            var listRequest = service.Files.List();
-            listRequest.Q = $"'{folderId}' in parents"; // Tìm tất cả các file trong thư mục
-            listRequest.Fields = "files(id, name, mimeType)"; // Lấy thêm thông tin về mimeType
-            listRequest.PageSize = 10;
-
             try
             {
-                var files = listRequest.Execute().Files;
-
-                if (files == null || files.Count == 0)
-                {
-                    MessageBox.Show("Không tìm thấy file trong thư mục.");
-                    return null; // Return null if no files found
-                }
-
-                // Hiển thị thông tin các file để kiểm tra
-                foreach (var file in files)
-                {
-                    MessageBox.Show($"Tên file: {file.Name}, ID: {file.Id}, MIME Type: {file.MimeType}");
-                }
-
-                // Trả về ID của file đầu tiên
-                return files[0].Id;
+                var request = service.Files.Get(fileId);
+                request.Fields = "id";
+                var file = request.Execute();
+                return file != null;
             }
-            catch (Google.GoogleApiException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Google API Error: {ex.Message}");
-                if (ex.Error != null)
-                {
-                    MessageBox.Show($"Error code: {ex.Error.Code}");
-                    MessageBox.Show($"Error message: {ex.Error.Message}");
-                }
-                throw; // Re-throw the exception for further handling
+                // If an exception is thrown, file might not exist
+                MessageBox.Show($"Lỗi khi kiểm tra file: {ex.Message}");
+                return false;
             }
         }
+
+        private void SaveDownloadToDatabase(Download download)
+        {
+           _dbContext.Downloads.Add(download);  
+            _dbContext.SaveChanges();
+        }
+   
 
         public async Task<IEnumerable<Game>> GetTopGames()
         {
@@ -307,6 +315,165 @@ namespace FLauncher.DAO
                 Console.WriteLine($"Error launching the game: {ex.Message}");
             }
         }
+
+        public void Update_Game(GamePublisher publisher, Game game, string selectedFilePath, string message)
+        {
+            try
+            {
+                // Step 1: Authenticate with Google Drive API
+                var credential = GoogleCredential.FromFile(PathtoServiceAccountKeyfile)
+                    .CreateScoped(DriveService.ScopeConstants.Drive)
+                    .UnderlyingCredential as ServiceAccountCredential;
+
+                var service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential
+                });
+
+                // Step 2: Get the file ID from the game link
+                string fileId = GetFileIdFromLink(game.GameLink);
+                if (string.IsNullOrEmpty(fileId))
+                {
+                    MessageBox.Show("Không tìm thấy File ID từ link của game.");
+                    return;
+                }
+
+                // Step 3: Delete the existing file in Google Drive (if needed)
+                DeleteFile(service, fileId);
+
+                // Step 4: Upload the new file
+                string uploadedFileId = UploadFile(service, selectedFilePath, Path.GetFileName(selectedFilePath));
+
+                // Step 5: If the upload was successful, update the link in the database
+                if (!string.IsNullOrEmpty(uploadedFileId))
+                {
+                    string shareableLink = GetShareableLink(service, uploadedFileId);
+                    UpdateInfor(game, publisher, message);
+                    UpdateLink(game, shareableLink);
+                }
+
+                MessageBox.Show("Cập nhật game thành công!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi cập nhật game: {ex.Message}");
+            }
+        }
+
+        private void DeleteFile(DriveService service, string fileId)
+        {
+            try
+            {
+                service.Files.Delete(fileId).Execute();
+
+                MessageBox.Show("Đã xóa file cũ khỏi Google Drive.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi xóa file cũ: {ex.Message}");
+            }
+            if (DoesFileExist(service, fileId))
+            {
+                DeleteFile(service, fileId);
+            }
+            else
+            {
+                MessageBox.Show("File không tồn tại trong Google Drive.");
+            }
+
+        }
+
+
+        public void UpdateInfor(Game game, GamePublisher gamePublisher, string message)
+        {
+            try
+            {
+                
+                var update = new Update
+                {
+
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    PublisherId = gamePublisher.PublisherId,  // Assuming gamePublisher has an Id property
+                    GameId = game.GameID,  // Assuming game has an Id property
+                    UpdateContent = message,  // The message or content of the update
+                    UpdateTimeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")  // Set the update time
+                };
+                _dbContext.Updates.Add(update);
+                _dbContext.SaveChanges();
+              
+                // Step 3: Inform the user
+                MessageBox.Show("Đã cập nhật game thành công!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi cập nhật game: {ex.Message}");
+            }
+        }
+        private void UpdateLink(Game game, string link)
+        {
+            game.GameLink = link;
+            _dbContext.Games.Update(game);  // Cập nhật game trong database
+            _dbContext.SaveChanges();
+            MessageBox.Show("Đã cập nhật link game thành công!");
+        }
+        private string UploadFile(DriveService service, string filePath, string fileName)
+        {
+            var fileMetadata = new Google.Apis.Drive.v3.Data.File()
+            {
+                Name = fileName,
+            };
+
+            using (var fileStream = new FileStream(filePath, FileMode.Open))
+            {
+                var uploadRequest = service.Files.Create(fileMetadata, fileStream, "application/octet-stream");
+                uploadRequest.Fields = "id, name";
+                var progress = uploadRequest.Upload();
+
+                if (progress.Status == UploadStatus.Completed)
+                {
+                    var uploadedFile = uploadRequest.ResponseBody;
+                    MessageBox.Show($"Tải file mới lên thành công: {uploadedFile.Name}");
+
+                    // Return file ID for further operations
+                    return uploadedFile.Id;
+                }
+                else
+                {
+                    MessageBox.Show($"Lỗi khi tải file lên: {progress.Exception.Message}");
+                    return null;
+                }
+            }
+        }
+
+        private string GetShareableLink(DriveService service, string fileId)
+        {
+            try
+            {
+                // Set file permission to "Anyone with the link" and "Reader" (view-only access)
+                var permission = new Google.Apis.Drive.v3.Data.Permission()
+                {
+                    Type = "anyone", // Allows anyone with the link to access
+                    Role = "writer"  // Valid role is "reader" for view-only access
+                };
+
+                // Create shareable permission
+                service.Permissions.Create(permission, fileId).Execute();
+
+                // Retrieve the shareable link
+                var fileRequest = service.Files.Get(fileId);
+                fileRequest.Fields = "webViewLink";  // Get the view link
+                var fileInfo = fileRequest.Execute();
+
+                return fileInfo.WebViewLink;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thiết lập quyền chia sẻ: {ex.Message}");
+                return null;
+            }
+        }
+
+
 
     }
 }

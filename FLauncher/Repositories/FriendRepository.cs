@@ -29,7 +29,7 @@ namespace FLauncher.Repositories
             await _friendDAO.UpdateFriendRequestStatus(requestId, acceptId, isAccepted);
         }
 
-        public async Task<IEnumerable<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
+        public async Task<List<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
         {
             return await _friendDAO.GetFriendInvitationsForGamer(gamer);  // Call the synchronous DAO method
         }
@@ -51,5 +51,7 @@ namespace FLauncher.Repositories
         {
             return await FriendDAO.Instance.GetFriendWithTheSameGame(game, gamer);
         }
+
+      
     }
 }

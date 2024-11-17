@@ -12,5 +12,6 @@ namespace FLauncher.Repositories
       Task<IEnumerable<Game>> GetTopGames();
         void Download_game(Game game, String saveLocation, Gamer gamer);
         void Play_Game(Game game,Gamer gamer );
+        void Upload_game(GamePublisher publisher,Game game, string selectedFilePath, string message);
     }
 }
