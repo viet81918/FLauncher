@@ -34,23 +34,23 @@ namespace FLauncher.ViewModel
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
         public ObservableCollection<Notification> UnreadNotifications { get; }
         public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
-        public List<Friend> FriendInvitations { get; }
+        public ObservableCollection<Friend> FriendInvitations { get; }
         public double AverageRating => Reviews?.Any() == true ? Reviews.Average(r => r.Rating) : 0;
         public ObservableCollection<Update> Updates { get; }
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
-        public List<Gamer> Friendwiththesamegame { get; }
+        public ObservableCollection<Gamer> Friendwiththesamegame { get; }
 
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, List<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, List<Gamer> friendwiththesamegame)
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame)
         {
             Game = game;
             Gamer = gamer;
             Genres = new ObservableCollection<Genre>(genres);
             Reviews = new ObservableCollection<Review>(reviews);
             UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
-            FriendInvitations = friendInvitations;
+            FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
             Updates = new ObservableCollection<Update>(updates);
-            Friendwiththesamegame = friendwiththesamegame;
+            Friendwiththesamegame = new ObservableCollection<Gamer>(friendwiththesamegame); 
 
             // Load the GamePublisher asynchronously
             LoadGamePublisher(game);

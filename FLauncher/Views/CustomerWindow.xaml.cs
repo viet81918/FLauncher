@@ -47,7 +47,7 @@ namespace FLauncher
             {
                 _gamer =  _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
                 var unreadNotifications = await  _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
-                var friendInvitations =  _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
+                var friendInvitations =  await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
 
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
             }

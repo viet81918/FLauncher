@@ -19,5 +19,10 @@ namespace FLauncher.Repositories
         {
            return await GameDAO.Instance.GetTopGames();  
         }
+
+        public void Play_Game(Game game, Gamer gamer)
+        {
+            GameDAO.Instance.PlayGame(game, gamer); 
+        }
     }
 }

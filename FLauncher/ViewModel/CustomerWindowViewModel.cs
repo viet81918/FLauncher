@@ -16,7 +16,7 @@ namespace FLauncher.ViewModel
         public ObservableCollection<Notification> UnreadNotifications { get; }
 
         public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
-        public List<Friend> FriendInvitations { get; }
+        public ObservableCollection<Friend> FriendInvitations { get; }
 
         // Using ObservableCollection for dynamic data binding
         public ObservableCollection<Game> TrendingGames { get; }
@@ -27,11 +27,11 @@ namespace FLauncher.ViewModel
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
         // Constructor for Gamer Role
-        public CustomerWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, List<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
+        public CustomerWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
         {
             Gamer = gamer;
             UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
-            FriendInvitations = friendInvitations;
+            FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
             TrendingGames = new ObservableCollection<Game>(trendingGames);  // ObservableCollection to notify UI changes
             Genres = new ObservableCollection<Genre>(genres);
         }
