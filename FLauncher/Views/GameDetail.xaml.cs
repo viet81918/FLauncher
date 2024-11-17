@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
 using FLauncher.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -62,9 +63,9 @@ namespace FLauncher.Views
             // Set the DataContext to your ViewModel            
             if (_gamer != null)
             {
-                var friendwithsamegame = _friendRepo.GetFriendWithTheSameGame(game, _gamer);
+                var friendwithsamegame = await _friendRepo.GetFriendWithTheSameGame(game, _gamer);
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
-                var friendInvitations = _friendRepo.GetFriendInvitationsForGamer(_gamer);
+                var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
                 DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame);
             }
             else if (_gamePublisher != null)
@@ -81,10 +82,26 @@ namespace FLauncher.Views
         }
         private void Download_Click(object sender, RoutedEventArgs e)
         {
-      
-            _gameRepo.Download_game(_game , "E:\\FPT UNI\\OJT\\MOCK", _gamer); 
-        }
+            string location = Microsoft.VisualBasic.Interaction.InputBox("Enter the location your want to download the game :", "Download");
 
+            if (string.IsNullOrWhiteSpace(location))
+            {
+                MessageBox.Show("Please enter a valid Location.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+         
+            _gameRepo.Download_game(_game , location, _gamer); 
+        }
+        private void Play_Click(object sender, RoutedEventArgs e)
+        {
+
+            _gameRepo.Play_Game(_game , _gamer);
+        }
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
+
+         
+        }
         private void minimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;

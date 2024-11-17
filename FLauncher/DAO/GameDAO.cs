@@ -18,6 +18,7 @@ using SharpCompress.Common;
 using SharpCompress.Archives;
 using System.Windows;
 using MongoDB.Bson;
+using System.Diagnostics;
 
 namespace FLauncher.DAO
 {
@@ -260,8 +261,52 @@ namespace FLauncher.DAO
                                    .ToListAsync();
             return await games;
         }
-      
 
+        public void PlayGame(Game game, Gamer gamer)
+        {
+            try
+            {
+                // Retrieve the download directory from the database
+                string downloadDirectory = _dbContext.Downloads
+                    .Where(c => c.GameId == game.GameID && c.GamerId == gamer.GamerId)
+                    .Select(b => b.Directory)
+                    .FirstOrDefault();
+
+                // Check if the directory was found
+                if (string.IsNullOrWhiteSpace(downloadDirectory) || !Directory.Exists(downloadDirectory))
+                {
+                    Console.WriteLine("Download directory not found.");
+                    return;
+                }
+
+                // Find the executable file containing the word "game" in its name
+                string exeFilePath = Directory
+                    .EnumerateFiles(downloadDirectory, "*.exe", SearchOption.AllDirectories)
+                    .FirstOrDefault(file => Path.GetFileName(file).Contains("game", StringComparison.OrdinalIgnoreCase));
+
+                // Check if an executable file was found
+                if (exeFilePath == null)
+                {
+                    Console.WriteLine($"No executable file with 'game' in the name found in directory '{downloadDirectory}'.");
+                    return;
+                }
+
+                // Launch the executable
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = exeFilePath,
+                    WorkingDirectory = Path.GetDirectoryName(exeFilePath),
+                    UseShellExecute = true
+                };
+
+                Process.Start(startInfo);
+                Console.WriteLine($"Game launched successfully: {exeFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error launching the game: {ex.Message}");
+            }
+        }
 
     }
 }
