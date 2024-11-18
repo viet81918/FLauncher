@@ -524,7 +524,7 @@ Click="Play_Click"/>
                         <Button Content="Update Game" Width="120" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="441,140,0,0" 
 Background="Yellow" Foreground="Magenta" FontWeight="Bold" BorderBrush="Transparent"
 Click="Update_Click"/>
-                      
+
 
 
                         <TextBlock
