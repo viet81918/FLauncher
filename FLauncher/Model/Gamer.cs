@@ -37,8 +37,46 @@ namespace FLauncher.Model
         [BsonElement("Role")] // Maps to "Role" in MongoDB
         public int Role { get; set; }
 
+
+        // Maps to "RegistrationDate" in MongoDB as a string property
         [BsonElement("RegistrationDate")]
-        public string RegistrationDateString { get; set; }
+        public string? RegistrationDateString { get; set; }
+
+        [BsonIgnore]
+        public DateTime RegistrationDate
+        {
+            get
+            {
+                // Kiểm tra nếu chuỗi là rỗng hoặc null
+                return string.IsNullOrEmpty(RegistrationDateString)
+                    ? DateTime.MinValue // Trả về giá trị mặc định nếu chuỗi rỗng
+                    : DateTime.ParseExact(RegistrationDateString, "dd/MM/yyyy", null); // Parse chuỗi thành DateTime
+            }
+            set => RegistrationDateString = value.ToString("dd/MM/yyyy"); // Chuyển DateTime thành chuỗi với định dạng "dd/MM/yyyy"
+        }
+
+        // Maps to "Date of Birth" in MongoDB as a string property
+        [BsonElement("Date of Birth")]
+        public string? DateOfBirthString { get; set; }
+
+        [BsonIgnore]
+        public DateTime DateOfBirth
+        {
+            get
+            {
+                // Kiểm tra nếu chuỗi là rỗng hoặc null
+                return string.IsNullOrEmpty(DateOfBirthString)
+                    ? DateTime.MinValue // Trả về giá trị mặc định nếu chuỗi rỗng
+                    : DateTime.Parse(DateOfBirthString); // Parse chuỗi thành DateTime
+            }
+            set => DateOfBirthString = value.ToString("yyyy-MM-dd"); // Chuyển DateTime thành chuỗi với định dạng "yyyy-MM-dd"
+        }
+
+
+        /*
+
+        [BsonElement("RegistrationDate")]
+        public string? RegistrationDateString { get; set; }
 
         [BsonIgnore]
         public DateTime RegistrationDate
@@ -49,7 +87,7 @@ namespace FLauncher.Model
 
         // Maps to "Date of Birth" in MongoDB as a DateTime property
         [BsonElement("Date of Birth")]
-        public string DateOfBirthString { get; set; } // Stores as string
+        public string? DateOfBirthString { get; set; } // Stores as string
 
         [BsonIgnore]
         public DateTime DateOfBirth
@@ -57,5 +95,6 @@ namespace FLauncher.Model
             get => DateTime.Parse(DateOfBirthString); // Parses the string to DateTime
             set => DateOfBirthString = value.ToString("yyyy-MM-dd"); // Converts DateTime to string
         }
+        */
     }
 }

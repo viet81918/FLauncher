@@ -393,8 +393,8 @@ FontSize="15">
                     </Style>
                 </ListBox.Resources>
                 <ListBoxItem
-                    Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
+                    MouseLeftButtonUp="Home_Click"
+                    Content="{StaticResource home_icon}"/>
                 <ListBoxItem
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem
@@ -524,7 +524,7 @@ Click="Play_Click"/>
                         <Button Content="Update Game" Width="120" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="441,140,0,0" 
 Background="Yellow" Foreground="Magenta" FontWeight="Bold" BorderBrush="Transparent"
 Click="Update_Click"/>
-                      
+
 
 
                         <TextBlock

@@ -12,5 +12,6 @@ namespace FLauncher.Repositories
        List<User> GetUsers();
        User GetUserByEmailPass(string Email, string Pass);
        User GetUserByEmail(string Email);
+       User GetUserByGamer(Gamer Gamer);
     }
 }

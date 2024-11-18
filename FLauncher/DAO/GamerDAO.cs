@@ -10,14 +10,12 @@ namespace FLauncher.DAO
     public class GamerDAO : SingletonBase<GamerDAO>
     {
         private readonly FlauncherDbContext _dbContext;
-   
 
         public GamerDAO()
         {
             var connectionString = "mongodb://localhost:27017/";
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
- 
         }
         public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
         {
