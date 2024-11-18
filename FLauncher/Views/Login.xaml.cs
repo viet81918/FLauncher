@@ -1,16 +1,8 @@
-﻿using FLauncher.Model;
-using MongoDB.Bson.IO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FLauncher.Repositories;
+using Newtonsoft.Json;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
+
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -29,6 +21,7 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Net;
 using FLauncher.ViewModel;
+
 
 
 namespace FLauncher.Views
@@ -105,6 +98,7 @@ namespace FLauncher.Views
         }
         private void LoginGG_Click(object sender, RoutedEventArgs e)
         {
+
             var googleUser = LoginGoogle.GoogleLogin();
             //try
             //{
@@ -135,6 +129,7 @@ namespace FLauncher.Views
             //{
             //    MessageBox.Show("Đăng nhập thất bại: " + ex.Message + "," + googleUser.Email);
             //}
+
         }
 
         //login nhap tay
@@ -206,12 +201,14 @@ namespace FLauncher.Views
             }
         }
 
+
         private  void PerformLogin(string UserEmail, string UserPassword)
         {
             //string enteredUserEmail = emailU.email.Text.Trim();
             //string enteredPassword = passU.passbox.Password.Trim();
 
             string  accountType = CheckLogin(UserEmail, UserPassword);
+
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -225,6 +222,7 @@ namespace FLauncher.Views
             }
             else if (accountType == "gamer")
             {
+
                 MessageBox.Show("Đăng nhập thành công với tư cách gamer!");
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
@@ -236,6 +234,7 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách nhà phát hành!");
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
+
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 

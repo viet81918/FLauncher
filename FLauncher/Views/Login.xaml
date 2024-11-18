@@ -6,12 +6,21 @@
         xmlns:local="clr-namespace:FLauncher.Views" xmlns:cc="clr-namespace:FLauncher.CC"
         mc:Ignorable="d"
         Background="WhiteSmoke"
+
+         HorizontalAlignment="Stretch"
+         VerticalAlignment="Stretch"
+         Height="Auto"
+         Width="Auto"
+         Title="LoginPage" WindowStartupLocation="CenterScreen">
+
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         Height="Auto"
         Width="Auto"
         Title="LoginPage"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
         <Style x:Key="linkText" TargetType="{x:Type TextBlock}">
             <Setter Property="FontWeight" Value="SemiBold"/>

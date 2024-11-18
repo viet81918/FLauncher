@@ -1,4 +1,5 @@
-﻿using FLauncher.Model;
+﻿using FLauncher.CC;
+using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
@@ -6,13 +7,17 @@ using FLauncher.Views;
 using MongoDB.Driver;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Navigation;
+
+using Application = System.Windows.Application;
+
 
 namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
+        private Model.User _user;
         private Gamer _gamer;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
@@ -23,9 +28,10 @@ namespace FLauncher
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 
-        public CustomerWindow(User user)
+        public CustomerWindow(Model.User user)
         {
             InitializeComponent();
+            _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -43,6 +49,7 @@ namespace FLauncher
             var topGames = await _gameRepo.GetTopGames();  // Assuming GetTopGames() is async
             var genres = await  _genreRepo.GetGenres();    // Assuming GetGenres() is async
 
+
             if (user.Role == 3) // Role 3 - Gamer
             {
                 _gamer =  _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
@@ -56,6 +63,7 @@ namespace FLauncher
                 _gamePublisher =  _publisherRepo.GetPublisherByUser(user); // Assuming async
                 DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
             }
+
         }
     
     private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
@@ -130,7 +138,6 @@ namespace FLauncher
         private void logoutButton_Click(object sender, MouseButtonEventArgs e)
         {
             var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
             if (result == MessageBoxResult.Yes)
             {
                 DeleteLoginInfoFile();
@@ -145,6 +152,30 @@ namespace FLauncher
         {
             string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
             string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+        private void MenuListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainFrame == null) return;
+            if (sender is ListBox listBox && listBox.SelectedItem is ListBoxItem selectedItem)
+            {
+                string selectedPage = selectedItem.Tag.ToString();
+                switch (selectedPage)
+                {
+                    case "HomePage":
+                        MainFrame.Navigate(new HomePage(_user));
+                        break;
+                    case "GamesPage":
+                        MainFrame.Navigate(new GamePage());
+                        break;
+                    case "ProfilePage":
+                        MainFrame.Navigate(new ProfilePage());
+                        break;
+                }
+            }
+        }
+
+
+
 
             if (File.Exists(jsonFilePath))
             {
@@ -164,3 +195,5 @@ namespace FLauncher
         }
     }
 }
+
+
