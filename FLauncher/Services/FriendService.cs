@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using MongoDB.Bson;
 
 namespace FLauncher.Services
 {
@@ -42,6 +43,7 @@ namespace FLauncher.Services
             // Create the friend request
             var friendRequest = new Friend
             {
+                Id = ObjectId.GenerateNewId().ToString(), // Sinh một ObjectId mới
                 RequestId = requestId,
                 AcceptId = acceptId,
                 InvitationTime = DateTime.Now,
@@ -61,7 +63,7 @@ namespace FLauncher.Services
         public async Task  DeclineFriendRequest(string requestId, string acceptId) =>
             await _friendRepository.UpdateFriendRequestStatus(requestId, acceptId, false);
 
-        public List<Friend> GetPendingInvitations(string gamerId)
+        public async Task<List<Friend>> GetPendingInvitations(string gamerId)
         {
             // Retrieve the gamer by ID synchronously
             var gamer = _gamerRepository.GetGamerById(gamerId);
@@ -78,7 +80,7 @@ namespace FLauncher.Services
             Debug.WriteLine($"Gamer found: {gamer.GamerId}");
 
             // If the gamer exists, proceed to fetch invitations
-            return _friendRepository.GetFriendInvitationsForGamer(gamer);  // Now using synchronous method
+            return await _friendRepository.GetFriendInvitationsForGamer(gamer);  // Now using synchronous method
         }
 
 

@@ -46,17 +46,18 @@ namespace FLauncher.DAO
             return friends;
         }
 
-        public List<Friend> GetFriendInvitationsForGamer(Gamer gamer)
-        {
-            if (gamer == null)
-            {
-                throw new ArgumentNullException(nameof(gamer), "Gamer cannot be null");
-            }
 
-            // Use ToList() instead of ToListAsync() for synchronous execution
-            var invitations = _dbContext.Friends
-                .Where(friend => friend.AcceptId == gamer.GamerId && friend.IsAccept == null)
-                .ToList();  // This is now synchronous
+        public async Task<List<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
+{
+    if (gamer == null)
+    {
+        throw new ArgumentNullException(nameof(gamer), "Gamer cannot be null");
+    }
+
+    // Use ToList() instead of ToListAsync() for synchronous execution
+    var invitations = await _dbContext.Friends
+        .Where(friend => friend.AcceptId == gamer.GamerId && friend.IsAccept == null)
+        .ToListAsync();  // This is now synchronous
 
             Debug.WriteLine($"Fetched {invitations.Count} invitations for gamer {gamer.GamerId}");
 
@@ -68,14 +69,14 @@ namespace FLauncher.DAO
         public async Task InsertFriendRequest(Friend friendRequest)
         {
             _dbContext.Friends.Add(friendRequest);
-            await _dbContext.SaveChangesAsync();  // Use async SaveChanges to avoid blocking the thread
+            await _dbContext.SaveChangesAsync(); 
         }
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
             // Use async query to fetch friends for the given gamer
             return await _dbContext.Friends
-                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId)
+                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId && f.IsAccept==true )
                 .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
                                                                                                         
@@ -89,7 +90,7 @@ namespace FLauncher.DAO
         }
 
 
-        public List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer)
+        public async Task<IEnumerable<Gamer>> GetFriendWithTheSameGame(Game game, Gamer gamer)
         {
             var gamerDAO = new GamerDAO();
 
@@ -104,8 +105,8 @@ namespace FLauncher.DAO
 
             // 2. Lấy danh sách các Bill mà những người bạn này đã mua game từ bảng Bills
             var purchasedGameBills = _dbContext.Bills
-                                               .Where(b => friendIds.Contains(b.GamerId) && b.GameId == game.GameID)
-                                               .ToList();
+                                                .Where(b => friendIds.Contains(b.GamerId) && b.GameId == game.GameID)
+                                                .ToList();
 
             // 3. Lấy danh sách gamer từ các IDs đã mua game
             var gamerIdsWithPurchasedGame = purchasedGameBills
@@ -113,12 +114,13 @@ namespace FLauncher.DAO
                 .Distinct()
                 .ToList();
 
-            // Truy vấn các gamer từ các gamerIds
-            var friendsWithPurchasedGame = gamerDAO.GetGamersByIds(gamerIdsWithPurchasedGame);
+            // Truy vấn các gamer từ các gamerIds (dùng await)
+            var friendsWithPurchasedGame = await gamerDAO.GetGamersByIds(gamerIdsWithPurchasedGame);
 
             // Trả về danh sách bạn bè đã mua game
             return friendsWithPurchasedGame;
         }
+
 
 
 

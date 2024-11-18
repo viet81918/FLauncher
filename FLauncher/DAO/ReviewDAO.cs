@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,10 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-        public List<Review> GetReviewsByGame (Game game)
+        public async Task<IEnumerable<Review>> GetReviewsByGame (Game game)
         {
-            return _dbContext.Reviews.Where(c => c.GameId == game.GameID)
-                .ToList();
+            return await _dbContext.Reviews.Where(c => c.GameId == game.GameID)
+                .ToListAsync(); 
         }
     
     }

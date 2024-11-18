@@ -401,8 +401,10 @@
             Content="{StaticResource games_icon}"/>
 
                 <!-- Profile Icon Item with Click Event -->
+               
                 <ListBoxItem
                     Content="{StaticResource profile_icon}"
+
                     MouseLeftButtonUp="ProfileIcon_Click"/>
 
                 <!--demo phân quyền-->
@@ -415,6 +417,7 @@
                 <ListBoxItem 
                     Content="{StaticResource logout_icon}"
                     MouseLeftButtonUp="logoutButton_Click"/>
+
 
 
             </ListBox>

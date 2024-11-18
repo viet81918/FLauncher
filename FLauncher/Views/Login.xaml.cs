@@ -1,34 +1,9 @@
-﻿using FLauncher.Model;
-using MongoDB.Bson.IO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Newtonsoft.Json;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using static System.Net.WebRequestMethods;
-using FLauncher.Services;
-using Microsoft.VisualBasic.ApplicationServices;
-using FLauncher.Repositories;
-using Google.Apis.Auth;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Net;
+﻿using FLauncher.Repositories;
 using FLauncher.ViewModel;
+using Newtonsoft.Json;
+using System.IO;
+using System.Windows;
+using System.Windows.Input;
 
 
 namespace FLauncher.Views
@@ -108,28 +83,28 @@ namespace FLauncher.Views
             var googleUser = LoginGoogle.GoogleLogin();
             //try
             //{
-                
-                if (googleUser != null)
-                {
-                    // Lấy người dùng từ cơ sở dữ liệu theo email Google
-                    Model.User user = _userRepo.GetUserByEmail(googleUser.Email);
-                    Model.Gamer gamer = _gamerRepo.GetGamerByUser(user);
+
+            if (googleUser != null)
+            {
+                // Lấy người dùng từ cơ sở dữ liệu theo email Google
+                Model.User user = _userRepo.GetUserByEmail(googleUser.Email);
+                Model.Gamer gamer = _gamerRepo.GetGamerByUser(user);
                 // Kiểm tra xem người dùng có tồn tại không
                 if (user != null)
-                    {
-                        
-                            MessageBox.Show("Đăng nhập thành công!");
-                            SaveUserInfoToJson(gamer);
-                            CustomerWindow customerWindow = new CustomerWindow(user);
-                            customerWindow.Show();
-                            this.Close();
-                        
-                    }
-                    else
-                    {
-                        MessageBox.Show("Email: " + googleUser.Email + "chưa được đăng ký!");
-                    }
+                {
+
+                    MessageBox.Show("Đăng nhập thành công!");
+                    SaveUserInfoToJson(gamer);
+                    CustomerWindow customerWindow = new CustomerWindow(user);
+                    customerWindow.Show();
+                    this.Close();
+
                 }
+                else
+                {
+                    MessageBox.Show("Email: " + googleUser.Email + "chưa được đăng ký!");
+                }
+            }
             //}
             //catch (Exception ex)
             //{
@@ -143,7 +118,7 @@ namespace FLauncher.Views
             try
             {
                 Model.User user = _userRepo.GetUserByEmailPass(emailUser, password);
-                
+
 
                 if (user != null)
                 {
@@ -202,14 +177,16 @@ namespace FLauncher.Views
         {
             if (e.Key == Key.Enter)
             {
-                Button_Click(sender,e);
+                Button_Click(sender, e);
             }
         }
 
-        private  void PerformLogin(string UserEmail, string UserPassword)
-        {          
 
-            string  accountType = CheckLogin(UserEmail, UserPassword);
+        private void PerformLogin(string UserEmail, string UserPassword)
+        {
+
+
+            string accountType = CheckLogin(UserEmail, UserPassword);
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -243,9 +220,7 @@ namespace FLauncher.Views
             {
 
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
-                
-                 
- 
+
             }
         }
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)

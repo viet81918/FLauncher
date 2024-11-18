@@ -9,6 +9,6 @@ namespace FLauncher.Repositories
 {
     public interface IReviewRepository
     {
-        List<Review> GetReviewsByGame(Game game);
+        Task<IEnumerable<Review>> GetReviewsByGame(Game game);
     }
 }

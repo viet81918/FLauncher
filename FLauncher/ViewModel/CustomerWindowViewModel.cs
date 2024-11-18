@@ -1,48 +1,53 @@
 ﻿using FLauncher.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace FLauncher.ViewModel
 {
-    public class CustomerWindowViewModel
+    public class CustomerWindowViewModel : INotifyPropertyChanged
     {
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
+
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
-        public List<Notification> UnreadNotifications { get; }
+        public ObservableCollection<Notification> UnreadNotifications { get; }
 
         public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
-        public List<Friend> FriendInvitations { get; }
+        public ObservableCollection<Friend> FriendInvitations { get; }
 
-        // Add the TrendingGames property
-        public List<Game> TrendingGames { get; }
+        // Using ObservableCollection for dynamic data binding
+        public ObservableCollection<Game> TrendingGames { get; }
 
-        public List<Genre> Genres {  get; }
+        public ObservableCollection<Genre> Genres { get; }
 
-        
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
-        public CustomerWindowViewModel(Gamer gamer, List<Notification> unreadNotifications, List<Friend> friendInvitations, List<Game> trendingGames, List<Genre> genres) 
+
+        // Constructor for Gamer Role
+        public CustomerWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
         {
             Gamer = gamer;
-            UnreadNotifications = unreadNotifications;
-            FriendInvitations = friendInvitations;
-            TrendingGames = trendingGames;
-            Genres = genres;
+            UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
+            FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
+            TrendingGames = new ObservableCollection<Game>(trendingGames);  // ObservableCollection to notify UI changes
+            Genres = new ObservableCollection<Genre>(genres);
         }
-        
-        public CustomerWindowViewModel(GamePublisher gamePublisher, List<Game> trendingGames, List<Genre> genres)
+
+        // Constructor for Publisher Role
+        public CustomerWindowViewModel(GamePublisher gamePublisher, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
         {
-            GamePublisher = gamePublisher;            
-            TrendingGames = trendingGames;
-            Genres = genres;
+            GamePublisher = gamePublisher;
+            TrendingGames = new ObservableCollection<Game>(trendingGames);
+            Genres = new ObservableCollection<Genre>(genres);
+        }
+
+        // Property changed event to notify UI
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Helper method to raise the PropertyChanged event
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
-
-
-
 }

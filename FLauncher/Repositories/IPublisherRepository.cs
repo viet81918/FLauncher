@@ -9,8 +9,8 @@ namespace FLauncher.Repositories
 {
     public interface IPublisherRepository
     {
-        GamePublisher GetPublisherByGame(Game game);
-        List<Update> getUpdatesForGame(Game game);
+        Task<GamePublisher> GetPublisherByGame(Game game);
+        Task<IEnumerable<Update>> getUpdatesForGame(Game game);
         GamePublisher GetPublisherByUser(User user);
     }
 }
