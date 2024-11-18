@@ -207,9 +207,7 @@ namespace FLauncher.Views
         }
 
         private  void PerformLogin(string UserEmail, string UserPassword)
-        {
-            //string enteredUserEmail = emailU.email.Text.Trim();
-            //string enteredPassword = passU.passbox.Password.Trim();
+        {          
 
             string  accountType = CheckLogin(UserEmail, UserPassword);
 
@@ -246,12 +244,7 @@ namespace FLauncher.Views
 
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
                 
-                 // Close the Login window
-                //Window parentWindow = Window.GetWindow(this);
-                //if (parentWindow != null)
-                //{
-                //    parentWindow.Close();
-                //}
+                 
  
             }
         }

@@ -34,7 +34,10 @@ namespace FLauncher.Repositories
             return _friendDAO.GetFriendInvitationsForGamer(gamer);  // Call the synchronous DAO method
         }
 
-
+        public List<Gamer> GetAllFriendByGamer(Gamer gamer)
+        {
+            return _friendDAO.GetAllFriendByGamer(gamer);
+        }
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {

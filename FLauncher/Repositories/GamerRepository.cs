@@ -18,7 +18,7 @@ namespace FLauncher.Repositories
 
         public Gamer GetGamerByUser(User user)
         {
-           return GamerDAO.Instance.GetGamerByUser(user);
+           return _gamerDAO.GetGamerByUser(user);
         }
         public Gamer GetGamerById(string gamerId) {
             return  _gamerDAO.GetGamerById(gamerId);

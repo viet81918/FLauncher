@@ -402,14 +402,15 @@
 
                 <!-- Profile Icon Item with Click Event -->
                 <ListBoxItem
-                    Content="{StaticResource profile_icon}"/>
+                    Content="{StaticResource profile_icon}"
+                    MouseLeftButtonUp="ProfileIcon_Click"/>
 
                 <!--demo phân quyền-->
                 <ListBoxItem x:Name="settingsIconListBoxItem" 
                              Content="{StaticResource settings_icon}" />
                 <ListBoxItem
                     Content="{StaticResource message_icon}"
-                    MouseDoubleClick="messageButton_Click"/>
+                    MouseLeftButtonUp="messageButton_Click"/>
                 <!-- Add Log Out icon -->
                 <ListBoxItem 
                     Content="{StaticResource logout_icon}"

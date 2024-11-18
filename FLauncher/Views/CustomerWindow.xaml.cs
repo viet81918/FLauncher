@@ -130,11 +130,10 @@ namespace FLauncher
             }
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
-        {
-            MessageWindow mess = new MessageWindow();
+        {            
             var currentGamer = _gamer;
-            var messDetail = new MessageWindow(currentGamer);
-            mess.Show();
+            MessageWindow messWindow = new MessageWindow(currentGamer);
+            messWindow.Show();
             this.Hide();
             this.Close();
         }
@@ -167,7 +166,8 @@ namespace FLauncher
             // Create an instance of ProfileWindow and show it
             ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
             profileWindow.Show();
-
+            this.Hide();
+            this.Close();
             // Optionally, close the current window (MainWindow)
             // this.Close();
         }

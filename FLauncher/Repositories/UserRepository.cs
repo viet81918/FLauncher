@@ -23,5 +23,9 @@ namespace FLauncher.Repositories
         {
             return UserDAO.Instance.GetUserByEmail(Email);
         }
+        public User GetUserByGamer(Gamer gamer)
+        {
+            return UserDAO.Instance.GetUserByGamer(gamer);
+        }
     }
 }
