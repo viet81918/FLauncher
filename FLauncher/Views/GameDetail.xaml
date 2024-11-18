@@ -393,8 +393,8 @@ FontSize="15">
                     </Style>
                 </ListBox.Resources>
                 <ListBoxItem
-                    Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
+                    MouseLeftButtonUp="Home_Click"
+                    Content="{StaticResource home_icon}"/>
                 <ListBoxItem
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem

@@ -1,6 +1,12 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.ViewModel;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,6 +21,7 @@ namespace FLauncher.Views
     {
         private Game _game;
         private Gamer _gamer;
+        private Model.User _user;
         private GamePublisher _gamePublisher;
         private readonly INotiRepository _notiRepo;
         private readonly IFriendRepository _friendRepo;
@@ -27,7 +34,11 @@ namespace FLauncher.Views
             InitializeComponent();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
+
             _gameRepo = new GameRepository();
+
+            _userRepo = new UserRepository();
+
             _genreRepo = new GenreRepository();
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
@@ -45,6 +56,11 @@ namespace FLauncher.Views
             var reviews = await _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
             var publisher = await _publisherRepo.GetPublisherByGame(game);
             var updates = await _publisherRepo.getUpdatesForGame(game);
+
+
+            _user = _userRepo.GetUserByGamer(gamer);
+         
+          
 
 
             // Set the DataContext to your ViewModel            
@@ -150,6 +166,12 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
-
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
+        }
     }
 }
