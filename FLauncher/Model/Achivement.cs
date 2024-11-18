@@ -29,6 +29,6 @@ namespace FLauncher.Model
 
         [BsonElement("IsPrivate")]
         public bool IsPrivate { get; set; } = false;
-
+        
     }
 }

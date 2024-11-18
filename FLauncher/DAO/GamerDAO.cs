@@ -17,6 +17,24 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
+        public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
+        {
+            // Retrieve all the Buy records that match the game's ID
+            var buyRecords = await _dbContext.Bills
+                .Where(b => b.GameId == game.GameID)  // Match Buy records with the given GameId
+                .ToListAsync();
+
+            // Retrieve the unique GamerIds from the Buy records
+            var gamerIds = buyRecords.Select(b => b.GamerId).Distinct();
+
+            // Query the Gamers collection for gamers who have bought the game
+            var gamers = await _dbContext.Gamers
+                .Where(g => gamerIds.Contains(g.GamerId))  // Match gamers by their GamerIds
+                .ToListAsync();
+
+            return gamers;
+        }
+
         public Gamer GetGamerByUser(User user)
         {
             return _dbContext.Gamers.First(c => c.GamerId == user.ID);

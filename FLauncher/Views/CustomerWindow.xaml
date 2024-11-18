@@ -495,12 +495,7 @@
                                 </Setter>
                             </Style>
                         </UniformGrid.Resources>
-                        <Button
-                            Content="{StaticResource list_icon}"
-                            FontSize="18"/>
-                        <Button
-                            Content="{StaticResource grid_icon}"
-                            FontSize="18"/>
+                   
                     </UniformGrid>
                 </Grid>
                 <!--#endregion-->
