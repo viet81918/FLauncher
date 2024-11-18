@@ -1,24 +1,14 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
-using FLauncher.Services;
 using FLauncher.ViewModel;
-using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
 
 namespace FLauncher.Views
 {
@@ -26,16 +16,17 @@ namespace FLauncher.Views
     /// Interaction logic for GameDetail.xaml
     /// </summary>
     public partial class GameDetail : Window
-       
+
 
     {
         private Game _game;
         private Gamer _gamer;
+        private Model.User _user;
         private GamePublisher _gamePublisher;
         private readonly INotiRepository _notiRepo;
         private readonly IFriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
-        private readonly IGenresRepository  _genreRepo;
+        private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
         private readonly IGamerRepository _gamerRepo;
@@ -44,18 +35,24 @@ namespace FLauncher.Views
             InitializeComponent();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
+
             _gameRepo = new GameRepository();
+
+            _userRepo = new UserRepository();
+
             _genreRepo = new GenreRepository();
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
+
             _gamerRepo = new GamerRepository();
             InitializeData( game,  gamer,  gamePublisher);
+
 
         }
         private async void InitializeData(Game game, Gamer gamer, GamePublisher gamePublisher)
         {
             _game = game;
-          
+
             _gamer = gamer;
             _gamePublisher = gamePublisher;
 
@@ -63,6 +60,11 @@ namespace FLauncher.Views
             var reviews = await _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
             var publisher = await _publisherRepo.GetPublisherByGame(game);
             var updates = await _publisherRepo.getUpdatesForGame(game);
+
+
+            _user = _userRepo.GetUserByGamer(gamer);
+         
+          
 
 
             // Set the DataContext to your ViewModel            
@@ -99,13 +101,13 @@ namespace FLauncher.Views
                 System.Windows.MessageBox.Show("Please enter a valid Location.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-         
-            _gameRepo.Download_game(_game , location, _gamer); 
+
+            _gameRepo.Download_game(_game, location, _gamer);
         }
         private void Play_Click(object sender, RoutedEventArgs e)
         {
 
-            _gameRepo.Play_Game(_game , _gamer);
+            _gameRepo.Play_Game(_game, _gamer);
         }
         private void Update_Click(object sender, RoutedEventArgs e)
         {
@@ -133,7 +135,7 @@ namespace FLauncher.Views
                 }
 
                 // Gọi hàm cập nhật game
-                _gameRepo.Upload_game(_gamePublisher,_game ,selectedFilePath, message);
+                _gameRepo.Upload_game(_gamePublisher, _game, selectedFilePath, message);
             }
         }
 
@@ -173,6 +175,12 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
-
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
+        }
     }
 }

@@ -39,7 +39,9 @@ namespace FLauncher.DAO
         {
             return _dbContext.Users.First(c => c.Email.Equals(email));
         }
+        public User GetUserByGamer(Gamer gamer)
+        {
+            return _dbContext.Users.First(c => c.ID == gamer.GamerId);
+        }
     }
-
-
 }
