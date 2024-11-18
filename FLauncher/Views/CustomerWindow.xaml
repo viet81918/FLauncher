@@ -401,8 +401,15 @@
             Content="{StaticResource games_icon}"/>
 
                 <!-- Profile Icon Item with Click Event -->
-                <ListBoxItem
-                    Content="{StaticResource profile_icon}"/>
+                <ListBoxItem x:Name="settingsIconListBoxItem" 
+             Content="{StaticResource settings_icon}" />
+                <ListBoxItem MouseLeftButtonUp="ProfileIcon_Click"
+                        />
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
+
+
 
             </ListBox>
         </Grid>
@@ -791,8 +798,8 @@
             </StackPanel>
         </ScrollViewer>
         <!--#endregion-->
-        
-        
-        
+
+
+
     </Grid>
 </Window>

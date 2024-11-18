@@ -9,7 +9,7 @@ namespace FLauncher.Repositories
 {
     public interface IGenresRepository
     {
-        List<Genre> GetGenres();
-        List<Genre> GetGenresFromGame(Game game);
+        Task<IEnumerable<Genre>> GetGenres();
+        Task<IEnumerable<Genre>> GetGenresFromGame(Game game);
     }
 }

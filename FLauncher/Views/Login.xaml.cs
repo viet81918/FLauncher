@@ -42,11 +42,66 @@ namespace FLauncher.Views
             InitializeComponent(); // Make sure this is called first
             _userRepo = new UserRepository();
             _gamerRepo = new GamerRepository();
+            this.Loaded += Window_Loaded;
         }
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
 
+            if (!Directory.Exists(appDataPath))
+            {
+                Directory.CreateDirectory(appDataPath);
+            }
+
+            if (System.IO.File.Exists(jsonFilePath))
+            {
+                var json = System.IO.File.ReadAllText(jsonFilePath);
+                var loginInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.AutoLogin>(json);
+                //var ExpirationDate = DateTime.Now.AddMonths(1);
+                if (loginInfo.ExpirationDate >= DateTime.Now)
+                {
+                    emailU.email.Text = loginInfo.Email;
+                    passU.passbox.Password = loginInfo.Password;
+                    // Thực hiện đăng nhập tự động
+                    PerformLogin(loginInfo.Email, loginInfo.Password);
+                }
+                else
+                {
+                    System.IO.File.Delete(jsonFilePath); // Xóa tệp nếu hết hạn
+                }
+            }
+            else
+            {
+                MessageBox.Show("khong tim thay file loginInfo.json");
+            }
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            PerformLogin();
+            string enteredUserEmail = emailU.email.Text.Trim();
+            string enteredPassword = passU.passbox.Password.Trim();
+            if (RememberCheckBox.IsChecked == true)
+            {
+                var loginInfo = new Model.AutoLogin
+                {
+                    Email = emailU.email.Text.Trim(),
+                    Password = passU.passbox.Password.Trim(), // giả sử passU là PasswordBox
+                    ExpirationDate = DateTime.Now.AddMonths(1)
+                };
+
+                string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+                string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+                if (!Directory.Exists(appDataPath))
+                {
+                    Directory.CreateDirectory(appDataPath);
+                }
+
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(loginInfo, Formatting.Indented);
+                System.IO.File.WriteAllText(jsonFilePath, json);
+                MessageBox.Show("da luu");
+            }
+            PerformLogin(enteredUserEmail, enteredPassword);
         }
         private void LoginGG_Click(object sender, RoutedEventArgs e)
         {
@@ -139,7 +194,7 @@ namespace FLauncher.Views
         {
             if (e.Key == Key.Enter)
             {
-                PerformLogin();
+                passU.passbox.Focus(); ;
             }
         }
 
@@ -147,16 +202,16 @@ namespace FLauncher.Views
         {
             if (e.Key == Key.Enter)
             {
-                PerformLogin();
+                Button_Click(sender,e);
             }
         }
 
-        private  void PerformLogin()
-        { 
-            string enteredUserEmail = emailU.email.Text.Trim();
-            string enteredPassword = passU.passbox.Password.Trim();
+        private  void PerformLogin(string UserEmail, string UserPassword)
+        {
+            //string enteredUserEmail = emailU.email.Text.Trim();
+            //string enteredPassword = passU.passbox.Password.Trim();
 
-            string  accountType = CheckLogin(enteredUserEmail, enteredPassword);
+            string  accountType = CheckLogin(UserEmail, UserPassword);
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -171,7 +226,7 @@ namespace FLauncher.Views
             else if (accountType == "gamer")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách gamer!");
-                Model.User loggedInUser = _userRepo.GetUserByEmailPass(enteredUserEmail, enteredPassword);
+                Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
@@ -180,7 +235,7 @@ namespace FLauncher.Views
             else if (accountType == "publisher")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách nhà phát hành!");
-                Model.User loggedInUser = _userRepo.GetUserByEmailPass(enteredUserEmail, enteredPassword);
+                Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
@@ -192,11 +247,11 @@ namespace FLauncher.Views
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
                 
                  // Close the Login window
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
-                {
-                    parentWindow.Close();
-                }
+                //Window parentWindow = Window.GetWindow(this);
+                //if (parentWindow != null)
+                //{
+                //    parentWindow.Close();
+                //}
  
             }
         }

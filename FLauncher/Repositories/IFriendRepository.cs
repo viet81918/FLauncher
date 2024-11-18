@@ -16,7 +16,7 @@ namespace FLauncher.Repositories
         Task UpdateFriendRequestStatus(string requestId, string acceptId, bool isAccepted);
 
         // Get pending friend invitations for a gamer
-        List<Friend> GetFriendInvitationsForGamer(Gamer gamer);
+        Task<List<Friend>> GetFriendInvitationsForGamer(Gamer gamer);
 
         // Get all friends for a gamer
         Task<List<Friend>> GetFriendsForGamer(Gamer gamer);
@@ -25,7 +25,7 @@ namespace FLauncher.Repositories
         Task<Friend> GetFriendship(string gamerId1, string gamerId2);
 
         // Get friends who have the same game as the given gamer
-        List<Gamer> GetFriendWithTheSameGame(Game game, Gamer gamer);
+        Task<IEnumerable <Gamer>> GetFriendWithTheSameGame(Game game, Gamer gamer);
 
     }
 }

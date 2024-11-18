@@ -39,7 +39,6 @@ namespace FLauncher.Views
             // Load friend count
             _viewModel.LoadProfileData(_currentGamer.GamerId);
 
-            // Set the ViewModel as DataContext
             this.DataContext = _viewModel;
         }
 
@@ -87,7 +86,7 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
-        private void AddFriendButton_Click(object sender, RoutedEventArgs e)
+        private async void AddFriendButton_Click(object sender, RoutedEventArgs e)
         {
             // Prompt user to enter the Gamer ID they want to add as a friend
             string acceptId = Microsoft.VisualBasic.Interaction.InputBox("Enter the ID of the gamer you want to add as a friend:", "Add Friend");
@@ -108,7 +107,7 @@ namespace FLauncher.Views
             }
 
             // Check if there is already a pending invitation between the two gamers
-            var pendingInvitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);
+            var pendingInvitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
 
             bool isInvitationPending = pendingInvitations.Any(invitation =>
                 (invitation.RequestId == _currentGamer.GamerId && invitation.AcceptId == acceptId) ||
@@ -140,12 +139,12 @@ namespace FLauncher.Views
 
 
 
-        private void InvitationButton_Click(object sender, RoutedEventArgs e)
+        private async void InvitationButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 // Fetch the pending invitations synchronously
-                var invitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);  // Blocking call
+                var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);  // Blocking call
 
                 if (invitations != null && invitations.Count > 0)
                 {
@@ -192,7 +191,7 @@ namespace FLauncher.Views
         private async Task RefreshInvitationsList()
         {
             // Fetch the updated list of invitations
-            var invitations = _friendService.GetPendingInvitations(_currentGamer.GamerId);
+            var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
 
             // Update the ListBox with the new list
             InvitationsListBox.ItemsSource = invitations;

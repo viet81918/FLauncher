@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-        public GamePublisher GetPublisherByGame(Game game)
+        public async Task<GamePublisher> GetPublisherByGame(Game game)
         {
             // Step 1: Get the corresponding 'Publish' entry for the game
             var publishEntry = _dbContext.Publishcations
@@ -32,15 +33,15 @@ namespace FLauncher.DAO
             }
 
             // Step 2: Get the 'GamePublisher' based on the GamePublisherId in the publishEntry
-            var publisher = _dbContext.GamePublishers
-                                      .FirstOrDefault(p => p.PublisherId == publishEntry.GamePublisherId);
+            var publisher = await _dbContext.GamePublishers
+                                      .FirstOrDefaultAsync(p => p.PublisherId == publishEntry.GamePublisherId);
 
             // Return the publisher object
             return publisher;
         }
-        public List<Update> getUpdatesForGame(Game game)
+        public async Task<IEnumerable<Update>> getUpdatesForGame(Game game)
         {
-            return _dbContext.Updates.Where(c => c.GameId == game.GameID).ToList();
+            return await _dbContext.Updates.Where(c => c.GameId == game.GameID).ToListAsync();
         }
         public GamePublisher GetPublisherByUser(User user)
         {

@@ -8,11 +8,26 @@ using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
-    public class GameRepository : IGameReposotory
+    public class GameRepository : IGameRepository
     {
-        public List<Game> GetGames()
+        public void Download_game(Game game, string saveLocation, Gamer gamer)
         {
-           return GameDAO.Instance.GetGames();  
+            GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
+        }
+
+        public async Task<IEnumerable<Game>> GetTopGames()
+        {
+           return await GameDAO.Instance.GetTopGames();  
+        }
+
+        public void Play_Game(Game game, Gamer gamer)
+        {
+            GameDAO.Instance.PlayGame(game, gamer); 
+        }
+
+        public void Upload_game(GamePublisher publisher,Game game, string selectedFilePath, string message)
+        {
+            GameDAO.Instance.Update_Game(publisher, game, selectedFilePath, message);
         }
     }
 }

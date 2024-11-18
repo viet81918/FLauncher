@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -19,18 +20,18 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-        public List<Notification> GetNotiforGamer(Gamer gamer) {
-            return _dbContext.Notifications
+        public async Task<IEnumerable<Notification>> GetNotiforGamer(Gamer gamer) {
+            return await _dbContext.Notifications
                     .Where(notification => notification.UserId == gamer.GamerId)
-                    .ToList();
+                    .ToListAsync();
 
         }
-        public List<Notification> GetUnreadNotiforGamer(Gamer gamer)
+        public async Task<IEnumerable<Notification>> GetUnreadNotiforGamer(Gamer gamer)
         {
             // Fetch notifications where `UserId` matches and `isRead` is false
-            return _dbContext.Notifications
+            return await _dbContext.Notifications
                              .Where(notification => notification.UserId == gamer.GamerId && !notification.isRead)
-                             .ToList();
+                             .ToListAsync();
         }
 
     }
