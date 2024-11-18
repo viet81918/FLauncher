@@ -25,6 +25,16 @@ namespace FLauncher.DAO
             return await _dbContext.Reviews.Where(c => c.GameId == game.GameID)
                 .ToListAsync(); 
         }
-    
+        public async Task<IEnumerable<Gamer>> GetGamerByReview(IEnumerable<Review> reviews)
+        {
+            // Extract all unique GamerIds from the reviews
+            var gamerIds = reviews.Select(r => r.GamerId).Distinct();
+
+            // Fetch Gamers whose GamerId is in the list of extracted GamerIds
+            return await _dbContext.Gamers
+                .Where(g => gamerIds.Contains(g.GamerId))
+                .ToListAsync();
+        }
+
     }
 }

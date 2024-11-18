@@ -38,6 +38,7 @@ namespace FLauncher.Views
         private readonly IGenresRepository  _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
+        private readonly IGamerRepository _gamerRepo;
         public GameDetail(Game game, Gamer gamer, GamePublisher gamePublisher)
         {
             InitializeComponent();
@@ -47,6 +48,7 @@ namespace FLauncher.Views
             _genreRepo = new GenreRepository();
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
+            _gamerRepo = new GamerRepository();
             InitializeData( game,  gamer,  gamePublisher);
 
         }
@@ -69,7 +71,12 @@ namespace FLauncher.Views
                 var friendwithsamegame = await _friendRepo.GetFriendWithTheSameGame(game, _gamer);
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
-                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame);
+                var Achivements = await _gameRepo.GetAchivesFromGame(_game);
+                var Unlock = await _gameRepo.GetUnlockAchivementsFromGame(Achivements, _gamer);
+                var UnlockAchivements = await _gameRepo.GetAchivementsFromUnlocks(Unlock);
+                var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
+                var reviewers = await _gamerRepo.GetGamersFromGame(game);
+                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers);
             }
             else if (_gamePublisher != null)
             {

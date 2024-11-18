@@ -604,7 +604,7 @@ Foreground="{StaticResource SecondaryBrush}">
                         VerticalAlignment="Center"/>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                    <Grid Background="Gray" Height="275" Width="615" Margin="0,0,15,0">
+                    <Grid Background="Gray" Height="269" Width="615" Margin="0,0,15,0">
                         <!-- Existing Content -->
 
                         <!-- Title -->
@@ -630,20 +630,129 @@ Foreground="{StaticResource SecondaryBrush}">
                         </ItemsControl>
                     </Grid>
                     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-
                         <Grid Background="DimGray" Height="75" Width="615" Margin="0,20,15,20">
-                            <TextBlock Text="Friend with the same game:" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}" Margin="0,10" />
+                            <StackPanel>
+                                <!-- Title TextBlock -->
+                                <TextBlock Text="Friends with the same game:" FontSize="12" FontWeight="SemiBold" 
+                   Foreground="{StaticResource SecondaryBrush}" Margin="10,5,0,0" />
 
+                                <!-- Container for the avatars -->
+                                <ItemsControl ItemsSource="{Binding Friendwiththesamegame}" MaxHeight="50" Margin="5">
+                                    <ItemsControl.ItemsPanel>
+                                        <!-- UniformGrid to limit the display to max 12 avatars -->
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="12" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="40" Height="40" Margin="2" CornerRadius="20">
+                                                <Image Source="{Binding AvatarLink}" 
+                               Width="40" Height="40" 
+                               Stretch="UniformToFill" 
+                               ClipToBounds="True"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
                         </Grid>
+
 
                         <Grid Background="DimGray" Height="200" Width="615" Margin="0,0,15,0">
-                            <TextBlock Text="Achivement" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}" Margin="0,10" />
+                            <TextBlock Text="Lock Achivement" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}" Margin="0,10" />
 
+                            <ItemsControl ItemsSource="{Binding LockAchivement}" Margin="0,30,0,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <!-- Sử dụng WrapPanel để hiển thị các biểu tượng achievement -->
+                                        <WrapPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="40" Height="40" Margin="5">
+                                            <Image Source="{Binding LockImageLink}" Width="40" Height="40">
+                                                <Image.ToolTip>
+                                                    <!-- Hiển thị tên achievement khi di chuột vào -->
+                                                    <ToolTip Content="{Binding Name}" />
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </Grid>
+
 
                     </StackPanel>
 
 
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                    <TextBlock Text="Unlock Achievements:" FontSize="20" FontWeight="SemiBold" Foreground="White" Margin="0,10,0,10" />
+                    <ScrollViewer Height="275" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding UnlockAchivementViewModels}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5" Width="150">
+                                        <Border Background="LightGray" CornerRadius="5" Padding="10">
+                                            <StackPanel>
+                                                <!-- Icon Achievement -->
+                                                <Image Source="{Binding UnlockImageLink}" Width="100" Height="100" Stretch="Uniform" />
+                                                <!-- Tên Achievement -->
+                                                <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
+                                                <!-- Thời gian Unlock -->
+                                                <TextBlock Text="{Binding DateUnlockString}" FontSize="12" Foreground="DarkGray" TextAlignment="Center" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                    <TextBlock Text="Gamer Reviews:" FontSize="20" FontWeight="SemiBold" Foreground="White" Margin="0,10,0,10" />
+                    <ScrollViewer Height="275" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ReviewGamerViewModels}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Vertical" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5" Width="300">
+                                        <Border Background="LightGray" CornerRadius="5" Padding="10">
+                                            <StackPanel>
+                                                <!-- Avatar -->
+                                                <Image Source="{Binding AvatarLink}" Width="50" Height="50" Stretch="Uniform" Margin="0,5,0,0" />
+                                                <!-- Name of Reviewer -->
+                                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
+                                                <!-- Rating -->
+                                                <TextBlock Text="Rating:" FontSize="14" FontWeight="SemiBold" Foreground="Black" />
+                                                <TextBlock Text="{Binding Rating}" FontSize="14" Foreground="DarkBlue" />
+                                                <!-- Description of Review -->
+                                                <TextBlock Text="Description:" FontSize="14" FontWeight="SemiBold" Foreground="Black" Margin="0,5,0,0"/>
+                                                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="DarkGray" TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </StackPanel>
 
 
