@@ -8,7 +8,7 @@
         x:Name="mainWindow"
         AllowsTransparency="True"
         Background="Transparent"
-        Title="MainWindow" Height="984" Width="1400"
+        Title="MainWindow" Height="800" Width="1400"
         MinHeight="768" MinWidth="1400"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
@@ -265,19 +265,19 @@
                             <!-- Money -->
                         </Grid.RowDefinitions>
 
-                        <!-- Gamer's Name -->
+                        <!-- Name -->
                         <TextBlock
         FontWeight="SemiBold"
         Foreground="{StaticResource SecondaryBrush}"
-        Text="{Binding Gamer.Name}" />
+        Text="{Binding Name}" />
                         <!-- Binding to Name property of Gamer -->
 
-                        <!-- Gamer's Money -->
+                        <!-- Money -->
                         <TextBlock
         Grid.Row="1"
         FontWeight="SemiBold"
         Foreground="{StaticResource PrimaryBrush}"
-        Text="{Binding Gamer.Money, StringFormat=C}" />
+        Text="{Binding Money, StringFormat=C}" />
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 
@@ -339,15 +339,17 @@
         <!--#endregion-->
 
         <!--#region Left Navigation Menu-->
-        <Grid 
-            Background="{StaticResource CanvasBrush}"
-            Grid.Row="1"
-            Effect="{StaticResource RightShadowEffect}">
-             <!--Menu Buttons--> 
-             <!--ListBox for menu items--> 
-            <ListBox Background="Transparent"
-                     BorderThickness="0"
-                     SelectionChanged="MenuListBox_SelectionChanged">
+
+        <Grid
+    Background="{StaticResource CanvasBrush}"
+    Grid.Row="1"
+    Effect="{StaticResource RightShadowEffect}">
+            <!--Menu Buttons-->
+            <ListBox
+        Background="Transparent"
+        BorderThickness="0"
+        SelectionChanged="MenuListBox_SelectionChanged">             
+
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Height" Value="80"/>
@@ -357,6 +359,7 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                     <Grid Background="{TemplateBinding Background}">
+
                                          <!--Indicator for selected Item--> 
                                         <Rectangle x:Name="indicator"
                                            HorizontalAlignment="Left"
@@ -375,6 +378,7 @@
                                             <Setter TargetName="indicator" Property="Fill" Value="{StaticResource PrimaryBrush}"/>
                                              <!--Set the fill for icon when listboxitem is selected--> 
                                             <Setter TargetName="icon" Property="Fill" Value="{StaticResource PrimaryBrush}"/>
+
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -382,18 +386,37 @@
                         </Setter>
                     </Style>
                 </ListBox.Resources>
+
                 <ListBoxItem Content="{StaticResource home_icon}" IsSelected="False" Tag="HomePage"/>
                 <ListBoxItem Content="{StaticResource games_icon}" IsSelected="False" Tag="GamesPage"/>
                 <ListBoxItem Content="{StaticResource profile_icon}" IsSelected="False" Tag="ProfilePage"/>
+
+
+                
+
+                <!-- Profile Icon Item with Click Event -->
+                <ListBoxItem x:Name="settingsIconListBoxItem" 
+             Content="{StaticResource settings_icon}" />
+                  
+                
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
+
+
+
+
             </ListBox>
             
 
 
         </Grid>
+
         <Frame x:Name="MainFrame"
     Grid.Column="1"
     Grid.Row="1"
     NavigationUIVisibility="Hidden"/>
+
         <!--#endregion-->
 
         <!--#region Contents-->
@@ -774,7 +797,7 @@
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <ItemsControl ItemsSource="{Binding TrendingGames}">
                         <ItemsControl.ItemsPanel>
-                            --><!-- Set a horizontal StackPanel for horizontal layout --><!--
+
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
@@ -791,11 +814,13 @@
                     MacCompatible="True"
                     SteamCompatible="True"
                     Margin="0,0,15,0"
-                    Effect="{StaticResource BottomShadowEffect}" />
+                    Effect="{StaticResource BottomShadowEffect}"
+                    MouseDown="TrendingCard_MouseDown" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
+
 
                 --><!--#endregion--><!--
             </StackPanel>
@@ -804,5 +829,6 @@
         
         
         
+
     </Grid>
 </Window>

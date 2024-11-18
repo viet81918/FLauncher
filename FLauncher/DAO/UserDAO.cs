@@ -34,6 +34,11 @@ namespace FLauncher.DAO
         {
             return _dbContext.Users.First(c => c.Email.Equals(email) && c.Password.Equals(pass));
         }
+
+        public User GetUserByEmail(string email)
+        {
+            return _dbContext.Users.First(c => c.Email.Equals(email));
+        }
     }
 
 

@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
-    public interface IGamerRepository
+    public interface IGenresRepository
     {
-        Gamer GetGamerByUser(User user);
-
-        Gamer GetGamerById(string gamerId);
-       
+        Task<IEnumerable<Genre>> GetGenres();
+        Task<IEnumerable<Genre>> GetGenresFromGame(Game game);
     }
 }

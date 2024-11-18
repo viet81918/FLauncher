@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FLauncher.Repositories
+namespace FLauncher.ViewModel
 {
-    public interface IGameReposotory
+    class MessageWindowViewModel
     {
-        List<Game> GetGames();
+        public Gamer Gamer { get; }
+        public List<Friend> FriendInvitations { get; }
     }
 }
