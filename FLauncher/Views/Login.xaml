@@ -10,7 +10,7 @@
          VerticalAlignment="Stretch"
          Height="Auto"
          Width="Auto"
-         Title="LoginPage">
+         Title="LoginPage" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style x:Key="linkText" TargetType="{x:Type TextBlock}">
             <Setter Property="FontWeight" Value="SemiBold"/>

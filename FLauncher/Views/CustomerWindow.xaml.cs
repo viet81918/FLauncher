@@ -1,22 +1,27 @@
-﻿using FLauncher.Model;
+﻿using FLauncher.CC;
+using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.ViewModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using Application = System.Windows.Application;
 
 namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
+        private Model.User _user;
         private Gamer _gamer;
         private readonly GamerRepository _gamerRepo;
         private readonly NotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly GameRepository _gameRepo;
 
-        public CustomerWindow(User user)
+        public CustomerWindow(Model.User user)
         {
             InitializeComponent();
+            _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -31,10 +36,12 @@ namespace FLauncher
 
             // Fetch all games and sort by NumberOfBuyers in descending order to get the top 6
             var allGames = _gameRepo.GetGames();
-            var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(6).ToList();
+            var topGames = allGames.OrderByDescending(g => g.NumberOfBuyers).Take(9).ToList();
 
             // Set DataContext to the ViewModel
             DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames);
+
+
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -80,6 +87,30 @@ namespace FLauncher
             }
         }
 
+        private void MenuListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (MainFrame == null) return;
+            if (sender is ListBox listBox && listBox.SelectedItem is ListBoxItem selectedItem)
+            {
+                string selectedPage = selectedItem.Tag.ToString();
+                switch (selectedPage)
+                {
+                    case "HomePage":
+                        MainFrame.Navigate(new HomePage(_user));
+                        break;
+                    case "GamesPage":
+                        MainFrame.Navigate(new GamePage());
+                        break;
+                    case "ProfilePage":
+                        MainFrame.Navigate(new ProfilePage());
+                        break;
+                }
+            }
+        }
+
+
 
     }
 }
+
+

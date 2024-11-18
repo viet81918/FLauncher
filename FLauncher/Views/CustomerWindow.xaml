@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FLauncher.Views" xmlns:cc="clr-namespace:FLauncher.CC"
+        xmlns:cc="clr-namespace:FLauncher.CC"
         mc:Ignorable="d"
         x:Name="mainWindow"
         AllowsTransparency="True"
@@ -339,14 +339,15 @@
         <!--#endregion-->
 
         <!--#region Left Navigation Menu-->
-        <Grid
+        <Grid 
             Background="{StaticResource CanvasBrush}"
             Grid.Row="1"
             Effect="{StaticResource RightShadowEffect}">
-            <!--Menu Buttons-->
-            <ListBox
-                Background="Transparent"
-                BorderThickness="0">
+             <!--Menu Buttons--> 
+             <!--ListBox for menu items--> 
+            <ListBox Background="Transparent"
+                     BorderThickness="0"
+                     SelectionChanged="MenuListBox_SelectionChanged">
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Height" Value="80"/>
@@ -356,35 +357,24 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                                     <Grid Background="{TemplateBinding Background}">
-
-                                        <!--Indicator for selected Item-->
-                                        <Rectangle
-                                            x:Name="indicator"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Stretch"
-                                            Width="4"/>
-
-                                        <!--Menu Icon-->
-                                        <Path
-                                            x:Name="icon"
-                                            Data="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"
-                                            Fill="{StaticResource SecondaryBrush}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"/>
+                                         <!--Indicator for selected Item--> 
+                                        <Rectangle x:Name="indicator"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Stretch"
+                                           Width="4"/>
+                                         <!--Menu Icon--> 
+                                        <Path x:Name="icon"
+                                      Data="{Binding Content, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"
+                                      Fill="{StaticResource SecondaryBrush}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <!--Set the fill for indicator when listboxitem is selected-->
-                                            <Setter
-                                                TargetName="indicator"
-                                                Property="Fill"
-                                                Value="{StaticResource PrimaryBrush}"/>
-
-                                            <!--Set the fill for icon when listboxitem is selected-->
-                                            <Setter
-                                                TargetName="icon"
-                                                Property="Fill"
-                                                Value="{StaticResource PrimaryBrush}"/>
+                                             <!--Set the fill for indicator when listboxitem is selected--> 
+                                            <Setter TargetName="indicator" Property="Fill" Value="{StaticResource PrimaryBrush}"/>
+                                             <!--Set the fill for icon when listboxitem is selected--> 
+                                            <Setter TargetName="icon" Property="Fill" Value="{StaticResource PrimaryBrush}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -392,20 +382,23 @@
                         </Setter>
                     </Style>
                 </ListBox.Resources>
-                <ListBoxItem
-                    Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
-                <ListBoxItem
-                    Content="{StaticResource games_icon}"/>
-                <ListBoxItem
-                    Content="{StaticResource profile_icon}"/>
-
+                <ListBoxItem Content="{StaticResource home_icon}" IsSelected="False" Tag="HomePage"/>
+                <ListBoxItem Content="{StaticResource games_icon}" IsSelected="False" Tag="GamesPage"/>
+                <ListBoxItem Content="{StaticResource profile_icon}" IsSelected="False" Tag="ProfilePage"/>
             </ListBox>
+            
+
+
         </Grid>
+        <Frame x:Name="MainFrame"
+    Grid.Column="1"
+    Grid.Row="1"
+    NavigationUIVisibility="Hidden"/>
         <!--#endregion-->
 
         <!--#region Contents-->
-        <ScrollViewer
+        <!--<ScrollViewer
+            x:Name="TrendingScrollViewer"
             Grid.Column="1"
             Grid.Row="1"
             HorizontalScrollBarVisibility="Disabled"
@@ -413,7 +406,7 @@
             <StackPanel
                 Margin="40">
 
-                <!--#region Filters-->
+                --><!--#region Filters--><!--
                 <Grid
                     Background="{StaticResource CanvasBrush}"
                     Height="77">
@@ -421,29 +414,22 @@
                         Orientation="Horizontal"
                         HorizontalAlignment="Left">
 
-                        <!--Filter by genre-->
+                        --><!--Filter by genre--><!--
                         <cc:filterItems
                             Margin="20,0,0,0"
                             Text="GENRE"/>
-                        <!--Filter by tagse-->
+                        --><!--Filter by DATE--><!--
                         <cc:filterItems
                             Margin="20,0,0,0"
-                            Text="TAGS"/>
-                        <!--Filter by system-->
-                        <cc:filterItems
-                            Margin="20,0,0,0"
-                            Text="SYSTEM"/>
-                        <!--Filter by language-->
-                        <cc:filterItems
-                            Margin="20,0,0,0"
-                            Text="LANGUAGE"/>
-                        <!--Filter by price-->
+                            Text="DATE"/>
+                        
+                        --><!--Filter by price--><!--
                         <cc:filterItems
                             Margin="20,0,0,0"
                             Text="PRICE"/>
                     </StackPanel>
 
-                    <!--Change View (Grid or List View) icons-->
+                    --><!--Change View (Grid or List View) icons--><!--
                     <UniformGrid
                         Columns="2"
                         Margin="0,0,6,0"
@@ -461,7 +447,7 @@
                                     TargetType="{x:Type Button}">
                                             <Border
                                         Background="{TemplateBinding Background}">
-                                                <!--Respective Icon-->
+                                                --><!--Respective Icon--><!--
                                                 <Path
                                             Data="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
                                             Fill="{StaticResource SecondaryBrush}"
@@ -482,10 +468,10 @@
                             FontSize="18"/>
                     </UniformGrid>
                 </Grid>
-                <!--#endregion-->
+                --><!--#endregion-->
 
                 <!--#region Hot & New Title & Cards-->
-                <!--Title-->
+                <!--Title--><!--
                 <Grid
                     Margin="0,20,0,0">
                     <TextBlock
@@ -503,7 +489,7 @@
                         VerticalAlignment="Center"/>
                 </Grid>
 
-                <!--Cards-->
+                --><!--Cards--><!--
                 <StackPanel
                     Orientation="Horizontal"
                     Margin="0,10,0,0">
@@ -513,22 +499,22 @@
                         Width="615"
                         Margin="0,0,15,0">
 
-                        <!--Game Character Background-->
+                        --><!--Game Character Background--><!--
                         <Image
                             Source="/assets/gg.png"
                             Stretch="UniformToFill"/>
 
-                        <!--Overlay-->
+                        --><!--Overlay--><!--
                         <Grid
                             Background="{StaticResource GradientBrush}"/>
 
-                        <!--Like Percentage-->
+                        --><!--Like Percentage--><!--
                         <Grid
                             Height="40"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Margin="25">
-                            <!--background-->
+                            --><!--background--><!--
                             <Border
                                 Background="{StaticResource
                                 CanvasBrush}"
@@ -537,7 +523,7 @@
                             <DockPanel>
                                 <StackPanel
                                     Orientation="Horizontal">
-                                    <!--Like Icon-->
+                                    --><!--Like Icon--><!--
                                     <Path
                                         Data="{StaticResource like_icon}"
                                         Fill="{StaticResource SecondaryBrush}"
@@ -546,7 +532,7 @@
                                         Height="16"
                                         Width="35"/>
 
-                                    <!--Percentage Text-->
+                                    --><!--Percentage Text--><!--
                                     <TextBlock
                                         Text="93%"
                                         Margin="0,0,8,0"
@@ -558,7 +544,7 @@
                             </DockPanel>
                         </Grid>
 
-                        <!--Tags-->
+                        --><!--Tags--><!--
                         <StackPanel
                             Orientation="Horizontal"
                             HorizontalAlignment="Left"
@@ -574,7 +560,7 @@
                                 Text="ACTION"/>
                         </StackPanel>
 
-                        <!--Title-->
+                        --><!--Title--><!--
                         <TextBlock
                             HorizontalAlignment="Left"
                             Margin="30,146,0,0"                            
@@ -585,27 +571,27 @@
                             Foreground="{StaticResource SecondaryBrush}"><Run Text="Gigantic Open Beta"/><LineBreak/><Run Text="Starts Now"/></TextBlock>
                     </Grid>
 
-                    <!--Repeat...-->
+                    --><!--Repeat...--><!--
                     <Grid
                         Background="{StaticResource PrimaryBrush}"
                         Height="275"
                         Width="615"
                         Margin="0,0,15,0">
 
-                        <!--Game Character Background-->
+                        --><!--Game Character Background--><!--
                         <Image
                             Source="/assets/fh.png"
                             Stretch="UniformToFill"/>
-                        <!--Overlay-->
+                        --><!--Overlay--><!--
                         <Grid
                             Background="{StaticResource GradientBrush}"/>
-                        <!--Like Percentage-->
+                        --><!--Like Percentage--><!--
                         <Grid
                             Height="40"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Margin="25">
-                            <!--background-->
+                            --><!--background--><!--
                             <Border
                                 Background="{StaticResource
                                 CanvasBrush}"
@@ -614,7 +600,7 @@
                             <DockPanel>
                                 <StackPanel
                                     Orientation="Horizontal">
-                                    <!--Like Icon-->
+                                    --><!--Like Icon--><!--
                                     <Path
                                         Data="{StaticResource like_icon}"
                                         Fill="{StaticResource SecondaryBrush}"
@@ -623,7 +609,7 @@
                                         Height="16"
                                         Width="35"/>
 
-                                    <!--Percentage Text-->
+                                    --><!--Percentage Text--><!--
                                     <TextBlock
                                         Text="93%"
                                         Margin="0,0,8,0"
@@ -635,7 +621,7 @@
                             </DockPanel>
                         </Grid>
 
-                        <!--Tags-->
+                        --><!--Tags--><!--
                         <StackPanel
                             Orientation="Horizontal"
                             HorizontalAlignment="Left"
@@ -649,7 +635,7 @@
                                 Text="HARDCORE"/>
                         </StackPanel>
 
-                        <!--Title-->
+                        --><!--Title--><!--
                         <TextBlock
                             HorizontalAlignment="Left"
                             Margin="30,146,0,0"                            
@@ -666,20 +652,20 @@
                         Width="615"
                         Margin="0,0,15,0">
 
-                        <!--Game Character Background-->
+                        --><!--Game Character Background--><!--
                         <Image
                             Source="/assets/wt.png"
                             Stretch="UniformToFill"/>
-                        <!--Overlay-->
+                        --><!--Overlay--><!--
                         <Grid
                             Background="{StaticResource GradientBrush}"/>
-                        <!--Like Percentage-->
+                        --><!--Like Percentage--><!--
                         <Grid
                             Height="40"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Margin="25">
-                            <!--background-->
+                            --><!--background--><!--
                             <Border
                                 Background="{StaticResource
                                 CanvasBrush}"
@@ -688,7 +674,7 @@
                             <DockPanel>
                                 <StackPanel
                                     Orientation="Horizontal">
-                                    <!--Like Icon-->
+                                    --><!--Like Icon--><!--
                                     <Path
                                         Data="{StaticResource like_icon}"
                                         Fill="{StaticResource SecondaryBrush}"
@@ -697,7 +683,7 @@
                                         Height="16"
                                         Width="35"/>
 
-                                    <!--Percentage Text-->
+                                    --><!--Percentage Text--><!--
                                     <TextBlock
                                         Text="93%"
                                         Margin="0,0,8,0"
@@ -709,7 +695,7 @@
                             </DockPanel>
                         </Grid>
 
-                        <!--Tags-->
+                        --><!--Tags--><!--
                         <StackPanel
                             Orientation="Horizontal"
                             HorizontalAlignment="Left"
@@ -722,7 +708,7 @@
                                 Text="ACTION"/>
                         </StackPanel>
 
-                        <!--Title-->
+                        --><!--Title--><!--
                         <TextBlock
                             HorizontalAlignment="Left"
                             Margin="30,146,0,0"                            
@@ -734,10 +720,10 @@
                     </Grid>
 
                 </StackPanel>
-                <!--#endregion-->
+                --><!--#endregion-->
 
                 <!--#region Hot & New Title & Cards-->
-                <!--Title-->
+                <!--Title--><!--
                 <Grid
                     Margin="0,20,0,0">
                     <TextBlock
@@ -746,19 +732,49 @@
                         FontSize="22"
                         Text="Trending"
                         VerticalAlignment="Bottom"/>
+                    <StackPanel
+    Orientation="Horizontal"
+    HorizontalAlignment="Right"
+    VerticalAlignment="Bottom"
+    Margin="0,0,6,20">    
+                        --><!--<Button 
+                            Background="Transparent" 
+                            BorderBrush="Transparent" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="previous_Click">--><!--
+                        <TextBlock
+                            Foreground="{StaticResource SecondaryBrush}"
+                            FontWeight="SemiBold"
+                            FontSize="22"
+                            Text="See more >" />
+                        --><!--</Button>-->
 
-                    <TextBlock
-                        Foreground="{StaticResource SecondaryBrush}"
-                        FontWeight="SemiBold"
-                        HorizontalAlignment="Right"
-                        Text="SEE MORE >"
-                        VerticalAlignment="Center"/>
+                        <!--<TextBlock
+                            Foreground="{StaticResource SecondaryBrush}"
+                            FontWeight="SemiBold"
+                            FontSize="22"
+                            Text=" | "/>
+
+                        --><!--<Button 
+                            Background="Transparent" 
+                            BorderBrush="Transparent" 
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="next_Click">--><!--
+                            <TextBlock
+                                Foreground="{StaticResource SecondaryBrush}"
+                                FontWeight="SemiBold"
+                                FontSize="22"
+                                Text="Next &gt;" />
+                        --><!--</Button>--><!--
+                    </StackPanel>
                 </Grid>
-                <!--Cards-->
+                --><!--Cards--><!--
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <ItemsControl ItemsSource="{Binding TrendingGames}">
                         <ItemsControl.ItemsPanel>
-                            <!-- Set a horizontal StackPanel for horizontal layout -->
+                            --><!-- Set a horizontal StackPanel for horizontal layout --><!--
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal"/>
                             </ItemsPanelTemplate>
@@ -781,10 +797,10 @@
                     </ItemsControl>
                 </StackPanel>
 
-                <!--#endregion-->
+                --><!--#endregion--><!--
             </StackPanel>
         </ScrollViewer>
-        <!--#endregion-->
+        --><!--#endregion-->
         
         
         

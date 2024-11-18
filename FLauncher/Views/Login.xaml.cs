@@ -1,26 +1,7 @@
-﻿using FLauncher.Model;
-using MongoDB.Bson.IO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using FLauncher.Repositories;
 using Newtonsoft.Json;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using static System.Net.WebRequestMethods;
-using FLauncher.Services;
-using Microsoft.VisualBasic.ApplicationServices;
-using FLauncher.Repositories;
+using System.Windows;
+using System.Windows.Input;
 
 
 namespace FLauncher.Views
@@ -41,7 +22,7 @@ namespace FLauncher.Views
         }
         private void LoginGG_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private string CheckLogin(string emailUser, string password)
@@ -106,12 +87,13 @@ namespace FLauncher.Views
             }
         }
 
-        private  void PerformLogin()
-        { 
+        private void PerformLogin()
+        {
             string enteredUserEmail = emailU.email.Text.Trim();
             string enteredPassword = passU.passbox.Password.Trim();
 
-            string  accountType = CheckLogin(enteredUserEmail, enteredPassword);
+            string accountType = CheckLogin(enteredUserEmail, enteredPassword);
+
 
             // Check the result of CheckLogin
             if (accountType == "admin")
@@ -127,7 +109,7 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách khách hàng!");
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(enteredUserEmail, enteredPassword);
-               CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
                 this.Close();
