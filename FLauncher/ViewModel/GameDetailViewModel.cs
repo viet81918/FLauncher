@@ -74,7 +74,10 @@ namespace FLauncher.ViewModel
                     {
                         Name = achivement.Name,
                         UnlockImageLink = achivement.UnlockImageLink,
-                        DateUnlockString = unlock.DateUnlockString
+                        DateUnlockString = unlock.DateUnlockString,
+                        AchivmentId = unlock.AchievementId,
+                        GameId = unlock.GameId,
+                        GamerId = unlock.GamerId
                     });
                 }
             }
