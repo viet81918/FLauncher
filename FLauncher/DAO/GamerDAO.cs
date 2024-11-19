@@ -29,12 +29,13 @@ namespace FLauncher.DAO
         }
 
 
-        public async Task <IEnumerable<Gamer>> GetGamersByIds(List<string> gamerIds)
+        public async Task<List<Gamer>> GetGamersByIds(List<string> gamerIds)
         {
             return await _dbContext.Gamers
-                             .Where(g => gamerIds.Contains(g.GamerId))
-                             .ToListAsync();
+                              .Where(g => gamerIds.Contains(g.GamerId))
+                              .ToListAsync();
         }
+
 
         public List<Game> GetGamesByGamer(Gamer gamer)
         {

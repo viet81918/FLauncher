@@ -17,7 +17,7 @@ namespace FLauncher
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
-        private  readonly INotiRepository _notiRepo;
+        private  readonly NotiRepository _notiRepo;
         private  readonly FriendRepository _friendRepo;
         private  readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
@@ -41,7 +41,7 @@ namespace FLauncher
           
             // Fetch top games and genres asynchronously
             var topGames = await _gameRepo.GetTopGames();  // Assuming GetTopGames() is async
-            var genres = await  _genreRepo.GetGenres();    // Assuming GetGenres() is async
+            var genres = await _genreRepo.GetGenres();    // Assuming GetGenres() is async
 
             if (user.Role == 3) // Role 3 - Gamer
             {
