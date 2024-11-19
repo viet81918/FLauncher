@@ -81,7 +81,39 @@ namespace FLauncher.DAO
             }
         }
 
+        public async Task<bool> IsBuyGame(Game game, Gamer gamer)
+        {
+            if (game == null || gamer == null)
+                return false;
 
+            // Query the Bills collection to check if a bill exists for the given gamer and game
+            var billExists = await _dbContext.Bills
+                .AnyAsync(bill => bill.GameId == game.GameID && bill.GamerId == gamer.GamerId);
+
+            return billExists;
+        }
+        public async Task<bool> IsPublishGame(Game game, GamePublisher publisher
+            )
+        {
+            if (game == null || publisher == null)
+                return false;
+
+            // Query the Bills collection to check if a bill exists for the given gamer and game
+            var Published = await _dbContext.Publishcations
+                .AnyAsync(c => c.GameId == game.GameID && c.GamePublisherId == publisher.PublisherId && c.isPublishable == true);
+
+            return Published;
+        }
+        public async Task<bool> IsGamePublishable(Game game)
+        {
+            if (game == null)
+                return false;
+
+            // Check if the game is marked as publishable in the Publish collection
+            var isPublishable = await _dbContext.Publishcations
+                .AnyAsync(p => p.GameId == game.GameID && p.isPublishable);
+            return isPublishable;
+        }
 
         public void DownloadRarFromLink(Game game, string saveLocation, Gamer gamer)
         {
@@ -246,15 +278,22 @@ namespace FLauncher.DAO
            _dbContext.Downloads.Add(download);  
             _dbContext.SaveChanges();
         }
-   
+
 
         public async Task<IEnumerable<Game>> GetTopGames()
         {
+            var publishableGameIds = await _dbContext.Publishcations
+                .Where(p => p.isPublishable) // Chỉ lấy những game được publish
+                .Select(p => p.GameId) // Lấy danh sách GameId
+                .ToListAsync();
+
             return await _dbContext.Games
-                .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
+                .Where(g => publishableGameIds.Contains(g.GameID)) // Chỉ lấy game trong danh sách publishable
+                .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo số lượng người mua
                 .Take(9) // Lấy ra 9 game đầu tiên
-                .ToListAsync(); // Chuyển kết quả thành 
+                .ToListAsync();
         }
+        
             public  async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
         {
             // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills

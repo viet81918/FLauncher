@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,9 +48,16 @@ namespace FLauncher.ViewModel
         public ObservableCollection<UnlockAchivementViewModel> UnlockAchivementViewModels { get; set; }
         public ObservableCollection<ReviewGamerViewModel> ReviewGamerViewModels { get; set; }
         public ObservableCollection<Gamer> Reviewers { get; }
-
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers)
+        public bool IsGamer { get; set; }
+        public bool IsPublisher { get; set; }
+        public bool IsBuy { get; set; }
+        public bool IsPublished { get; set; }
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers, bool isBuy, bool isPublished)
         {
+            IsGamer = true;
+            IsPublisher = false;
+            IsPublished = isPublished;
+            IsBuy = isBuy;
             Game = game;
             Gamer = gamer;
             Genres = new ObservableCollection<Genre>(genres);

@@ -14,7 +14,7 @@ namespace FLauncher.Repositories
         {
             GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
         }
-
+       
         public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
         {
            return await GameDAO.Instance.GetAchivementFromUnlock(unlock);
@@ -43,6 +43,16 @@ namespace FLauncher.Repositories
         public async Task<IEnumerable<UnlockAchivement>> GetUnlockAchivementsFromGame( IEnumerable<Achivement> achivement, Gamer gamer)
         {
             return await GameDAO.Instance.GetUnlockAchivements( achivement, gamer);
+        }
+
+        public async Task<bool> IsBuyGame(Game game, Gamer gamer)
+        {
+          return await GameDAO.Instance.IsBuyGame(game, gamer);
+        }
+
+        public async Task<bool> IsPublishGame(Game game, GamePublisher publisher)
+        {
+            return await GameDAO.Instance.IsPublishGame(game, publisher);
         }
 
         public void Play_Game(Game game, Gamer gamer)

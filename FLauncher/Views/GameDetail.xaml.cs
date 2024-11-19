@@ -79,7 +79,9 @@ namespace FLauncher.Views
                 var UnlockAchivements = await _gameRepo.GetAchivementsFromUnlocks(Unlock);
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
-                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers);
+                var isBuy = await _gameRepo.IsBuyGame(game, gamer);
+                var isPublish = await _gameRepo.IsPublishGame(game, _gamePublisher);
+                DataContext = new GameDetailViewModel(game, gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isPublish);
             }
             else if (_gamePublisher != null)
             {
