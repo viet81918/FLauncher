@@ -52,12 +52,13 @@ namespace FLauncher.ViewModel
         public bool IsPublisher { get; set; }
         public bool IsBuy { get; set; }
         public bool IsPublished { get; set; }
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers, bool isBuy, bool isPublished)
+        public bool IsDownload { get; set; }
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers, bool isBuy, bool isDownload)
         {
             IsGamer = true;
             IsPublisher = false;
-            IsPublished = isPublished;
             IsBuy = isBuy;
+            IsDownload = isDownload;
             Game = game;
             Gamer = gamer;
             Genres = new ObservableCollection<Genre>(genres);
@@ -108,8 +109,12 @@ namespace FLauncher.ViewModel
 
         }
 
-        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews,GamePublisher GamePublisher, IEnumerable<Update> updates)
+        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews,GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished)
         {
+            IsGamer = false;
+            IsPublisher = true;
+            IsPublished = isPublished;
+      
             Game = game;
             Genres = new ObservableCollection<Genre>(genres);
             Reviews = new ObservableCollection<Review>(reviews);

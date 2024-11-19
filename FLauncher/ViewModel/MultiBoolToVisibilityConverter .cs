@@ -12,15 +12,22 @@ namespace FLauncher.ViewModel
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values == null || values.Length < 2)
+            // Check if we have the right number of values and they are all booleans
+            if (values == null || values.Length == 0)
                 return Visibility.Collapsed;
 
-            if (values[0] is bool isBuy && values[1] is bool isPublisher)
+            // Check if all the values are boolean and store them
+            bool[] boolValues = values.OfType<bool>().ToArray();
+
+            // Example logic: If all conditions are true, return Visible
+            if (boolValues.Length > 0)
             {
-                // Only show if IsBuy is true and IsPublisher is false
-                return isBuy && !isPublisher ? Visibility.Visible : Visibility.Collapsed;
+                // You can adjust this logic as needed based on the number of booleans and the conditions
+                if (boolValues.All(b => b))  // If all booleans are true
+                    return Visibility.Visible;
             }
 
+            // Return Collapsed if any of the conditions is false
             return Visibility.Collapsed;
         }
 
@@ -29,5 +36,6 @@ namespace FLauncher.ViewModel
             throw new NotSupportedException("MultiBoolToVisibilityConverter does not support ConvertBack.");
         }
     }
+
 
 }
