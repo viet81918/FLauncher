@@ -50,6 +50,11 @@ namespace FLauncher.Repositories
           return await GameDAO.Instance.IsBuyGame(game, gamer);
         }
 
+        public async Task<bool> isDownload(Game game, Gamer gamer)
+        {
+            return await GameDAO.Instance.isDownload(game, gamer);
+        }
+
         public async Task<bool> IsPublishGame(Game game, GamePublisher publisher)
         {
             return await GameDAO.Instance.IsPublishGame(game, publisher);

@@ -104,6 +104,10 @@ namespace FLauncher.DAO
 
             return Published;
         }
+        public async Task<bool> isDownload(Game game, Gamer gamer)
+        {
+            return await _dbContext.Downloads.AnyAsync(c => c.GameId == game.GameID && c.GamerId == gamer.GamerId);
+        }
         public async Task<bool> IsGamePublishable(Game game)
         {
             if (game == null)
@@ -570,6 +574,10 @@ namespace FLauncher.DAO
         public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
         {
             return await _dbContext.Achivements.FirstOrDefaultAsync(c => c.AchivementId == unlock.AchievementId);
+        }
+        public void Uninstall_Game(Gamer gamer, Game game)
+        {
+
         }
     }
 

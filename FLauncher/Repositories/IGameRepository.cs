@@ -21,6 +21,7 @@ namespace FLauncher.Repositories
         Task<bool> IsBuyGame(Game game, Gamer gamer);
         Task<bool> IsPublishGame(Game game, GamePublisher publisher
             );
+        Task<bool> isDownload(Game game, Gamer gamer);
 
     }
 }
