@@ -18,6 +18,9 @@ namespace FLauncher.Repositories
         Task<IEnumerable<Achivement>> GetAchivementsFromUnlocks(IEnumerable<UnlockAchivement> unlockAchivements);
         Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock);
         Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer);
-      
+        Task<bool> IsBuyGame(Game game, Gamer gamer);
+        Task<bool> IsPublishGame(Game game, GamePublisher publisher
+            );
+
     }
 }
