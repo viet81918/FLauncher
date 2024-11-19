@@ -30,6 +30,7 @@ namespace FLauncher.Views
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
         private readonly IGamerRepository _gamerRepo;
+        private readonly IUserRepository _userRepo;
         public GameDetail(Game game, Gamer gamer, GamePublisher gamePublisher)
         {
             InitializeComponent();
