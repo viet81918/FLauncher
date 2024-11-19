@@ -16,9 +16,12 @@ namespace FLauncher
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
+
+
         private readonly INotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
+
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 

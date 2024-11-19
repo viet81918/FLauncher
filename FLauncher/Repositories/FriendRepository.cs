@@ -8,10 +8,12 @@ namespace FLauncher.Repositories
     public class FriendRepository : IFriendRepository
     {
         private readonly FriendDAO _friendDAO;
+        private readonly GamerDAO _gamerDAO;
 
         public FriendRepository()
         {
             _friendDAO = FriendDAO.Instance; // Assuming FriendDAO follows Singleton pattern
+            _gamerDAO = GamerDAO.Instance;
         }
 
         public async Task AddFriendRequest(Friend friendRequest)
@@ -55,6 +57,16 @@ namespace FLauncher.Repositories
             return await FriendDAO.Instance.GetFriendWithTheSameGame(game, gamer);
         }
 
-      
+        public async Task<IEnumerable<Gamer>> GetListFriendForGamer(string gamerId)
+        {
+            return await _friendDAO.GetListFriendForGamer(gamerId);
+        }
+
+
+
+
+
+        }
+
     }
-}
+
