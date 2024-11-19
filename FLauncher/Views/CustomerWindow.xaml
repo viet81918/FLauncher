@@ -401,10 +401,19 @@
             Content="{StaticResource games_icon}"/>
 
                 <!-- Profile Icon Item with Click Event -->
+               
+                <ListBoxItem
+                    Content="{StaticResource profile_icon}"
+
+                    MouseLeftButtonUp="ProfileIcon_Click"/>
+
+                <!--demo phân quyền-->
                 <ListBoxItem x:Name="settingsIconListBoxItem" 
-             Content="{StaticResource settings_icon}" />
-                <ListBoxItem MouseLeftButtonUp="ProfileIcon_Click"
-                        />
+                             Content="{StaticResource settings_icon}" />
+                <ListBoxItem
+                    Content="{StaticResource message_icon}"
+                    MouseLeftButtonUp="messageButton_Click"/>
+                <!-- Add Log Out icon -->
                 <ListBoxItem 
                     Content="{StaticResource logout_icon}"
                     MouseLeftButtonUp="logoutButton_Click"/>
@@ -486,12 +495,7 @@
                                 </Setter>
                             </Style>
                         </UniformGrid.Resources>
-                        <Button
-                            Content="{StaticResource list_icon}"
-                            FontSize="18"/>
-                        <Button
-                            Content="{StaticResource grid_icon}"
-                            FontSize="18"/>
+                   
                     </UniformGrid>
                 </Grid>
                 <!--#endregion-->

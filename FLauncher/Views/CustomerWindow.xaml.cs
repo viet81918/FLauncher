@@ -3,29 +3,32 @@ using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
 using FLauncher.Views;
-using MongoDB.Driver;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
 
 namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
+        private User _user;
         private Gamer _gamer;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
-        private  readonly NotiRepository _notiRepo;
-        private  readonly FriendRepository _friendRepo;
-        private  readonly IGameRepository _gameRepo;
+
+
+        private readonly INotiRepository _notiRepo;
+        private readonly FriendRepository _friendRepo;
+        private readonly IGameRepository _gameRepo;
+
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -37,31 +40,31 @@ namespace FLauncher
 
         private async void InitializeData(User user)
         {
-            
-          
+
+
             // Fetch top games and genres asynchronously
             var topGames = await _gameRepo.GetTopGames();  // Assuming GetTopGames() is async
             var genres = await _genreRepo.GetGenres();    // Assuming GetGenres() is async
 
             if (user.Role == 3) // Role 3 - Gamer
             {
-                _gamer =  _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
-                var unreadNotifications = await  _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
-                var friendInvitations =  await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
+                _gamer = _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
+                var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
+                var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
 
                 DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
-                _gamePublisher =  _publisherRepo.GetPublisherByUser(user); // Assuming async
+                _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
                 DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
             }
         }
-    
-    private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
+
+        private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
-               if (e.ChangedButton == MouseButton.Left)
+            if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
 
@@ -78,10 +81,10 @@ namespace FLauncher
             if (clickedGame != null)
             {
                 // Get the current gamer from the DataContext
-                var currentGamer = _gamer;
+                var currentUser = _user;
                 var currentPublisher = _gamePublisher;
                 // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer, currentPublisher);
+                var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
             }
         }
@@ -101,7 +104,7 @@ namespace FLauncher
             Close();
         }
 
-    
+
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchTextBox.Text == "Search the store")
@@ -119,11 +122,12 @@ namespace FLauncher
             }
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
-        {
-           
+
+        {            
             var currentGamer = _gamer;
-            var messDetail = new MessageWindow(currentGamer);
-            messDetail.Show();
+            MessageWindow messWindow = new MessageWindow(currentGamer);
+            messWindow.Show();
+
             this.Hide();
             this.Close();
         }
@@ -137,7 +141,7 @@ namespace FLauncher
                 this.Hide();
                 Login login = new Login();
                 login.Show();
-                
+
                 this.Close();
             }
         }
@@ -155,10 +159,11 @@ namespace FLauncher
         {
             // Create an instance of ProfileWindow and show it
             _friendService = new FriendService(_friendRepo, _gamerRepo);
-            
+
             ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
             profileWindow.Show();
-
+            this.Hide();
+            this.Close();
             // Optionally, close the current window (MainWindow)
             // this.Close();
         }

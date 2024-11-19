@@ -2,6 +2,7 @@
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +10,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.IO;
+
 
 namespace FLauncher.Views
 {
@@ -19,15 +26,23 @@ namespace FLauncher.Views
     {
         private readonly Gamer _currentGamer;
         private readonly FriendService _friendService;
+
         private  ProfileWindowViewModel _viewModel;
         private readonly GamerRepository _gamerRepo;
         private readonly FriendRepository _friendRepo;
+
+
+     
+        private Model.User _user;
+        private readonly UserRepository _userRepo;
 
         public ProfileWindow(Gamer gamer, FriendService friendService)
         {
             Debug.WriteLine("ProfileWindow constructor called.");
 
             InitializeComponent();
+            _userRepo = new UserRepository();
+            _user = _userRepo.GetUserByGamer(gamer);
             _currentGamer = gamer;
             _friendService = friendService;
             _friendRepo = new FriendRepository();
@@ -206,6 +221,44 @@ namespace FLauncher.Views
 
             // Update the ListBox with the new list
             InvitationsListBox.ItemsSource = invitations;
+        }
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void logoutButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                DeleteLoginInfoFile();
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+
+                this.Close();
+            }
+        }
+        private void DeleteLoginInfoFile()
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+            if (File.Exists(jsonFilePath))
+            {
+                File.Delete(jsonFilePath);
+            }
+        }
+        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
+        {
+            var messWindow = new MessageWindow(_currentGamer);
+            messWindow.Show();
+            this.Hide();
+            this.Close();
         }
     }
 }

@@ -7,7 +7,12 @@ using MongoDB.Driver;
 using FLauncher.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+
 using MongoDB.Bson;
+
+using FLauncher.Repositories;
+using System.Windows;
+
 
 namespace FLauncher.DAO
 {
@@ -15,8 +20,10 @@ namespace FLauncher.DAO
     {
        
         private readonly FlauncherDbContext _dbContext;
+
         private readonly IMongoCollection<BsonDocument> _friendCollection;
         private readonly GamerDAO _gamerDAO;
+
 
         public FriendDAO()
         {
@@ -28,6 +35,29 @@ namespace FLauncher.DAO
             _friendCollection = database.GetCollection<BsonDocument>("Friends");
             _gamerDAO = GamerDAO.Instance;
         }
+        public List<Gamer> GetAllFriendByGamer(Gamer gamer)
+        {
+            
+            // Lấy danh sách các Friend Id mà người chơi (gamer) có trong cả RequestId hoặc AcceptId và IsAccept = true
+            var friendIds = _dbContext.Friends
+                                      .Where(f => (f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId) && f.IsAccept == true)
+                                      .Select(f => f.RequestId == gamer.GamerId ? f.AcceptId : f.RequestId) // Chọn ID bạn bè từ cả hai trường
+                                      .ToList();
+
+            if (friendIds.Count == 0)
+            {
+                MessageBox.Show("Không có bạn bè.");
+                return new List<Gamer>();
+            }
+
+            // Lấy thông tin các Gamer từ bảng Gamers dựa trên danh sách các Friend ID
+            var friends = _dbContext.Gamers
+                                    .Where(g => friendIds.Contains(g.GamerId))
+                                    .ToList();
+
+            return friends;
+        }
+
 
         public async Task<List<Friend>> GetFriendInvitationsForGamer(Gamer gamer)
 {
@@ -41,10 +71,10 @@ namespace FLauncher.DAO
         .Where(friend => friend.AcceptId == gamer.GamerId && friend.IsAccept == null)
         .ToListAsync();  // This is now synchronous
 
-    Debug.WriteLine($"Fetched {invitations.Count} invitations for gamer {gamer.GamerId}");
+            Debug.WriteLine($"Fetched {invitations.Count} invitations for gamer {gamer.GamerId}");
 
-    return invitations;
-}
+            return invitations;
+        }
 
 
 
@@ -61,6 +91,7 @@ namespace FLauncher.DAO
                 .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId && f.IsAccept==true )
                 .ToListAsync(); // Using ToListAsync for asynchronous operation
         }
+                                                                                                        
 
         public List<Friend> GetFriendsForAGamer(Gamer gamer)
         {

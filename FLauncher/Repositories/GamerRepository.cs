@@ -18,15 +18,22 @@ namespace FLauncher.Repositories
 
         public Gamer GetGamerByUser(User user)
         {
-           return GamerDAO.Instance.GetGamerByUser(user);
+           return _gamerDAO.GetGamerByUser(user);
         }
         public Gamer GetGamerById(string gamerId) {
             return  _gamerDAO.GetGamerById(gamerId);
 
         }
+
         public async Task<IEnumerable<Gamer>> GetGamersByIds(List<string> gamerIds)
         {
             return await _gamerDAO.GetGamersByIds(gamerIds);
+
+
+        public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
+        {
+           return await _gamerDAO.GetGamersFromGame(game);
+
         }
     }
 }

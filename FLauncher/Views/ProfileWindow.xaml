@@ -403,11 +403,18 @@
                 </ListBox.Resources>
                 <ListBoxItem
                     Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
+                    MouseLeftButtonUp="Home_Click"/>
                 <ListBoxItem
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem
-                    Content="{StaticResource profile_icon}"/>
+                    Content="{StaticResource profile_icon}"
+                    IsSelected="True"/>
+                <ListBoxItem
+                    Content="{StaticResource message_icon}"
+                    MouseLeftButtonUp="messageButton_Click"/>
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
 
             </ListBox>
         </Grid>
