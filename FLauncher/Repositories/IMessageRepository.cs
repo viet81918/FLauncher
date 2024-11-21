@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
-    public interface IReviewRepository
+    public interface IMessageRepository
     {
-        Task<IEnumerable<Review>> GetReviewsByGame(Game game);
-        Task<IEnumerable<Gamer>> GetGamerByReview(IEnumerable<Review> reviews);
+        List<Message> GetMessages(string senderId, string receiverId);
+        void SendMessage(Message message);
     }
 }

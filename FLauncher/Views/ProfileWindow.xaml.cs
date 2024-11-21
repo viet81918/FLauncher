@@ -2,19 +2,20 @@
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
+using Microsoft.VisualBasic.ApplicationServices;
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
+
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+
 
 namespace FLauncher.Views
 {
@@ -25,27 +26,57 @@ namespace FLauncher.Views
     {
         private readonly Gamer _currentGamer;
         private readonly FriendService _friendService;
-        private readonly ProfileWindowViewModel _viewModel;
-        
+
+        private  ProfileWindowViewModel _viewModel;
+        private readonly GamerRepository _gamerRepo;
+        private readonly FriendRepository _friendRepo;
+
+
+     
+        private Model.User _user;
+        private readonly UserRepository _userRepo;
+
         public ProfileWindow(Gamer gamer, FriendService friendService)
         {
+            Debug.WriteLine("ProfileWindow constructor called.");
+
             InitializeComponent();
+            _userRepo = new UserRepository();
+            _user = _userRepo.GetUserByGamer(gamer);
             _currentGamer = gamer;
             _friendService = friendService;
-            DataContext = gamer;
-            // Set up the ViewModel with the appropriate repositories
-            _viewModel = new ProfileWindowViewModel(new FriendRepository(), new GamerRepository());
+            _friendRepo = new FriendRepository();
+            _gamerRepo= new GamerRepository();
 
-            // Load friend count
-            _viewModel.LoadProfileData(_currentGamer.GamerId);
+           
 
-            this.DataContext = _viewModel;
+            // Call the async method after the window is initialized
+            InitializeProfileDataAsync();
         }
 
-        
+        // Create a new async method to load data
+        private async void InitializeProfileDataAsync()
+        {
+            var friendsList = await _friendRepo.GetListFriendForGamer(_currentGamer.GamerId);
+
+            _viewModel = new ProfileWindowViewModel(_friendRepo, _gamerRepo, friendsList);
+
+            DataContext = _viewModel;
+            Debug.WriteLine("DataContext set.");
+
+            await _viewModel.LoadProfileData(_currentGamer.GamerId);
+           
+            Debug.WriteLine("Load methods called.");
+        }
+
+
+
+
+
+
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //To move the window on mouse down
+            // To move the window on mouse down
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
@@ -57,7 +88,7 @@ namespace FLauncher.Views
 
         private void maximizeButton_Click(object sender, RoutedEventArgs e)
         {
-            //First detect if windows is in normal state or maximized
+            // First detect if windows is in normal state or maximized
             if (WindowState == WindowState.Normal)
                 WindowState = WindowState.Maximized;
             else
@@ -66,7 +97,7 @@ namespace FLauncher.Views
 
         private void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            //Close the App
+            // Close the App
             Close();
         }
 
@@ -86,6 +117,7 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
+
         private async void AddFriendButton_Click(object sender, RoutedEventArgs e)
         {
             // Prompt user to enter the Gamer ID they want to add as a friend
@@ -127,7 +159,7 @@ namespace FLauncher.Views
                 MessageBox.Show("Friend request sent successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Refresh the friend count for the current gamer
-                _viewModel.RefreshFriendCount(_currentGamer.GamerId);
+                await _viewModel.RefreshFriendCount(_currentGamer.GamerId);
             }
             else
             {
@@ -135,16 +167,12 @@ namespace FLauncher.Views
             }
         }
 
-
-
-
-
         private async void InvitationButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 // Fetch the pending invitations synchronously
-                var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);  // Blocking call
+                var invitations = await _friendService.GetPendingInvitations(_currentGamer.GamerId);
 
                 if (invitations != null && invitations.Count > 0)
                 {
@@ -162,8 +190,6 @@ namespace FLauncher.Views
                 MessageBox.Show($"Error: {ex.Message}", "Gamer Not Found", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
 
         private async void AcceptButton_Click(object sender, RoutedEventArgs e)
         {
@@ -195,6 +221,44 @@ namespace FLauncher.Views
 
             // Update the ListBox with the new list
             InvitationsListBox.ItemsSource = invitations;
+        }
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void logoutButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                DeleteLoginInfoFile();
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+
+                this.Close();
+            }
+        }
+        private void DeleteLoginInfoFile()
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+            if (File.Exists(jsonFilePath))
+            {
+                File.Delete(jsonFilePath);
+            }
+        }
+        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
+        {
+            var messWindow = new MessageWindow(_currentGamer);
+            messWindow.Show();
+            this.Hide();
+            this.Close();
         }
     }
 }

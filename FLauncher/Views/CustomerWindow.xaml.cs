@@ -11,19 +11,24 @@ namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
+        private User _user;
         private Gamer _gamer;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
+
+
         private readonly INotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
+
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -76,10 +81,10 @@ namespace FLauncher
             if (clickedGame != null)
             {
                 // Get the current gamer from the DataContext
-                var currentGamer = _gamer;
+                var currentUser = _user;
                 var currentPublisher = _gamePublisher;
                 // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer, currentPublisher);
+                var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
             }
         }
@@ -117,11 +122,12 @@ namespace FLauncher
             }
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
-        {
 
+        {            
             var currentGamer = _gamer;
-            var messDetail = new MessageWindow(currentGamer);
-            messDetail.Show();
+            MessageWindow messWindow = new MessageWindow(currentGamer);
+            messWindow.Show();
+
             this.Hide();
             this.Close();
         }
@@ -156,7 +162,8 @@ namespace FLauncher
 
             ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
             profileWindow.Show();
-
+            this.Hide();
+            this.Close();
             // Optionally, close the current window (MainWindow)
             // this.Close();
         }

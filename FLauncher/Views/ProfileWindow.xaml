@@ -14,6 +14,15 @@
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
         FontSize="15">
+    <Window.Resources>
+        <Style x:Key="CircleImageStyle" TargetType="Image">
+            <Setter Property="Clip">
+                <Setter.Value>
+                    <EllipseGeometry RadiusX="20" RadiusY="20" Center="20,20"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid
         Margin="5"
             Effect="{StaticResource BottomShadowEffect}"
@@ -394,11 +403,18 @@
                 </ListBox.Resources>
                 <ListBoxItem
                     Content="{StaticResource home_icon}"
-                    IsSelected="True"/>
+                    MouseLeftButtonUp="Home_Click"/>
                 <ListBoxItem
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem
-                    Content="{StaticResource profile_icon}"/>
+                    Content="{StaticResource profile_icon}"
+                    IsSelected="True"/>
+                <ListBoxItem
+                    Content="{StaticResource message_icon}"
+                    MouseLeftButtonUp="messageButton_Click"/>
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
 
             </ListBox>
         </Grid>
@@ -584,19 +600,33 @@
                                 <!-- Friend Section -->
                                 <StackPanel Grid.Row="1" Margin="10">
                                     <TextBlock
-                            Text="Friends"
-                            FontSize="18"
-                            FontWeight="SemiBold"
-                            Foreground="{StaticResource SecondaryBrush}"/>
-                                    <ItemsControl ItemsSource="{Binding Friends}">
+        Text="Friends"
+        FontSize="18"
+        FontWeight="SemiBold"
+        Foreground="{StaticResource SecondaryBrush}" />
+
+                                    <ItemsControl ItemsSource="{Binding ListFriend}">
+                                        <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <!-- Customize this DataTemplate to display each friend -->
-                                                <TextBlock Text="{Binding FriendName}" Margin="5,2"/>
+                                                <StackPanel Orientation="Horizontal" Margin="5,2">
+                                                    <!-- Avatar -->
+                                                    <Image Source="{Binding AvatarLink}" Width="40" Height="40" Margin="0,0,10,0" Stretch="UniformToFill" />
+                                                    <!-- Friend Name -->
+                                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontSize="14" />
+                                                </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
+                                        
                                     </ItemsControl>
+
                                 </StackPanel>
+
                             </Grid>
                         </Grid>
                     </StackPanel>
