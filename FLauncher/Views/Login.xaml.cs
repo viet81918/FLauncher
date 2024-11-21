@@ -192,8 +192,8 @@ namespace FLauncher.Views
             if (accountType == "admin")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách quản trị viên!");
-                MainWindow adminWindow = new MainWindow();
-                adminWindow.Show();
+                //MainWindow adminWindow = new MainWindow();
+                //adminWindow.Show();
 
                 // Close the Login window
                 this.Close();

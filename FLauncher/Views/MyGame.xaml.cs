@@ -2,30 +2,30 @@
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
-using FLauncher.Views;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace FLauncher
+namespace FLauncher.Views
 {
-    public partial class CustomerWindow : Window
+    /// <summary>
+    /// Interaction logic for MyGame.xaml
+    /// </summary>
+    public partial class MyGame : Window
     {
         private User _user;
         private Gamer _gamer;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
-
-
         private readonly INotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
-
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 
-        public CustomerWindow(User user)
+        public MyGame(User user)
         {
             InitializeComponent();
             _user = user;
@@ -71,22 +71,6 @@ namespace FLauncher
         private void minimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
-        }
-
-        private void TrendingCard_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            // Get the clicked game from the data context
-            var clickedGame = ((FrameworkElement)sender).DataContext as Game;
-
-            if (clickedGame != null)
-            {
-                // Get the current gamer from the DataContext
-                var currentUser = _user;
-                var currentPublisher = _gamePublisher;
-                // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentUser);
-                gameDetailPage.Show();
-            }
         }
 
         private void maximizeButton_Click(object sender, RoutedEventArgs e)
@@ -145,6 +129,7 @@ namespace FLauncher
                 this.Close();
             }
         }
+
         private void DeleteLoginInfoFile()
         {
             string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
@@ -164,14 +149,18 @@ namespace FLauncher
             profileWindow.Show();
             this.Hide();
             this.Close();
-            // Optionally, close the current window (MainWindow)
-            // this.Close();
+
         }
-        private void MyGame_Click(object sender, MouseButtonEventArgs e)
+
+        private void GamesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MyGame myGame = new MyGame(_user);
-            myGame.Show();
-            this.Close();
+            // TODO: Populate the right column with the details of the selected game.
         }
+
+        private void FavoritesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // TODO: Populate the right column with the details of the selected favorite game.
+        }
+
     }
 }
