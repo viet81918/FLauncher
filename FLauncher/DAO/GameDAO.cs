@@ -3,23 +3,15 @@ using FLauncher.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using SharpCompress.Archives.Rar;
-using SharpCompress.Common;
-using SharpCompress.Archives;
-using System.Windows;
-using MongoDB.Bson;
-using System.Diagnostics;
 using Google.Apis.Upload;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
 
 namespace FLauncher.DAO
 {
@@ -27,9 +19,9 @@ namespace FLauncher.DAO
     {
 
         private const string PathtoServiceAccountKeyfile = @"E:\FPT UNI\OJT\MOCK\FLauncher\FLauncher\credentials.json";
-       
+
         private readonly FlauncherDbContext _dbContext;
-      
+
 
         public GameDAO()
         {
@@ -279,7 +271,7 @@ namespace FLauncher.DAO
 
         private void SaveDownloadToDatabase(Download download)
         {
-           _dbContext.Downloads.Add(download);  
+            _dbContext.Downloads.Add(download);
             _dbContext.SaveChanges();
         }
 
@@ -297,12 +289,12 @@ namespace FLauncher.DAO
                 .Take(9) // Lấy ra 9 game đầu tiên
                 .ToListAsync();
         }
-        
-            public  async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
+
+        public async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
         {
             // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
             var purchasedGameIds = _dbContext.Bills
-                                              .Where(b => b.GamerId == gamer.Id)
+                                              .Where(b => b.GamerId == gamer.GamerId)
                                               .Select(b => b.GameId)
                                               .ToList();
 
@@ -431,7 +423,7 @@ namespace FLauncher.DAO
         {
             try
             {
-                
+
                 var update = new Update
                 {
 
@@ -443,7 +435,7 @@ namespace FLauncher.DAO
                 };
                 _dbContext.Updates.Add(update);
                 _dbContext.SaveChanges();
-              
+
                 // Step 3: Inform the user
                 MessageBox.Show("Đã cập nhật game thành công!");
             }
@@ -519,7 +511,7 @@ namespace FLauncher.DAO
         {
 
             return await _dbContext.Achivements.Where(c => c.GameId == game.GameID).ToListAsync();
-    }
+        }
         public async Task<IEnumerable<UnlockAchivement>> GetUnlockAchivements(IEnumerable<Achivement> achivements, Gamer gamer)
         {
             // Get the AchievementId and GameId from the list of achievements

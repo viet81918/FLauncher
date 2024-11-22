@@ -24,8 +24,14 @@ namespace FLauncher.Views
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
+        private Game _game;
 
-        public MyGame(User user)
+        private readonly IReviewRepository _reviewRepo;
+
+        private readonly IUserRepository _userRepo;
+
+
+        public MyGame(Game game, User user)
         {
             InitializeComponent();
             _user = user;
@@ -35,10 +41,19 @@ namespace FLauncher.Views
             _gameRepo = new GameRepository();
             _genreRepo = new GenreRepository();
             _publisherRepo = new PublisherRepository();
-            InitializeData(user);
+            _notiRepo = new NotiRepository();
+            _friendRepo = new FriendRepository();
+
+
+            _userRepo = new UserRepository();
+
+
+            _reviewRepo = new ReviewRepository();
+
+            InitializeData(game, user);
         }
 
-        private async void InitializeData(User user)
+        private async void InitializeData(Game game, User user)
         {
             if (user.Role == 3)
             {
@@ -54,7 +69,9 @@ namespace FLauncher.Views
 
             if (user.Role == 3) // Role 3 - Gamer
             {
+
                 var games = await _gameRepo.GetGamesByGamer(_gamer);
+
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
                 DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games);
@@ -64,6 +81,10 @@ namespace FLauncher.Views
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
 
             }
+            //var genres = await _genreRepo.GetGenresFromGame(game); // Get genres from your repository
+            var reviews = await _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
+            var publisher = await _publisherRepo.GetPublisherByGame(game);
+            var updates = await _publisherRepo.getUpdatesForGame(game);
         }
 
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
