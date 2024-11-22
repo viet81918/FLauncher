@@ -13,14 +13,18 @@ namespace FLauncher
 {
     public partial class CustomerWindow : Window
     {
+        private User _user;
         private Gamer _gamer;
         private User _user;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
+
+
         private readonly INotiRepository _notiRepo;
         private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
+
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
 
@@ -30,6 +34,7 @@ namespace FLauncher
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -118,10 +123,10 @@ namespace FLauncher
             if (clickedGame != null)
             {
                 // Get the current gamer from the DataContext
-                var currentGamer = _gamer;
+                var currentUser = _user;
                 var currentPublisher = _gamePublisher;
                 // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer, currentPublisher);
+                var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
             }
         }

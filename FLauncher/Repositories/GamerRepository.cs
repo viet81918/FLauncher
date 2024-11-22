@@ -24,5 +24,22 @@ namespace FLauncher.Repositories
             return  _gamerDAO.GetGamerById(gamerId);
 
         }
+
+        public async Task<IEnumerable<Gamer>> GetGamersByIds(List<string> gamerIds)
+        {
+            return await _gamerDAO.GetGamersByIds(gamerIds);
+
+
+        public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
+        {
+           return await _gamerDAO.GetGamersFromGame(game);
+
+        }
+
+        public async Task<bool> IsUpdate(Game game, Gamer gamer)
+        {
+         return await GamerDAO.Instance.IsUpdate(game, gamer);
+        }
+       
     }
 }

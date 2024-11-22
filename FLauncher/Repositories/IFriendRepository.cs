@@ -26,6 +26,7 @@ namespace FLauncher.Repositories
 
         // Get friends who have the same game as the given gamer
         Task<IEnumerable <Gamer>> GetFriendWithTheSameGame(Game game, Gamer gamer);
+        Task<IEnumerable<Gamer>> GetListFriendForGamer(string gamerId);
 
         List<Gamer> GetAllFriendByGamer(Gamer gamer);
     }

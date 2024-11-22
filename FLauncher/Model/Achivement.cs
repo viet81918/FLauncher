@@ -18,6 +18,10 @@ namespace FLauncher.Model
         public string AchivementId { get; set; }
         [BsonElement("Name")]
         public string Name { get; set; }
+        [BsonElement("Description")]
+        public string Description { get; set; }
+
+
         [BsonElement("Game_Id")]
         public string GameId { get; set; }
         [BsonElement("Trigger")]
@@ -29,6 +33,6 @@ namespace FLauncher.Model
 
         [BsonElement("IsPrivate")]
         public bool IsPrivate { get; set; } = false;
-
+        
     }
 }
