@@ -10,9 +10,9 @@ namespace FLauncher.Repositories
     public interface IGameRepository
     {
       Task<IEnumerable<Game>> GetTopGames();
-        void Download_game(Game game, String saveLocation, Gamer gamer);
-        void Play_Game(Game game,Gamer gamer );
-        void Upload_game(GamePublisher publisher,Game game, string selectedFilePath, string message);
+        Task Download_game(Game game, String saveLocation, Gamer gamer);
+        Task Play_Game(Game game,Gamer gamer );
+        Task Upload_game(GamePublisher publisher,Game game, string selectedFilePath, string message);
         Task<IEnumerable<Achivement>> GetAchivesFromGame(Game game);
         Task<IEnumerable<UnlockAchivement>> GetUnlockAchivementsFromGame(IEnumerable<Achivement> achivements , Gamer gamer) ;
         Task<IEnumerable<Achivement>> GetAchivementsFromUnlocks(IEnumerable<UnlockAchivement> unlockAchivements);
@@ -22,6 +22,9 @@ namespace FLauncher.Repositories
         Task<bool> IsPublishGame(Game game, GamePublisher publisher
             );
         Task<bool> isDownload(Game game, Gamer gamer);
+        Task Uninstall_Game(Gamer gamer, Game game);
+        Task Reinstall(Game game, Gamer gamer);
+        Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game);
 
     }
 }

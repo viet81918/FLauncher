@@ -17,5 +17,7 @@ namespace FLauncher.Repositories
 
         Task<IEnumerable<Gamer>> GetGamersFromGame(Game game);
 
+        Task <bool> IsUpdate ( Game game, Gamer gamer);
+
     }
 }
