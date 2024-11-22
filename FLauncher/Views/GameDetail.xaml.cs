@@ -31,9 +31,8 @@ namespace FLauncher.Views
 
         private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
-        public GameDetail(Game game, Model.User user )
+        public GameDetail(Game game, Model.User user)
 
-        private readonly IUserRepository _userRepo;
 
         {
             InitializeComponent();
