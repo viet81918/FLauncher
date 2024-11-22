@@ -18,10 +18,10 @@ namespace FLauncher.Views
 
 
     {
-        private Game _game;
-        private Gamer _gamer;
+        private Game _game = null ; 
+        private Gamer _gamer = null;
         private Model.User _user;
-        private GamePublisher _gamePublisher;
+        private GamePublisher _gamePublisher = null;
         private readonly INotiRepository _notiRepo;
         private readonly IFriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
@@ -93,7 +93,10 @@ namespace FLauncher.Views
             else if (_gamePublisher != null)
             {
                 var isPublish = await _gameRepo.IsPublishGame(game, _gamePublisher);
-                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish);
+                var gamers = await _gamerRepo.GetGamersFromGame(game);
+                var Achivements = await _gameRepo.GetAchivesFromGame(_game);
+              
+                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements , gamers);
             }
         }
 

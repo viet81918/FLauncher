@@ -48,10 +48,7 @@ namespace FLauncher.Repositories
             }
 
 
-        public async Task<bool> IsUpdate(Game game, Gamer gamer)
-        {
-            return await GamerDAO.Instance.IsUpdate(game, gamer);
-        }
+      
 
     }
 }

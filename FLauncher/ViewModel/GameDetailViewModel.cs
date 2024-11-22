@@ -64,6 +64,7 @@ namespace FLauncher.ViewModel
         public bool IsGamer { get; set; }
         public bool IsPublisher { get; set; }
         public bool IsBuy { get; set; }
+        public bool IsNotBuy { get; set; }
         public bool IsPublished { get; set; }
         public bool IsDownload { get; set; }
         public bool IsNotDown {  get; set; }
@@ -74,6 +75,15 @@ namespace FLauncher.ViewModel
             IsGamer = true;
             IsPublisher = false;
             IsBuy = isBuy;
+
+            if (IsBuy == true)
+            {
+                IsNotBuy = false;
+            }
+            else
+            {
+                IsNotBuy = true;
+            }
             IsDownload = isDownload;
             if (IsDownload== true)
             {
@@ -103,7 +113,6 @@ namespace FLauncher.ViewModel
             UnlockAchivement = new ObservableCollection<Achivement>(UnlockAchivements);
             Achivement = new ObservableCollection<Achivement>(Achivements);
             LockAchivement = new ObservableCollection<Achivement>(LockAchivements);
-            Gamers = new ObservableCollection<Gamer>(reviewers);
             // Load the GamePublisher asynchronously
             // Tạo danh sách ViewModel cho UnlockAchivements
             UnlockAchivementViewModels = new ObservableCollection<UnlockAchivementViewModel>();
@@ -143,19 +152,37 @@ namespace FLauncher.ViewModel
 
         }
 
-        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews,GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished)
+        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews,GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers)
         {
             IsGamer = false;
             IsPublisher = true;
             IsPublished = isPublished;
-      
+        
             Game = game;
             Genres = new ObservableCollection<Genre>(genres);
             Reviews = new ObservableCollection<Review>(reviews);
             Updates = new ObservableCollection<Update>(updates);
+            Gamers = new ObservableCollection<Gamer>(reviewers);
             _gamePublisher = GamePublisher;
+            Achivement = new ObservableCollection<Achivement>(Achivements);
             // Load the GamePublisher asynchronously
             LoadGamePublisher(game);
+            ReviewGamerViewModels = new ObservableCollection<ReviewGamerViewModel>();
+            foreach (var review in reviews)
+            {
+                var reviewer = reviewers.FirstOrDefault(a => a.GamerId == review.GamerId);
+                if (reviewer != null)
+                {
+                    ReviewGamerViewModels.Add(new ReviewGamerViewModel
+                    {
+                        Name = reviewer.Name,
+                        AvatarLink = reviewer.AvatarLink,
+                        Rating = review.Rating,
+                        Description = review.Description
+                    });
+                }
+            }
+ 
         }
 
         // Asynchronous method to load GamePublisher
