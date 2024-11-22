@@ -12,6 +12,10 @@ using SharpCompress.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using MongoDB.Bson;
+using System.Diagnostics;
+using Google.Apis.Upload;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FLauncher.DAO
 {
@@ -288,6 +292,108 @@ namespace FLauncher.DAO
                 .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo số lượng người mua
                 .Take(9) // Lấy ra 9 game đầu tiên
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Game>> GetAllGame()
+        {
+            return await _dbContext.Games
+                .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
+                .ToListAsync();
+        }
+        
+        public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
+        {
+            // lay id game co ten bat dau bang input name ex: gta => gta 1 , 2 ,3 ...
+            var GameN = new List<string>();
+            if (!string.IsNullOrEmpty(inputName))
+            {
+                MessageBox.Show("inputName Game DAO la " + inputName);
+                GameN = await _dbContext.Games
+                    .Where(g => g.Name.ToLower().StartsWith(inputName))
+                    .Select(n => n.GameID).ToListAsync();
+
+                MessageBox.Show("so luong id trong GameN: " + GameN.Count);
+
+                string NamdautieneG = string.Join(", ", GameN);
+                MessageBox.Show($"danh sach id bame trong GameN: {NamdautieneG}");
+            }
+
+            
+
+            //lay list id game co tat ca the loai trong List<string> genres truyen vao
+           
+            var GameGenre = new List<string>();
+            if (!genres.IsNullOrEmpty())
+            {
+                var listGameHas = await _dbContext.GameHasGenres.ToListAsync();
+                GameGenre = listGameHas
+                    .GroupBy(e => e.GameId)
+                    .Where(group => genres.All(genre => group.Any(g => g.TypeOfGenres == genre))) // Kiểm tra đủ thể loại
+                    .Select(group => group.Key) // Lấy ID_Game
+                    .ToList();
+
+                MessageBox.Show("so luong id trong GameGenre: " + GameGenre.Count);
+                string aftersacrh = string.Join(", ", GameGenre);
+                MessageBox.Show($"danh sach GameGenre: {aftersacrh}");
+            }
+
+            
+
+            //lay danh sach gid ame co publisher = pub truyen vao 
+            MessageBox.Show("publisher la " + pubs);
+            var pubInStore = await _dbContext.GamePublishers //lay dc id publisher 
+                .Where(p => p.Name.Equals(pubs))
+                .Select(b => b.PublisherId).ToListAsync();
+
+            var GameP = await _dbContext.Publishcations // lay id game tu Publishcations bang id pub 
+                .Where(s => pubInStore.Contains(s.GamePublisherId))
+                .Select(c => c.GameId).ToListAsync();
+
+            MessageBox.Show("So luong game id trong GameP: " + GameP.Count);
+
+            //var GamesValid = GameN.Intersect(GameGenre).Intersect(GameP);
+
+            // Khởi tạo GamesValid với danh sách không rỗng đầu tiên
+            //IEnumerable<string> GamesValid = null;
+            var GamesValid = new List<string>();
+            // Nếu GameN không rỗng, gán nó vào GamesValid
+            if (GameN.Any())
+            {
+                GamesValid = GameN;
+            }
+            // Nếu GameN rỗng nhưng GameGenre không rỗng, gán GameGenre vào GamesValid
+            else if (GameGenre.Any())
+            {
+                GamesValid = GameGenre;
+            }
+            // Nếu cả GameN và GameGenre đều rỗng nhưng GameP không rỗng, gán GameP vào GamesValid
+            else if (GameP.Any())
+            {
+                GamesValid = GameP;
+            }
+            // Nếu tất cả các danh sách đều rỗng, gán GamesValid là danh sách rỗng
+            //else
+            //{
+            //    GamesValid = Enumerable.Empty<string>();
+            //}
+
+            // Nếu GameGenre không rỗng, thực hiện giao giữa GamesValid và GameGenre
+            if (GameGenre.Any())
+            {
+                GamesValid = GamesValid.Intersect(GameGenre).ToList();
+            }
+
+            // Nếu GameP không rỗng, thực hiện giao giữa GamesValid và GameP
+            if (GameP.Any())
+            {
+                GamesValid = GamesValid.Intersect(GameP).ToList();
+            }
+            MessageBox.Show("So luong game id trong GamesValid = " + GamesValid.Count());
+
+            var resultG = await _dbContext.Games.Where(f => GamesValid.Contains(f.GameID)).ToListAsync();
+
+
+            return resultG;
         }
 
         public async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)

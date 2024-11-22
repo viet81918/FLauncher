@@ -92,10 +92,18 @@ namespace FLauncher.Repositories
         {
            await GameDAO.Instance.Reinstall(game, gamer);   
         }
-
         public async Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game)
         {
            return await TrackingDAO.Instance.GetTrackingFromGamerGame(gamer, game);
+        }
+
+        public async Task<IEnumerable<Game>> GetAllGame()
+        {
+            return await GameDAO.Instance.GetAllGame();
+        }        
+        public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
+        {
+            return await GameDAO.Instance.GetGameByInformation(inputName, genres, pubs);
         }
     }
 }

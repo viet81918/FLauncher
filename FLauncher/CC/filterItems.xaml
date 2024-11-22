@@ -5,12 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FLauncher.CC"
              mc:Ignorable="d" 
-             x:Name="_tags"
+             x:Name="filterItem"
              d:DesignHeight="44" d:DesignWidth="146">
-    <Grid
-        Background="{StaticResource DimBrush}"
-        Height="44"
-        Width="146"                            >
+
+    <Grid>
+        <!-- Expander chứa Grid tùy chỉnh và ListView bên trong -->
+        <Expander Name="ListItems" VerticalAlignment="Top" ExpandDirection="Down" Margin="10">
+                <Expander.Header>
+        <Grid
+            Background="{StaticResource DimBrush}"
+            Height="44"
+            Width="146">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <!--Text-->
@@ -19,19 +24,36 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock
-                Text="{Binding Text, ElementName=_tags}"
-                FontWeight="SemiBold"
-                Foreground="{StaticResource SecondaryBrush}"
-                VerticalAlignment="Center"
-                Margin="12,0"/>
+            Text="{Binding Text, ElementName=filterItem}"
+            FontWeight="SemiBold"
+            Foreground="{StaticResource SecondaryBrush}"
+            VerticalAlignment="Center"
+            Margin="12,0"/>
 
             <Path
-                Grid.Column="1"
-                Data="{StaticResource down_icon}"
-                Fill="{StaticResource SecondaryBrush}"
-                Margin="0,17"
-                Width="10"
-                Stretch="Uniform"
-                VerticalAlignment="Bottom"/>
+            Grid.Column="1"
+            Data="{StaticResource down_icon}"
+            Fill="{StaticResource SecondaryBrush}"
+            Margin="0,17"
+            Width="10"
+            Stretch="Uniform"
+            VerticalAlignment="Bottom"/>
+
+
+        </Grid>
+            </Expander.Header>
+            <!-- ListView hiển thị các genre có thể chọn -->
+            <ListView Name="ItemListView" Margin="24,0,0,0" Width="146" Background="#3E3E46" HorizontalAlignment="Left"
+                      SelectionMode="Multiple" SelectionChanged="ItemListView_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <!-- CheckBox cho mỗi genre -->
+                            <CheckBox Content="{Binding}" Margin="5" Foreground="Wheat"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Expander>
     </Grid>
 </UserControl>
