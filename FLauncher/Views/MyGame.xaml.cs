@@ -40,24 +40,29 @@ namespace FLauncher.Views
 
         private async void InitializeData(User user)
         {
-
-
+            if (user.Role == 3)
+            {
+                _gamer = _gamerRepo.GetGamerByUser(_user);
+            }
+            if (user.Role == 2)
+            {
+                _gamePublisher = _publisherRepo.GetPublisherByUser(_user);
+            }
             // Fetch top games and genres asynchronously
-            var topGames = await _gameRepo.GetTopGames();  // Assuming GetTopGames() is async
+
             var genres = await _genreRepo.GetGenres();    // Assuming GetGenres() is async
 
             if (user.Role == 3) // Role 3 - Gamer
             {
-                _gamer = _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
-                var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
-                var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
-
-                DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+                var games = await _gameRepo.GetGamesByGamer(_gamer);
+                var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
+                var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
+                DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
-                DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
+
             }
         }
 
@@ -160,6 +165,14 @@ namespace FLauncher.Views
         private void FavoritesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // TODO: Populate the right column with the details of the selected favorite game.
+        }
+
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
         }
 
     }

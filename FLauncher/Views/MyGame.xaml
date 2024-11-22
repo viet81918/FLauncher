@@ -362,7 +362,8 @@ Effect="{StaticResource RightShadowEffect}">
                 </ListBox.Resources>
 
                 <ListBoxItem
-        Content="{StaticResource home_icon}"/>
+        Content="{StaticResource home_icon}"
+                    />
 
                 <ListBoxItem
         Content="{StaticResource games_icon}" IsSelected="True"/>
@@ -463,11 +464,6 @@ Effect="{StaticResource RightShadowEffect}">
                     <!-- Leave this blank for now so you can edit it later -->
                 </Grid>
             </Grid>
-
-
-
-
-
         </ScrollViewer>        
         
     </Grid>

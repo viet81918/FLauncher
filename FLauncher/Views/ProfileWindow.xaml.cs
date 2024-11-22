@@ -2,19 +2,11 @@
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.IO;
 
 
 namespace FLauncher.Views
@@ -27,12 +19,12 @@ namespace FLauncher.Views
         private readonly Gamer _currentGamer;
         private readonly FriendService _friendService;
 
-        private  ProfileWindowViewModel _viewModel;
+        private ProfileWindowViewModel _viewModel;
         private readonly GamerRepository _gamerRepo;
         private readonly FriendRepository _friendRepo;
 
 
-     
+
         private Model.User _user;
         private readonly UserRepository _userRepo;
 
@@ -46,9 +38,9 @@ namespace FLauncher.Views
             _currentGamer = gamer;
             _friendService = friendService;
             _friendRepo = new FriendRepository();
-            _gamerRepo= new GamerRepository();
+            _gamerRepo = new GamerRepository();
 
-           
+
 
             // Call the async method after the window is initialized
             InitializeProfileDataAsync();
@@ -65,7 +57,7 @@ namespace FLauncher.Views
             Debug.WriteLine("DataContext set.");
 
             await _viewModel.LoadProfileData(_currentGamer.GamerId);
-           
+
             Debug.WriteLine("Load methods called.");
         }
 
