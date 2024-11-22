@@ -30,7 +30,20 @@ namespace FLauncher.ViewModel
 
         public Game Game { get; }
         public Gamer Gamer { get; }
-        public ObservableCollection<Genre> Genres { get; }
+        private ObservableCollection<Genre> _genres;
+        public ObservableCollection<Genre> Genres
+        {
+            get => _genres;
+            set
+            {
+                if (_genres != value)
+                {
+                    _genres = value;
+                    OnPropertyChanged(nameof(Genres));
+                }
+            }
+        }
+
         public ObservableCollection<Review> Reviews { get; }
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
         public ObservableCollection<Notification> UnreadNotifications { get; }

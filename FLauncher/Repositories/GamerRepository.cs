@@ -11,7 +11,9 @@ namespace FLauncher.Repositories
     public class GamerRepository : IGamerRepository
     {
         private readonly GamerDAO _gamerDAO;
+
         public GamerRepository() {
+
             _gamerDAO = GamerDAO.Instance;
 
         }
@@ -20,7 +22,9 @@ namespace FLauncher.Repositories
         {
             return _gamerDAO.GetGamerByUser(user);
         }
+
         public Gamer GetGamerById(string gamerId) {
+
             return _gamerDAO.GetGamerById(gamerId);
 
         }
@@ -30,16 +34,25 @@ namespace FLauncher.Repositories
             return await _gamerDAO.GetGamersByIds(gamerIds);
         }
 
+
             public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
             {
                 return await _gamerDAO.GetGamersFromGame(game);
 
             }
 
+
             public async Task<bool> IsUpdate(Game game, Gamer gamer)
             {
                 return await GamerDAO.Instance.IsUpdate(game, gamer);
             }
 
+
+        public async Task<bool> IsUpdate(Game game, Gamer gamer)
+        {
+            return await GamerDAO.Instance.IsUpdate(game, gamer);
         }
-    } 
+
+    }
+}
+
