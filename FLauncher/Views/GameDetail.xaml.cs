@@ -84,9 +84,9 @@ namespace FLauncher.Views
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
-            
+                var isUpdate = await _gamerRepo.IsUpdate(game, _gamer); 
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
-                DataContext = new GameDetailViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad);
+                DataContext = new GameDetailViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate);
             }
             else if (_gamePublisher != null)
             {
@@ -169,7 +169,7 @@ namespace FLauncher.Views
         }
         private void Uninstall_Click(object sender, RoutedEventArgs e)
         {
-
+           _gameRepo.Reinstall(_game,_gamer);
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -188,6 +188,16 @@ namespace FLauncher.Views
                 SearchTextBox.Text = "Search the store";
             }
         }
+        private void ReinstallGame_click(object sender, RoutedEventArgs e)
+        {
+            _gameRepo.Reinstall(_game, _gamer);
+        }
+        private void Tracking_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
+            gameDetailPage.Show();
+        }
+     
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);

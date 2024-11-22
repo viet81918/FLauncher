@@ -41,18 +41,38 @@ namespace FLauncher.ViewModel
         public ObservableCollection<Gamer> Friendwiththesamegame { get; }
         public ObservableCollection<UnlockAchivementViewModel> UnlockAchivementViewModels { get; set; }
         public ObservableCollection<ReviewGamerViewModel> ReviewGamerViewModels { get; set; }
-        public ObservableCollection<Gamer> Reviewers { get; }
+        public ObservableCollection<Gamer> Gamers { get; }
         public bool IsGamer { get; set; }
         public bool IsPublisher { get; set; }
         public bool IsBuy { get; set; }
         public bool IsPublished { get; set; }
         public bool IsDownload { get; set; }
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload)
+        public bool IsNotDown {  get; set; }
+        public bool IsUpdate { get; set; }
+        public bool IsNotUpdate { get; set; }
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers, bool isBuy, bool isDownload, bool isUpdate)
         {
             IsGamer = true;
             IsPublisher = false;
             IsBuy = isBuy;
             IsDownload = isDownload;
+            if (IsDownload== true)
+            {
+                IsNotDown = false;
+            }
+            else
+            {
+                IsNotDown = true;
+            }
+            IsUpdate = isUpdate;
+            if (IsUpdate == true)
+            {
+                IsNotUpdate = false;
+            }
+            else
+            {
+                IsNotUpdate = true;
+            }
             Game = game;
             Gamer = gamer;
             Genres = new ObservableCollection<Genre>(genres);
@@ -64,6 +84,7 @@ namespace FLauncher.ViewModel
             UnlockAchivement = new ObservableCollection<Achivement>(UnlockAchivements);
             Achivement = new ObservableCollection<Achivement>(Achivements);
             LockAchivement = new ObservableCollection<Achivement>(LockAchivements);
+            Gamers = new ObservableCollection<Gamer>(reviewers);
             // Load the GamePublisher asynchronously
             // Tạo danh sách ViewModel cho UnlockAchivements
             UnlockAchivementViewModels = new ObservableCollection<UnlockAchivementViewModel>();

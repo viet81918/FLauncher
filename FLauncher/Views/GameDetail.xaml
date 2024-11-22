@@ -483,47 +483,50 @@
 
                     </Grid>
 
-                    <Grid Height="275"
-                          Width="615"
-                          Margin="0,0,15,0">
+                    <Grid
+    Height="275"
+    Width="615"
+    Margin="0,0,15,0">
+                       
                         <Button Content="Uninstall"
-                                Width="120"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Margin="441,17,0,0"
-                                Background="Aquamarine"
-                                Foreground="MidnightBlue"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Download_Click">
+                        Width="120"
+                                        Height="40"
+HorizontalAlignment="Left"
+VerticalAlignment="Top"
+Margin="441,17,0,0"
+Background="Aquamarine"
+Foreground="MidnightBlue"
+FontWeight="Bold"
+BorderBrush="Transparent"
+Click="Uninstall_Click">
                             <Button.Visibility>
                                 <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                     <Binding Path="IsBuy" />
                                     <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
+                                    <Binding Path="IsDownload"/>
+                                    
                                 </MultiBinding>
                             </Button.Visibility>
                         </Button>
                         <Button Content="Download"
-                                Width="120"
-                                Height="40"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Margin="441,17,0,0"
-                                Background="Aquamarine"
-                                Foreground="MidnightBlue"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Uninstall_Click">
+Width="120"
+Height="40"
+HorizontalAlignment="Left"
+VerticalAlignment="Top"
+Margin="441,17,0,0"
+Background="Aquamarine"
+Foreground="MidnightBlue"
+FontWeight="Bold"
+BorderBrush="Transparent"
+Click="Download_Click">
                             <Button.Visibility>
                                 <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                     <Binding Path="IsBuy" />
                                     <Binding Path="IsGamer" />
+                                    <Binding Path="IsNotDown"/>
                                 </MultiBinding>
                             </Button.Visibility>
                         </Button>
-
                         <Button Content="Play Game"
                                 Width="120"
                                 Height="40"
@@ -539,22 +542,37 @@
                                 <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                     <Binding Path="IsBuy" />
                                     <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
+                                    <Binding Path="IsDownload"/>
+                                    <Binding Path="IsUpdate"/>
                                 </MultiBinding>
                             </Button.Visibility>
                         </Button>
 
-                        <Button   Content="Update Game"
-                                  Width="120"
-                                  Height="40"
-                                  HorizontalAlignment="Left"
-                                  VerticalAlignment="Top"
-                                  Margin="441,140,0,0"
-                                  Background="Yellow"
-                                  Foreground="Magenta"
-                                  FontWeight="Bold"
-                                  BorderBrush="Transparent"
-                                  Click="Update_Click">
+                        <Button Content="Update Game By Time"
+Width="120"
+Height="40"
+HorizontalAlignment="Left"
+VerticalAlignment="Top"
+Margin="441,80,0,0"
+Background="Gray"
+Foreground="White"
+FontWeight="Bold"
+BorderBrush="Transparent"
+Click="ReinstallGame_click">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                    <Binding Path="IsBuy" />
+                                    <Binding Path="IsGamer" />
+                                    <Binding Path="IsDownload"/>
+                                    <Binding Path="IsNotUpdate"/>
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+
+
+                        <Button   Content="Update Game" Width="120" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="441,140,0,0" 
+Background="Yellow" Foreground="Magenta" FontWeight="Bold" BorderBrush="Transparent"
+Click="Update_Click">
                             <Button.Visibility>
                                 <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                     <Binding Path="IsPublished" />
@@ -563,13 +581,27 @@
                             </Button.Visibility>
                         </Button>
 
-                        <TextBlock HorizontalAlignment="Left"
-                                   Margin="10,10,0,0"
-                                   TextWrapping="Wrap"
-                                   VerticalAlignment="Top"
-                                   FontSize="40"
-                                   FontWeight="Bold"
-                                   Foreground="{StaticResource SecondaryBrush}"><Run Text="{Binding Game.Name}" /></TextBlock>
+                        <Button   Content="Tracking Game" Width="120" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="441,140,0,0" 
+Background="Yellow" Foreground="Magenta" FontWeight="Bold" BorderBrush="Transparent"
+Click="Tracking_Click">
+                            <Button.Visibility>
+                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                    <Binding Path="IsBuy" />
+                                    <Binding Path="IsGamer" />
+                                    <Binding Path="IsDownload"/>
+                                    <Binding Path="IsUpdate"/>
+                                </MultiBinding>
+                            </Button.Visibility>
+                        </Button>
+
+                        <TextBlock
+        HorizontalAlignment="Left"
+        Margin="10,10,0,0"                            
+        TextWrapping="Wrap"
+        VerticalAlignment="Top"
+        FontSize="40"
+        FontWeight="Bold"
+        Foreground="{StaticResource SecondaryBrush}"><Run Text="{Binding Game.Name}"/></TextBlock>
 
                         <TextBlock HorizontalAlignment="Left"
                                    Margin="10,70,0,0"
@@ -682,17 +714,45 @@
                               Width="615"
                               Margin="0,20,15,20">
                             <StackPanel>
-                                <!-- Title TextBlock -->
-                                <TextBlock Text="Friends with the same game:"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           Foreground="{StaticResource SecondaryBrush}"
-                                           Margin="10,5,0,0" />
+                                <!-- Title TextBlock with Visibility Control -->
+                                <TextBlock Text="Friends with the same game:" FontSize="12" FontWeight="SemiBold" 
+                   Foreground="{StaticResource SecondaryBrush}" Margin="10,5,0,0">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                            <Binding Path="IsGamer" />
+ 
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
+                                <!-- Container for the avatars (Visible if IsPublisher is false) -->
+                                <ItemsControl Visibility="{Binding IsGamer, Converter={StaticResource BoolToVisibilityConverter}}" 
+                      ItemsSource="{Binding Friendwiththesamegame}" MaxHeight="50" Margin="5">
+                                    <ItemsControl.ItemsPanel>
+                                        <!-- UniformGrid to limit the display to max 12 avatars -->
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="12" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="40" Height="40" Margin="2" CornerRadius="20">
+                                                <Image Source="{Binding AvatarLink}" Width="40" Height="40" Stretch="UniformToFill" ClipToBounds="True"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
 
-                                <!-- Container for the avatars -->
-                                <ItemsControl ItemsSource="{Binding Friendwiththesamegame}"
-                                              MaxHeight="50"
-                                              Margin="5">
+                                <TextBlock Text="Gamer : " FontSize="12" FontWeight="SemiBold" 
+Foreground="{StaticResource SecondaryBrush}" Margin="10,5,0,0">
+                                    <TextBlock.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                            <Binding Path="IsPublisher" />
+                                        </MultiBinding>
+                                    </TextBlock.Visibility>
+                                </TextBlock>
+                                <!-- Display Gamers if IsPublisher is true -->
+                                <ItemsControl Visibility="{Binding IsPublisher, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
+                      ItemsSource="{Binding Gamers}" MaxHeight="50" Margin="5">
                                     <ItemsControl.ItemsPanel>
                                         <!-- UniformGrid to limit the display to max 12 avatars -->
                                         <ItemsPanelTemplate>
@@ -762,15 +822,16 @@
 
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical"
-                            Margin="10,0,0,0">
-                    <TextBlock Text="Unlock Achievements:"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="White"
-                               Margin="0,10,0,10" />
-                    <ScrollViewer Height="275"
-                                  VerticalScrollBarVisibility="Auto">
+                <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                    <StackPanel.Visibility>
+                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                            <Binding Path="IsBuy" />
+                            <Binding Path="IsGamer" />
+                        </MultiBinding>
+                    </StackPanel.Visibility>
+
+                    <TextBlock Text="Unlock Achievements:" FontSize="20" FontWeight="SemiBold" Foreground="White" Margin="0,10,0,10" />
+                    <ScrollViewer Height="275" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding UnlockAchivementViewModels}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>

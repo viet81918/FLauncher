@@ -32,5 +32,11 @@ namespace FLauncher.Repositories
             return await _gamerDAO.GetGamersFromGame(game);
 
         }
+
+        public async Task<bool> IsUpdate(Game game, Gamer gamer)
+        {
+         return await GamerDAO.Instance.IsUpdate(game, gamer);
+        }
+       
     }
 }
