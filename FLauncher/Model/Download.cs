@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,8 +28,17 @@ namespace FLauncher.Model
         [BsonIgnore]
         public DateTime TimeDownload
         {
-            get => DateTime.ParseExact(TimeDownloadString, "yyyy-MM-dd HH:mm:ss", null); // Converts string to DateTime
-            set => TimeDownloadString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Converts DateTime to string
+            get
+            {
+                if (string.IsNullOrWhiteSpace(TimeDownloadString))
+                    throw new InvalidOperationException("TimeDownloadString is null or empty.");
+
+                return DateTime.ParseExact(TimeDownloadString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            }
+            set
+            {
+                TimeDownloadString = value.ToString("yyyy-MM-dd HH:mm:ss");
+            }
         }
 
         [BsonElement("Storage")] // Matches the JSON key "Storage"

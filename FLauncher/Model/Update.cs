@@ -6,15 +6,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace FLauncher.Model
 {
     [Collection("Update")]
-    public  class Update
+    public class Update
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }  // Optional: Add this if you want a unique identifier for each update
+        public string Id { get; set; }
 
         [BsonElement("Publisher_id")]
         public string PublisherId { get; set; }
@@ -28,15 +29,28 @@ namespace FLauncher.Model
         [BsonElement("UpdateTime")]
         public string UpdateTimeString { get; set; }
 
-        [BsonIgnoreIfNull]
-        // Converts UpdateTime to DateTime when accessed
+
         [BsonIgnore]
         public DateTime UpdateTime
         {
-            get => DateTime.Parse(UpdateTimeString); // Converts string to DateTime
-            set => UpdateTimeString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Formats DateTime as string
+            get
+            {
+              
+
+                if (DateTime.TryParseExact(UpdateTimeString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                {
+                    return result;
+                }
+
+                throw new InvalidOperationException($"Invalid UpdateTime format: {UpdateTimeString}");
+            }
+            set
+            {
+                UpdateTimeString = value.ToString("yyyy-MM-dd HH:mm:ss");
+            }
         }
 
-      
     }
+
+
 }

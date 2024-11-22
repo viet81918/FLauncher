@@ -13,5 +13,6 @@ namespace FLauncher.Repositories
 
         Gamer GetGamerById(string gamerId);
         Task<IEnumerable<Gamer>> GetGamersFromGame(Game game);
+        Task <bool> IsUpdate ( Game game, Gamer gamer);
     }
 }
