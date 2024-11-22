@@ -1,12 +1,15 @@
-﻿using FLauncher.DAO;
-using FLauncher.Model;
+﻿using FLauncher.Model;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FLauncher.ViewModel
 {
-    public class CustomerWindowViewModel : INotifyPropertyChanged
+    public class SearchWindowViewModel : INotifyPropertyChanged
     {
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
@@ -18,7 +21,7 @@ namespace FLauncher.ViewModel
         public ObservableCollection<Friend> FriendInvitations { get; }
 
         // Using ObservableCollection for dynamic data binding
-        public ObservableCollection<Game> TrendingGames { get; }
+        public ObservableCollection<Game> AllGames { get; }
 
         public ObservableCollection<Genre> Genres { get; }
 
@@ -26,20 +29,20 @@ namespace FLauncher.ViewModel
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
         // Constructor for Gamer Role
-        public CustomerWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
+        public SearchWindowViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> allgames, IEnumerable<Genre> genres)
         {
             Gamer = gamer;
             UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
             FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
-            TrendingGames = new ObservableCollection<Game>(trendingGames);  // ObservableCollection to notify UI changes
+            AllGames = new ObservableCollection<Game>(allgames);  // ObservableCollection to notify UI changes
             Genres = new ObservableCollection<Genre>(genres);
         }
 
         // Constructor for Publisher Role
-        public CustomerWindowViewModel(GamePublisher gamePublisher, IEnumerable<Game> trendingGames, IEnumerable<Genre> genres)
+        public SearchWindowViewModel(GamePublisher gamePublisher, IEnumerable<Game> allgames, IEnumerable<Genre> genres)
         {
             GamePublisher = gamePublisher;
-            TrendingGames = new ObservableCollection<Game>(trendingGames);
+            AllGames = new ObservableCollection<Game>(allgames);
             Genres = new ObservableCollection<Genre>(genres);
         }
 

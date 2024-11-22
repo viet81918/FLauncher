@@ -12,5 +12,7 @@
             Content="Logout"
             Height="50px"
             Click="logout_click"/>
+        
+        <TextBlock Text="heelo"/>
     </Grid>
 </Window>
