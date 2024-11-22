@@ -30,6 +30,7 @@ namespace FLauncher.Services
         public DbSet<GamePublisher> GamePublishers { get; init; }
         public DbSet<Game> Games { get; init; }
         public DbSet<Gamer> Gamers { get; init; }
+        public DbSet<Message> Messages { get; init; }
         public DbSet<User> Users { get; init; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +48,8 @@ namespace FLauncher.Services
 
             modelBuilder.Entity<Gamer>();
             modelBuilder.Entity<User>();
+            
+                 modelBuilder.Entity<Message>();
 
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
