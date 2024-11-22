@@ -44,6 +44,7 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3587" />
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
+    <PackageReference Include="LiveCharts.NetCore" Version="0.9.8" />
     <PackageReference Include="MahApps.Metro.IconPacks" Version="5.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
@@ -52,11 +53,15 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="MindFusion.Charting" Version="4.3.0" />
+    <PackageReference Include="MindFusion.Charting.Wpf" Version="2.2.1.1" />
     <PackageReference Include="MongoDB.Bson" Version="3.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="MongoDB.Driver.Core" Version="2.30.0" />
     <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
     <PackageReference Include="SevenZipExtractor" Version="1.0.17" />
     <PackageReference Include="SharpCompress" Version="0.38.0" />
   </ItemGroup>

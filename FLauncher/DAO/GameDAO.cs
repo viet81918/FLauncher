@@ -119,7 +119,7 @@ namespace FLauncher.DAO
             return isPublishable;
         }
 
-        public void DownloadRarFromLink(Game game, string saveLocation, Gamer gamer)
+        public async Task DownloadRarFromLink(Game game, string saveLocation, Gamer gamer)
         {
             try
             {
@@ -188,7 +188,7 @@ namespace FLauncher.DAO
                     Directory = extractFolderPath // Lưu vị trí thư mục đã giải nén
                 };
 
-                SaveDownloadToDatabase(download);
+                await SaveDownloadToDatabase(download);
                 MessageBox.Show("Lưu thông tin download vào cơ sở dữ liệu thành công.");
             }
             catch (Exception ex)
@@ -277,10 +277,10 @@ namespace FLauncher.DAO
             }
         }
 
-        private void SaveDownloadToDatabase(Download download)
+        private  async Task SaveDownloadToDatabase(Download download)
         {
-           _dbContext.Downloads.Add(download);  
-            _dbContext.SaveChanges();
+            _dbContext.Downloads.Add(download);  
+           await  _dbContext.SaveChangesAsync();
         }
 
 
@@ -313,15 +313,15 @@ namespace FLauncher.DAO
             return await games;
         }
 
-        public void PlayGame(Game game, Gamer gamer)
+        public async Task PlayGame(Game game, Gamer gamer)
         {
             try
             {
                 // Retrieve the download directory from the database
-                string downloadDirectory = _dbContext.Downloads
+                string downloadDirectory = await _dbContext.Downloads
                     .Where(c => c.GameId == game.GameID && c.GamerId == gamer.GamerId)
                     .Select(b => b.Directory)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 // Check if the directory was found
                 if (string.IsNullOrWhiteSpace(downloadDirectory) || !Directory.Exists(downloadDirectory))
@@ -331,7 +331,7 @@ namespace FLauncher.DAO
                 }
 
                 // Find the executable file containing the word "game" in its name
-                string exeFilePath = Directory
+                string exeFilePath =  Directory
                     .EnumerateFiles(downloadDirectory, "*.exe", SearchOption.AllDirectories)
                     .FirstOrDefault(file => Path.GetFileName(file).Contains("game", StringComparison.OrdinalIgnoreCase));
 
@@ -359,7 +359,7 @@ namespace FLauncher.DAO
             }
         }
 
-        public void Update_Game(GamePublisher publisher, Game game, string selectedFilePath, string message)
+        public async Task Update_Game(GamePublisher publisher, Game game, string selectedFilePath, string message)
         {
             try
             {
@@ -391,8 +391,8 @@ namespace FLauncher.DAO
                 if (!string.IsNullOrEmpty(uploadedFileId))
                 {
                     string shareableLink = GetShareableLink(service, uploadedFileId);
-                    UpdateInfor(game, publisher, message);
-                    UpdateLink(game, shareableLink);
+                    await UpdateInfor(game, publisher, message);
+                     await UpdateLink(game, shareableLink);
                 }
 
                 MessageBox.Show("Cập nhật game thành công!");
@@ -427,7 +427,7 @@ namespace FLauncher.DAO
         }
 
 
-        public void UpdateInfor(Game game, GamePublisher gamePublisher, string message)
+        public async Task UpdateInfor(Game game, GamePublisher gamePublisher, string message)
         {
             try
             {
@@ -442,7 +442,7 @@ namespace FLauncher.DAO
                     UpdateTimeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")  // Set the update time
                 };
                 _dbContext.Updates.Add(update);
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
               
                 // Step 3: Inform the user
                 MessageBox.Show("Đã cập nhật game thành công!");
@@ -452,11 +452,11 @@ namespace FLauncher.DAO
                 MessageBox.Show($"Lỗi khi cập nhật game: {ex.Message}");
             }
         }
-        private void UpdateLink(Game game, string link)
+        private async Task UpdateLink(Game game, string link)
         {
             game.GameLink = link;
             _dbContext.Games.Update(game);  // Cập nhật game trong database
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             MessageBox.Show("Đã cập nhật link game thành công!");
         }
         private string UploadFile(DriveService service, string filePath, string fileName)
@@ -575,9 +575,50 @@ namespace FLauncher.DAO
         {
             return await _dbContext.Achivements.FirstOrDefaultAsync(c => c.AchivementId == unlock.AchievementId);
         }
-        public void Uninstall_Game(Gamer gamer, Game game)
+        public async Task Uninstall_Game(Gamer gamer, Game game)
         {
+            // Assuming _dbContext is your database context for MongoDB or any other repository context
 
+            // First, find the game installation record for the given gamer and game
+            var gameRecord = await _dbContext.Downloads
+                .FirstOrDefaultAsync(g => g.GameId == game.GameID && g.GamerId == gamer.GamerId);
+
+            if (gameRecord != null)
+            {
+                // 1. Delete the record from the database
+                _dbContext.Downloads.Remove(gameRecord);
+                await _dbContext.SaveChangesAsync();  // Ensure that the changes are saved
+
+                // 2. Delete the game folder from the file system
+                string gameDirectory = gameRecord.Directory;  // Path to the game directory
+                if (Directory.Exists(gameDirectory))
+                {
+                    try
+                    {
+                        Directory.Delete(gameDirectory, true);  // true ensures that all subdirectories and files are deleted
+                        MessageBox.Show($"Game directory {gameDirectory} has been deleted.");
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle any exceptions (e.g., permission issues, file in use, etc.)
+                        MessageBox.Show($"An error occurred while deleting the game directory: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Game directory not found or already deleted.");
+                }
+            }
+            else
+            {
+             MessageBox.Show("No installation record found for this game and gamer.");
+            }
+        }
+        public async Task Reinstall(Game game, Gamer gamer)
+        {
+            var downData = await _dbContext.Downloads.FirstOrDefaultAsync(c => c.GameId == game.GameID && c.GamerId == gamer.GamerId);
+            await Uninstall_Game(gamer, game);
+            await DownloadRarFromLink(game, Path.GetDirectoryName(downData.Directory), gamer);
         }
     }
 

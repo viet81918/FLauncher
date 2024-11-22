@@ -5,6 +5,7 @@ namespace FLauncher.Repositories
 {
     public class GameRepository : IGameRepository
     {
+
         public void Download_game(Game game, string saveLocation, Gamer gamer)
         {
             GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
@@ -60,15 +61,41 @@ namespace FLauncher.Repositories
             return await GameDAO.Instance.IsPublishGame(game, publisher);
         }
 
-        public void Play_Game(Game game, Gamer gamer)
+
+        public async Task Uninstall_Game(Gamer gamer, Game game)
         {
+            await GameDAO.Instance.Uninstall_Game(gamer, game);
+        }
+
+       
+
+         public async Task Download_game(Game game, string saveLocation, Gamer gamer)
+        {
+          await GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
+        }
+
+        public async Task Play_Game(Game game, Gamer gamer)
+        {
+            await GameDAO.Instance.PlayGame(game, gamer);
+        }
+
+        public async Task Upload_game(GamePublisher publisher, Game game, string selectedFilePath, string message)
+        {
+
             GameDAO.Instance.PlayGame(game, gamer);
         }
 
-        public void Upload_game(GamePublisher publisher, Game game, string selectedFilePath, string message)
+     
+
+        public async Task Reinstall(Game game, Gamer gamer)
+
         {
-            GameDAO.Instance.Update_Game(publisher, game, selectedFilePath, message);
+           await GameDAO.Instance.Reinstall(game, gamer);   
         }
 
+        public async Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game)
+        {
+           return await TrackingDAO.Instance.GetTrackingFromGamerGame(gamer, game);
+        }
     }
 }
