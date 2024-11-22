@@ -1,16 +1,44 @@
-﻿using System.Windows;
+﻿using FLauncher.DAO;
+using System.Windows;
 using System.Windows.Controls;
+
 
 namespace FLauncher.CC
 {
-    /// <summary>
-    /// Interaction logic for filterItems.xaml
-    /// </summary>
+    
     public partial class filterItems : UserControl
     {
         public filterItems()
         {
             InitializeComponent();
+
+            var genres = GenreDAO.Instance.GetAllTypeGenres();
+            ////var publisher = PublisherDAO.Instance.getAll(); 
+            ItemListView.ItemsSource = genres;
+
+            ItemListView.SelectionChanged += ItemListView_SelectionChanged;
+        }
+        // Sự kiện khi trạng thái CheckBox thay đổi
+        public event Action<List<string>> selectedGenre;
+
+        private void ItemListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            var selectedGenres = new List<string>();
+
+            // Duyệt qua tất cả các item trong ListView
+            foreach (var item in ItemListView.SelectedItems)
+            {
+                // Mỗi item là một genre, ta sẽ lấy nội dung của nó
+                if (item != null)
+                {
+                    selectedGenres.Add(item.ToString());
+                }
+            }
+
+            // Gửi danh sách các genre đã chọn
+            selectedGenre?.Invoke(selectedGenres);
+
         }
 
 

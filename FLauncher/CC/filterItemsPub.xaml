@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="FLauncher.CC.filterItemsPub"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FLauncher.CC"
+             mc:Ignorable="d" 
+             x:Name="_tags2"
+             d:DesignHeight="44" d:DesignWidth="146">
+    <Grid>
+        <!-- Expander chứa Grid tùy chỉnh và ListView bên trong -->
+        <Expander Name="ListItems" VerticalAlignment="Top" ExpandDirection="Down" Margin="10">
+            <Expander.Header>
+                <Grid
+        Background="{StaticResource DimBrush}"
+        Height="44"
+        Width="146">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <!--Text-->
+                        <ColumnDefinition Width="40"/>
+                        <!--Glyph-->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+        Text="{Binding Text, ElementName=_tags2}"
+        FontWeight="SemiBold"
+        Foreground="{StaticResource SecondaryBrush}"
+        VerticalAlignment="Center"
+        Margin="12,0"/>
+
+                    <Path
+        Grid.Column="1"
+        Data="{StaticResource down_icon}"
+        Fill="{StaticResource SecondaryBrush}"
+        Margin="0,17"
+        Width="10"
+        Stretch="Uniform"
+        VerticalAlignment="Bottom"/>
+
+
+                </Grid>
+            </Expander.Header>
+            <!-- ListView hiển thị các genre có thể chọn -->
+            <ListView Name="ItemListViewPublisher" Margin="24,0,0,0" Width="146" Background="#3E3E46" HorizontalAlignment="Left"
+                       SelectionMode="Single" SelectionChanged="ItemListViewPublisher_SelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <!-- CheckBox cho mỗi genre -->
+                            <RadioButton  Content="{Binding}" Margin="5" Foreground="Wheat" 
+                                          GroupName="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Name}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Expander>
+    </Grid>
+</UserControl>
