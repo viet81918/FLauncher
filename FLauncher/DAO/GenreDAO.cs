@@ -20,6 +20,14 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
+
+        public List<string> GetAllTypeGenres()
+        {
+            return  _dbContext.Genres
+                           .AsQueryable()  // Chuyển sang truy vấn LINQ
+                           .Select(g => g.TypeOfGenre)  // Chọn chỉ trường TypeOfGenre
+                           .ToList();
+        }
         public async Task<IEnumerable<Genre>> GetGenres()
         {
             return await _dbContext.Genres.ToListAsync();

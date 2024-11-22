@@ -238,7 +238,9 @@ FontSize="15">
                         Fill="{StaticResource SecondaryBrush}"
                         Stretch="Uniform"
                         Height="15"
-                        Width="15"/>
+                        Width="15"
+                        MouseLeftButtonUp="searchGame_button"
+                        Cursor="Hand"/>
 
                     <!--Search text-->
                     <TextBox
@@ -247,10 +249,11 @@ FontSize="15">
                         Background="Transparent"
                         BorderThickness="0"
                         Foreground="{StaticResource SecondaryBrush}"
-                        Text="Search the store"
+                        Text="Search name game"
                         VerticalAlignment="Center"
                         GotFocus="SearchTextBox_GotFocus"
-                        LostFocus="SearchTextBox_LostFocus"/>
+                        LostFocus="SearchTextBox_LostFocus"
+                        KeyDown="SearchTextBox_KeyDown"/>
                 </Grid>
                 <!--#endregion-->
 
@@ -407,6 +410,19 @@ FontSize="15">
                     Content="{StaticResource games_icon}"/>
                 <ListBoxItem
                     Content="{StaticResource profile_icon}"/>
+                
+                <ListBoxItem x:Name="searchButton" 
+                     Content="{StaticResource search_icon}" 
+                     MouseLeftButtonUp="searchButton_Click"/>
+                
+                <ListBoxItem
+                    Content="{StaticResource message_icon}"
+                    MouseLeftButtonUp="messageButton_Click"/>
+                
+                <!-- Add Log Out icon -->
+                <ListBoxItem 
+                    Content="{StaticResource logout_icon}"
+                    MouseLeftButtonUp="logoutButton_Click"/>
 
             </ListBox>
         </Grid>

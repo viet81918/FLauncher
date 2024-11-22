@@ -20,6 +20,12 @@ namespace FLauncher.DAO
             var client = new MongoClient(connectionString);
             _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
+        public List<string> getAll()
+        {
+            return _dbContext.GamePublishers
+                           .Select(p => p.Name)  // Chọn chỉ trường TypeOfGenre
+                           .ToList();
+        }       
         public async Task<GamePublisher> GetPublisherByGame(Game game)
         {
             // Step 1: Get the corresponding 'Publish' entry for the game

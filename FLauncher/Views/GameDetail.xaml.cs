@@ -4,6 +4,7 @@ using FLauncher.ViewModel;
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,9 +13,7 @@ using System.Windows.Input;
 
 namespace FLauncher.Views
 {
-    /// <summary>
-    /// Interaction logic for GameDetail.xaml
-    /// </summary>
+    
     public partial class GameDetail : Window
 
 
@@ -29,9 +28,12 @@ namespace FLauncher.Views
         private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
+
         private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
-        public GameDetail(Game game, Model.User user )
+        public GameDetail(Game game, Model.User user)
+
+
         {
             InitializeComponent();
             _notiRepo = new NotiRepository();
@@ -174,7 +176,7 @@ namespace FLauncher.Views
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (SearchTextBox.Text == "Search the store")
+            if (SearchTextBox.Text == "Search name game")
             {
                 SearchTextBox.Text = string.Empty;
                 SearchTextBox.Foreground = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources["SecondaryBrush"];
@@ -185,7 +187,7 @@ namespace FLauncher.Views
         {
             if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
             {
-                SearchTextBox.Text = "Search the store";
+                SearchTextBox.Text = "Search name game";
             }
         }
         private void ReinstallGame_click(object sender, RoutedEventArgs e)
@@ -204,6 +206,68 @@ namespace FLauncher.Views
             cus.Show();
             this.Hide();
             this.Close();
+        }
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                searchGame_button(sender, e);
+            }
+        }
+        private void searchGame_button(object sender, RoutedEventArgs e)
+        {
+            var CurrentWin = _user;
+            string Search_input = SearchTextBox.Text.Trim().ToLower();
+            if (Search_input == "Search name game")
+            {
+                Search_input = string.Empty;
+            }
+            SearchWindow search = new SearchWindow(CurrentWin, Search_input, null, null);
+            search.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
+        {
+            var CurrentUser = _user;
+            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
+            serchwindow.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
+
+        {
+            var currentGamer = _gamer;
+            MessageWindow messWindow = new MessageWindow(currentGamer);
+            messWindow.Show();
+
+            this.Hide();
+            this.Close();
+        }
+        private void logoutButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                DeleteLoginInfoFile();
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+
+                this.Close();
+            }
+        }
+        private void DeleteLoginInfoFile()
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+            if (File.Exists(jsonFilePath))
+            {
+                File.Delete(jsonFilePath);
+            }
         }
     }
 }
