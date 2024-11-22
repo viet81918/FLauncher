@@ -152,10 +152,9 @@ namespace FLauncher.Views
             if (clickedGame != null)
             {
                 // Get the current gamer from the DataContext
-                var currentGamer = _gamer;
-                var currentPublisher = _gamePublisher;
+                
                 // Navigate to the GameDetail page and pass the selected game and gamer
-                var gameDetailPage = new GameDetail(clickedGame, currentGamer, currentPublisher);
+                var gameDetailPage = new GameDetail(clickedGame,_user );
                 gameDetailPage.Show();
             }
         }

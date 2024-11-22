@@ -15,7 +15,6 @@ namespace FLauncher
     {
         private User _user;
         private Gamer _gamer;
-        private User _user;
         private GamePublisher _gamePublisher;
         private readonly IPublisherRepository _publisherRepo;
         private readonly GamerRepository _gamerRepo;
