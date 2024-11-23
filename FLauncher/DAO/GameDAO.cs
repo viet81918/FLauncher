@@ -5,6 +5,7 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Upload;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using SharpCompress.Archives;
@@ -12,10 +13,6 @@ using SharpCompress.Common;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using MongoDB.Bson;
-using System.Diagnostics;
-using Google.Apis.Upload;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FLauncher.DAO
 {
@@ -273,10 +270,10 @@ namespace FLauncher.DAO
             }
         }
 
-        private  async Task SaveDownloadToDatabase(Download download)
+        private async Task SaveDownloadToDatabase(Download download)
         {
-            _dbContext.Downloads.Add(download);  
-           await  _dbContext.SaveChangesAsync();
+            _dbContext.Downloads.Add(download);
+            await _dbContext.SaveChangesAsync();
         }
 
 
@@ -300,7 +297,7 @@ namespace FLauncher.DAO
                 .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
                 .ToListAsync();
         }
-        
+
         public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
         {
             // lay id game co ten bat dau bang input name ex: gta => gta 1 , 2 ,3 ...
@@ -318,10 +315,10 @@ namespace FLauncher.DAO
                 MessageBox.Show($"danh sach id bame trong GameN: {NamdautieneG}");
             }
 
-            
+
 
             //lay list id game co tat ca the loai trong List<string> genres truyen vao
-           
+
             var GameGenre = new List<string>();
             if (!genres.IsNullOrEmpty())
             {
@@ -337,7 +334,7 @@ namespace FLauncher.DAO
                 MessageBox.Show($"danh sach GameGenre: {aftersacrh}");
             }
 
-            
+
 
             //lay danh sach gid ame co publisher = pub truyen vao 
             MessageBox.Show("publisher la " + pubs);
@@ -429,7 +426,7 @@ namespace FLauncher.DAO
                 }
 
                 // Find the executable file containing the word "game" in its name
-                string exeFilePath =  Directory
+                string exeFilePath = Directory
                     .EnumerateFiles(downloadDirectory, "*.exe", SearchOption.AllDirectories)
                     .FirstOrDefault(file => Path.GetFileName(file).Contains("game", StringComparison.OrdinalIgnoreCase));
 
@@ -490,7 +487,7 @@ namespace FLauncher.DAO
                 {
                     string shareableLink = GetShareableLink(service, uploadedFileId);
                     await UpdateInfor(game, publisher, message);
-                     await UpdateLink(game, shareableLink);
+                    await UpdateLink(game, shareableLink);
                 }
 
                 MessageBox.Show("Cập nhật game thành công!");
@@ -541,7 +538,7 @@ namespace FLauncher.DAO
                 };
                 _dbContext.Updates.Add(update);
                 await _dbContext.SaveChangesAsync();
-              
+
                 // Step 3: Inform the user
                 MessageBox.Show("Đã cập nhật game thành công!");
             }
@@ -709,7 +706,7 @@ namespace FLauncher.DAO
             }
             else
             {
-             MessageBox.Show("No installation record found for this game and gamer.");
+                MessageBox.Show("No installation record found for this game and gamer.");
             }
         }
         public async Task Reinstall(Game game, Gamer gamer)

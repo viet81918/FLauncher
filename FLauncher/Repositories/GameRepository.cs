@@ -6,10 +6,7 @@ namespace FLauncher.Repositories
     public class GameRepository : IGameRepository
     {
 
-        public void Download_game(Game game, string saveLocation, Gamer gamer)
-        {
-            GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
-        }
+
 
         public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
         {
@@ -67,11 +64,11 @@ namespace FLauncher.Repositories
             await GameDAO.Instance.Uninstall_Game(gamer, game);
         }
 
-       
 
-         public async Task Download_game(Game game, string saveLocation, Gamer gamer)
+
+        public async Task Download_game(Game game, string saveLocation, Gamer gamer)
         {
-          await GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
+            await GameDAO.Instance.DownloadRarFromLink(game, saveLocation, gamer);
         }
 
         public async Task Play_Game(Game game, Gamer gamer)
@@ -82,25 +79,25 @@ namespace FLauncher.Repositories
         public async Task Upload_game(GamePublisher publisher, Game game, string selectedFilePath, string message)
         {
 
-            GameDAO.Instance.PlayGame(game, gamer);
+            await GameDAO.Instance.Update_Game(publisher, game, selectedFilePath, message);
         }
 
-     
+
 
         public async Task Reinstall(Game game, Gamer gamer)
 
         {
-           await GameDAO.Instance.Reinstall(game, gamer);   
+            await GameDAO.Instance.Reinstall(game, gamer);
         }
         public async Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game)
         {
-           return await TrackingDAO.Instance.GetTrackingFromGamerGame(gamer, game);
+            return await TrackingDAO.Instance.GetTrackingFromGamerGame(gamer, game);
         }
 
         public async Task<IEnumerable<Game>> GetAllGame()
         {
             return await GameDAO.Instance.GetAllGame();
-        }        
+        }
         public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
         {
             return await GameDAO.Instance.GetGameByInformation(inputName, genres, pubs);

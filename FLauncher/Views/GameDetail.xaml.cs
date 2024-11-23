@@ -1,24 +1,18 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.ViewModel;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
 namespace FLauncher.Views
 {
-    
+
     public partial class GameDetail : Window
 
 
     {
-        private Game _game = null ; 
+        private Game _game = null;
         private Gamer _gamer = null;
         private Model.User _user;
         private GamePublisher _gamePublisher = null;
@@ -28,6 +22,7 @@ namespace FLauncher.Views
         private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
+
 
         private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
@@ -47,7 +42,7 @@ namespace FLauncher.Views
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
             _gamerRepo = new GamerRepository();
-            InitializeData( game, user);
+            InitializeData(game, user);
 
 
         }
@@ -57,22 +52,18 @@ namespace FLauncher.Views
             if (user.Role == 3)
             {
                 _gamer = _gamerRepo.GetGamerByUser(user);
-            } else
+            }
+            else
             {
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user);
             }
-           
-            
+
+
 
             var genres = await _genreRepo.GetGenresFromGame(game); // Get genres from your repository
             var reviews = await _reviewRepo.GetReviewsByGame(game); // Get reviews from your repository
             var publisher = await _publisherRepo.GetPublisherByGame(game);
             var updates = await _publisherRepo.getUpdatesForGame(game);
-
-
-
-         
-   
 
             // Set the DataContext to your ViewModel            
             if (_gamer != null)
@@ -86,7 +77,7 @@ namespace FLauncher.Views
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
-                var isUpdate = await _gamerRepo.IsUpdate(game, _gamer); 
+                var isUpdate = await _gamerRepo.IsUpdate(game, _gamer);
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
                 DataContext = new GameDetailViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate);
             }
@@ -95,8 +86,8 @@ namespace FLauncher.Views
                 var isPublish = await _gameRepo.IsPublishGame(game, _gamePublisher);
                 var gamers = await _gamerRepo.GetGamersFromGame(game);
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
-              
-                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements , gamers);
+
+                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements, gamers);
             }
         }
 
@@ -174,7 +165,7 @@ namespace FLauncher.Views
         }
         private void Uninstall_Click(object sender, RoutedEventArgs e)
         {
-           _gameRepo.Reinstall(_game,_gamer);
+            _gameRepo.Reinstall(_game, _gamer);
         }
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -202,7 +193,7 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
             gameDetailPage.Show();
         }
-     
+
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);

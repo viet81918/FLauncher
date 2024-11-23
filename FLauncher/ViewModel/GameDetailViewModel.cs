@@ -2,6 +2,7 @@
 using FLauncher.Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace FLauncher.ViewModel
 {
@@ -61,10 +62,10 @@ namespace FLauncher.ViewModel
         public bool IsNotBuy { get; set; }
         public bool IsPublished { get; set; }
         public bool IsDownload { get; set; }
-        public bool IsNotDown {  get; set; }
+        public bool IsNotDown { get; set; }
         public bool IsUpdate { get; set; }
         public bool IsNotUpdate { get; set; }
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement>  unlockAchivementsData, IEnumerable<Gamer>  reviewers, bool isBuy, bool isDownload, bool isUpdate)
+        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate)
         {
             IsGamer = true;
             IsPublisher = false;
@@ -79,7 +80,7 @@ namespace FLauncher.ViewModel
                 IsNotBuy = true;
             }
             IsDownload = isDownload;
-            if (IsDownload== true)
+            if (IsDownload == true)
             {
                 IsNotDown = false;
             }
@@ -146,12 +147,12 @@ namespace FLauncher.ViewModel
 
         }
 
-        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews,GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers)
+        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews, GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers)
         {
             IsGamer = false;
             IsPublisher = true;
             IsPublished = isPublished;
-        
+
             Game = game;
             Genres = new ObservableCollection<Genre>(genres);
             Reviews = new ObservableCollection<Review>(reviews);
@@ -176,7 +177,7 @@ namespace FLauncher.ViewModel
                     });
                 }
             }
- 
+
         }
 
         // Asynchronous method to load GamePublisher
@@ -186,12 +187,15 @@ namespace FLauncher.ViewModel
             GamePublisher = await PublisherDAO.Instance.GetPublisherByGame(game);
         }
 
+        #region INotifyPropertyChanged implimentation
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        //[NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+        #endregion
     }
 
 }
