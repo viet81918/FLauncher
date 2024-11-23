@@ -18,7 +18,19 @@ namespace FLauncher.ViewModel
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
         public ObservableCollection<Gamer> Friends { get; }
-        public ObservableCollection<Model.Message> Messages { get; set; }
+        private ObservableCollection<Model.Message> _Messages { get; set; }
+        public ObservableCollection<Model.Message> Messages
+        {
+            get => _Messages;
+            set
+            {
+                if (_Messages != value)
+                {
+                    _Messages = value;
+                    OnPropertyChanged(nameof(Messages));
+                }
+            }
+        }
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
