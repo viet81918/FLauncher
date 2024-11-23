@@ -441,7 +441,7 @@ Margin="0,0,20,0">
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-                <ScrollViewer>
+                <ScrollViewer x:Name="ChatScrollViewer">
 
                     <ItemsControl Margin="10 5 10 10" x:Name="ChatMessages" Background="Transparent">
                         <ItemsControl.ItemTemplate>
@@ -494,13 +494,7 @@ Margin="0,0,20,0">
                         </Button>
 
                     </StackPanel>
-                    <!--<Grid>
-                        <TextBlock Margin="15,0,120,0" VerticalAlignment="Center" Foreground="#868686" Panel.ZIndex="1"
-                                   IsHitTestVisible="False" Text="Type your message..."
-                                   Visibility="{Binding ElementName=txtMessage, Path=Text.IsEmpty}" Height="40"/>
-                        <TextBox x:Name="txtMessage" Style="{StaticResource messageTextBox}" />
-                    </Grid>-->
-                    <!--send Button-->
+                    
 
 
                 </Grid>
