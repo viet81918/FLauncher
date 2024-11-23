@@ -8,6 +8,7 @@
         Background="WhiteSmoke"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
+        WindowStartupLocation="CenterScreen"
         Height="Auto"
         Width="Auto"
         Title="LoginPage"

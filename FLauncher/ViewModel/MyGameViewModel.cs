@@ -6,8 +6,21 @@ using System.Runtime.CompilerServices;
 
 namespace FLauncher.ViewModel
 {
-    public class GameDetailViewModel : INotifyPropertyChanged
+    public class MyGameViewModel : INotifyPropertyChanged
     {
+        public Gamer Gamer { get; }
+
+        public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
+        public ObservableCollection<Notification> UnreadNotifications { get; }
+
+        public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
+        public ObservableCollection<Friend> FriendInvitations { get; }
+
+        public string Name => Gamer?.Name;
+        public double Money => Gamer?.Money ?? 0.0;
+        public ObservableCollection<Game> MyGames { get; }
+
+
         private GamePublisher _gamePublisher;
 
         public GamePublisher GamePublisher
@@ -24,7 +37,6 @@ namespace FLauncher.ViewModel
         }
 
         public Game Game { get; }
-        public Gamer Gamer { get; }
         private ObservableCollection<Genre> _genres;
         public ObservableCollection<Genre> Genres
         {
@@ -40,18 +52,15 @@ namespace FLauncher.ViewModel
         }
 
         public ObservableCollection<Review> Reviews { get; }
-        public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
-        public ObservableCollection<Notification> UnreadNotifications { get; }
+
         public ObservableCollection<Achivement> Achivement { get; }
         public ObservableCollection<Achivement> UnlockAchivement { get; }
         public ObservableCollection<UnlockAchivement> Unlock { get; }
         public ObservableCollection<Achivement> LockAchivement { get; }
-        public int FriendInvitationCount => FriendInvitations?.Count ?? 0;
-        public ObservableCollection<Friend> FriendInvitations { get; }
+
         public double AverageRating => Reviews?.Any() == true ? Reviews.Average(r => r.Rating) : 0;
         public ObservableCollection<Update> Updates { get; }
-        public string Name => Gamer?.Name ?? GamePublisher?.Name;
-        public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
+
         public ObservableCollection<Gamer> Friendwiththesamegame { get; }
         public ObservableCollection<UnlockAchivementViewModel> UnlockAchivementViewModels { get; set; }
         public ObservableCollection<ReviewGamerViewModel> ReviewGamerViewModels { get; set; }
@@ -65,8 +74,20 @@ namespace FLauncher.ViewModel
         public bool IsNotDown { get; set; }
         public bool IsUpdate { get; set; }
         public bool IsNotUpdate { get; set; }
-        public GameDetailViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate)
+
+        public MyGameViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> myGames)
         {
+            Gamer = gamer;
+            UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
+            FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
+            MyGames = new ObservableCollection<Game>(myGames);
+
+
+        }
+        public MyGameViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate, IEnumerable<Game> myGames)
+        {
+
+            MyGames = new ObservableCollection<Game>(myGames);
             IsGamer = true;
             IsPublisher = false;
             IsBuy = isBuy;
@@ -147,40 +168,6 @@ namespace FLauncher.ViewModel
 
         }
 
-        public GameDetailViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews, GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers)
-        {
-            IsGamer = false;
-            IsPublisher = true;
-            IsPublished = isPublished;
-
-            Game = game;
-            Genres = new ObservableCollection<Genre>(genres);
-            Reviews = new ObservableCollection<Review>(reviews);
-            Updates = new ObservableCollection<Update>(updates);
-            Gamers = new ObservableCollection<Gamer>(reviewers);
-            _gamePublisher = GamePublisher;
-            Achivement = new ObservableCollection<Achivement>(Achivements);
-            // Load the GamePublisher asynchronously
-            LoadGamePublisher(game);
-            ReviewGamerViewModels = new ObservableCollection<ReviewGamerViewModel>();
-            foreach (var review in reviews)
-            {
-                var reviewer = reviewers.FirstOrDefault(a => a.GamerId == review.GamerId);
-                if (reviewer != null)
-                {
-                    ReviewGamerViewModels.Add(new ReviewGamerViewModel
-                    {
-                        Name = reviewer.Name,
-                        AvatarLink = reviewer.AvatarLink,
-                        Rating = review.Rating,
-                        Description = review.Description
-                    });
-                }
-            }
-
-        }
-
-        // Asynchronous method to load GamePublisher
         private async void LoadGamePublisher(Game game)
         {
             // Assuming GetPublisherByGame is a method that returns Task<GamePublisher>
@@ -199,3 +186,4 @@ namespace FLauncher.ViewModel
     }
 
 }
+
