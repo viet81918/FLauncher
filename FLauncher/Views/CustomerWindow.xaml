@@ -401,7 +401,8 @@
             IsSelected="True"/>
 
                 <ListBoxItem
-            Content="{StaticResource games_icon}"/>
+            Content="{StaticResource games_icon}"
+                    MouseLeftButtonUp="MyGame_Click" />
 
                 <!-- Profile Icon Item with Click Event -->
                

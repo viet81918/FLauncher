@@ -6,7 +6,6 @@ using FLauncher.Views;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using System.Windows;
-using System.Windows.Forms.Design;
 using System.Windows.Input;
 
 namespace FLauncher
@@ -101,7 +100,7 @@ namespace FLauncher
                 DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
             }
         }
-        
+
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
@@ -161,7 +160,7 @@ namespace FLauncher
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
 
-        {            
+        {
             var currentGamer = _gamer;
             MessageWindow messWindow = new MessageWindow(currentGamer);
             messWindow.Show();
@@ -208,7 +207,7 @@ namespace FLauncher
         private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
         {
             var CurrentUser = _user;
-            SearchWindow serchwindow = new SearchWindow(CurrentUser, null,null,null);
+            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
             serchwindow.Show();
             this.Hide();
             this.Close();
@@ -241,6 +240,15 @@ namespace FLauncher
 
             SearchWindow search = new SearchWindow(CurrentWin, Search_input, selectedGenre, selectedPub);
             search.Show();
+            this.Hide();
+            this.Close();
+        }
+
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
             this.Hide();
             this.Close();
         }
