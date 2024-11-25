@@ -657,11 +657,11 @@
                                         Foreground="Magenta"
                                         FontWeight="Bold"
                                         BorderBrush="Transparent"
-                                        Click="Tracking_Click">
+                                        Click="TrackingPlayers_Click">
                                     <Button.Visibility>
                                         <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                                             <Binding Path="IsPublished" />
-                                            <Binding Path="IsPublisher" />
+                                            <Binding Path="IsPublished" />
                                         </MultiBinding>
                                     </Button.Visibility>
                                 </Button>
