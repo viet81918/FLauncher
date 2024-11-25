@@ -28,7 +28,7 @@ namespace FLauncher.DAO
             // Ensure the Day field in MongoDB is formatted as "dd/MM/yyyy"
             string todayDateString = DateTime.Today.ToString("dd/MM/yyyy");
 
-            var collection = await _dbContextOnline.Trackings
+            var collection = await _dbContextOnline.TrackingsTime
                 .Where(c => c.ID_Gamer == gamer.GamerId
                             && c.ID_Game == game.GameID
                             && c.DateString == todayDateString) // Query directly on DateString
@@ -38,6 +38,17 @@ namespace FLauncher.DAO
             //{
             //    MessageBox.Show(tracking.DateString);  // Use DateString for displaying the date
             //}
+
+            return collection;
+        }
+        public async Task<TrackingPlayers> GetTrackingFromGame( Game game)
+        {
+
+
+            var collection = await _dbContextOnline.TrackingPlayers
+                .FirstOrDefaultAsync(c => c.ID_Game == game.GameID)
+                    ;
+           
 
             return collection;
         }

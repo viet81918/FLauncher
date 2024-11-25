@@ -25,6 +25,7 @@ namespace FLauncher.Repositories
         Task Uninstall_Game(Gamer gamer, Game game);
         Task Reinstall(Game game, Gamer gamer);
         Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game);
+        Task<TrackingPlayers> GetTrackingFromGame(Game game);
         Task<IEnumerable<Game>> GetAllGame();
         Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs);
 

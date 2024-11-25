@@ -102,5 +102,10 @@ namespace FLauncher.Repositories
         {
             return await GameDAO.Instance.GetGameByInformation(inputName, genres, pubs);
         }
+
+        public async Task<TrackingPlayers> GetTrackingFromGame(Game game)
+        {
+          return  await TrackingDAO.Instance.GetTrackingFromGame(game);
+        }
     }
 }

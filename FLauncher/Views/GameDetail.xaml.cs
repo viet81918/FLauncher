@@ -193,7 +193,14 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
             gameDetailPage.Show();
         }
+        
 
+
+          private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new TrackingNumberPlayer( _game);
+            gameDetailPage.Show();
+        }
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);
