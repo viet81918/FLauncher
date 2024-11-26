@@ -294,7 +294,7 @@ namespace FLauncher.Views
             // Create an instance of ProfileWindow and show it
             _friendService = new FriendService(_friendRepo, _gamerRepo);
 
-            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
             this.Hide();
             this.Close();
