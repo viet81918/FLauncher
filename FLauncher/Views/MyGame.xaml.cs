@@ -1,52 +1,89 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
 using FLauncher.ViewModel;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace FLauncher.Views
 {
-
-    public partial class GameDetail : Window
-
-
+    /// <summary>
+    /// Interaction logic for MyGame.xaml
+    /// </summary>
+    public partial class MyGame : Window
     {
-        private Game _game = null;
-        private Gamer _gamer = null;
-        private Model.User _user;
-        private GamePublisher _gamePublisher = null;
+        private User _user;
+        private Gamer _gamer;
+        private GamePublisher _gamePublisher;
+        private readonly IPublisherRepository _publisherRepo;
+        private readonly GamerRepository _gamerRepo;
         private readonly INotiRepository _notiRepo;
-        private readonly IFriendRepository _friendRepo;
+        private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
+        private FriendService _friendService;
+        private Game _game;
+
         private readonly IReviewRepository _reviewRepo;
-        private readonly IPublisherRepository _publisherRepo;
 
-
-        private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
-        public GameDetail(Game game, Model.User user)
 
 
+        public MyGame(User user)
         {
             InitializeComponent();
+            _user = user;
+            _gamerRepo = new GamerRepository();
+            _notiRepo = new NotiRepository();
+            _friendRepo = new FriendRepository();
+            _gameRepo = new GameRepository();
+            _genreRepo = new GenreRepository();
+            _publisherRepo = new PublisherRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
 
-            _gameRepo = new GameRepository();
 
             _userRepo = new UserRepository();
 
-            _genreRepo = new GenreRepository();
-            _reviewRepo = new ReviewRepository();
-            _publisherRepo = new PublisherRepository();
-            _gamerRepo = new GamerRepository();
-            InitializeData(game, user);
 
+            _reviewRepo = new ReviewRepository();
+
+            InitializeData(user);
+        }
+
+        private async void InitializeData(User user)
+        {
+            if (user.Role == 3)
+            {
+                _gamer = _gamerRepo.GetGamerByUser(_user);
+            }
+            if (user.Role == 2)
+            {
+                _gamePublisher = _publisherRepo.GetPublisherByUser(_user);
+            }
+            // Fetch top games and genres asynchronously
+
+            var genres = await _genreRepo.GetGenres();    // Assuming GetGenres() is async
+
+            if (user.Role == 3) // Role 3 - Gamer
+            {
+
+                var games = await _gameRepo.GetGamesByGamer(_gamer);
+
+                var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
+                var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
+                DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games);
+            }
+            else if (user.Role == 2) // Role 2 - Publisher
+            {
+                _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
+
+            }
 
         }
-        private async void InitializeData(Game game, Model.User user)
+        private async void InitializeGamerData(Game game, Model.User user)
         {
             _game = game;
             if (user.Role == 3)
@@ -68,6 +105,7 @@ namespace FLauncher.Views
             // Set the DataContext to your ViewModel            
             if (_gamer != null)
             {
+                var games = await _gameRepo.GetGamesByGamer(_gamer);
                 var friendwithsamegame = await _friendRepo.GetFriendWithTheSameGame(game, _gamer);
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
@@ -79,7 +117,7 @@ namespace FLauncher.Views
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
                 var isUpdate = await _gamerRepo.IsUpdate(game, _gamer);
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
-                DataContext = new GameDetailViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate);
+                DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games);
             }
             else if (_gamePublisher != null)
             {
@@ -96,6 +134,26 @@ namespace FLauncher.Views
             //To move the window on mouse down
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+
+        private void minimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void maximizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            //First detect if windows is in normal state or maximized
+            if (WindowState == WindowState.Normal)
+                WindowState = WindowState.Maximized;
+            else
+                WindowState = WindowState.Normal;
+        }
+
+        private void closeButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Close the App
+            Close();
         }
         private void Download_Click(object sender, RoutedEventArgs e)
         {
@@ -144,25 +202,9 @@ namespace FLauncher.Views
             }
         }
 
-        private void minimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
-        }
 
-        private void maximizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            //First detect if windows is in normal state or maximized
-            if (WindowState == WindowState.Normal)
-                WindowState = WindowState.Maximized;
-            else
-                WindowState = WindowState.Normal;
-        }
 
-        private void closeButton_Click(object sender, RoutedEventArgs e)
-        {
-            //Close the App
-            Close();
-        }
+
         private void Uninstall_Click(object sender, RoutedEventArgs e)
         {
             _gameRepo.Reinstall(_game, _gamer);
@@ -193,53 +235,12 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
             gameDetailPage.Show();
         }
-        
 
 
-          private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
+        private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
         {
-            var gameDetailPage = new TrackingNumberPlayer( _game);
+            var gameDetailPage = new TrackingNumberPlayer(_game);
             gameDetailPage.Show();
-        }
-        private void Achivement_Click(object sender, RoutedEventArgs e)
-        {
-            var gameDetailPage = new AchivementManagement(_user,_game);
-            gameDetailPage.Show();
-        }
-        private void Home_Click(object sender, MouseButtonEventArgs e)
-        {
-            CustomerWindow cus = new CustomerWindow(_user);
-            cus.Show();
-            this.Hide();
-            this.Close();
-        }
-        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-                searchGame_button(sender, e);
-            }
-        }
-        private void searchGame_button(object sender, RoutedEventArgs e)
-        {
-            var CurrentWin = _user;
-            string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
-            {
-                Search_input = string.Empty;
-            }
-            SearchWindow search = new SearchWindow(CurrentWin, Search_input, null, null);
-            search.Show();
-            this.Hide();
-            this.Close();
-        }
-        private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
-        {
-            var CurrentUser = _user;
-            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
-            serchwindow.Show();
-            this.Hide();
-            this.Close();
         }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
 
@@ -265,6 +266,7 @@ namespace FLauncher.Views
                 this.Close();
             }
         }
+
         private void DeleteLoginInfoFile()
         {
             string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
@@ -275,5 +277,46 @@ namespace FLauncher.Views
                 File.Delete(jsonFilePath);
             }
         }
+        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Create an instance of ProfileWindow and show it
+            _friendService = new FriendService(_friendRepo, _gamerRepo);
+
+            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            profileWindow.Show();
+            this.Hide();
+            this.Close();
+
+        }
+
+        private void GamesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Ensure the sender is a ListBox
+            if (sender is ListBox listBox)
+            {
+                // Get the selected game
+                var selectedGame = listBox.SelectedItem as Game;
+
+                // Check if a game is selected
+                if (selectedGame != null)
+                {
+                    // Access the game's properties
+                    InitializeGamerData(selectedGame, _user);
+
+                }
+            }
+        }
+
+
+        private void Home_Click(object sender, MouseButtonEventArgs e)
+        {
+            CustomerWindow cus = new CustomerWindow(_user);
+            cus.Show();
+            this.Hide();
+            this.Close();
+        }
+
+
+
     }
 }

@@ -16,19 +16,6 @@ namespace FLauncher
     /// </summary>
     public partial class App : Application
     {
-        private IServiceProvider _serviceProvider;
 
-       
-        
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            if (_serviceProvider is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-            base.OnExit(e);
-        }
     }
-
 }

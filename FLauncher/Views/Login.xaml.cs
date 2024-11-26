@@ -166,7 +166,7 @@ namespace FLauncher.Views
                 MessageBox.Show("Lỗi khi lưu thông tin người dùng: " + ex.Message);
             }
         }
-
+        
         private void txtEmail_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -183,7 +183,7 @@ namespace FLauncher.Views
             }
         }
 
-
+        
         private void PerformLogin(string UserEmail, string UserPassword)
         {
 
@@ -194,8 +194,8 @@ namespace FLauncher.Views
             if (accountType == "admin")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách quản trị viên!");
-                MainWindow adminWindow = new MainWindow();
-                adminWindow.Show();
+                //MainWindow adminWindow = new MainWindow();
+                //adminWindow.Show();
 
                 // Close the Login window
                 this.Close();

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver;
 using FLauncher.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FLauncher.DAO
 {
@@ -82,6 +83,42 @@ namespace FLauncher.DAO
                              .Where(b => b.GameId == gamer.GamerId)
                              .ToList();
         }
+
+        public async Task<bool> IsUpdate(Game game, Gamer gamer)
+        {
+            if (game == null || gamer == null)
+                return false;
+
+            // Fetch the download record for the gamer and game
+            var downloadRecord = await _dbContext.Downloads
+                .FirstOrDefaultAsync(d => d.GameId == game.GameID && d.GamerId == gamer.GamerId);
+
+            if (downloadRecord == null)
+            {
+                // No download record exists, so the game is not updated
+                return false;
+            }
+
+            DateTime downloadTime = downloadRecord.TimeDownload;
+
+            // Fetch the last update time for the game
+            var updateRecord = await _dbContext.Updates
+       .OrderByDescending(d => d.UpdateTimeString) // Use UpdateTimeString for ordering
+       .FirstOrDefaultAsync(u => u.GameId == game.GameID);
+
+            if (updateRecord == null)
+            {
+                // No updates have been made for this game
+                return true;
+            }
+
+            DateTime lastUpdateTime = updateRecord.UpdateTime;
+
+            // Check if the download time is after the last update time
+            return downloadTime >= lastUpdateTime;
+        }
+
+
 
 
     }

@@ -18,7 +18,19 @@ namespace FLauncher.ViewModel
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
         public ObservableCollection<Gamer> Friends { get; }
-        public ObservableCollection<Model.Message> Messages { get; set; }
+        private ObservableCollection<Model.Message> _Messages { get; set; }
+        public ObservableCollection<Model.Message> Messages
+        {
+            get => _Messages;
+            set
+            {
+                if (_Messages != value)
+                {
+                    _Messages = value;
+                    OnPropertyChanged(nameof(Messages));
+                }
+            }
+        }
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
@@ -30,15 +42,7 @@ namespace FLauncher.ViewModel
             Messages = new ObservableCollection<Model.Message>(messages);
         }
 
-        //chat
-        //public void LoadMessages(List<Model.Message> messages)
-        //{
-        //    Messages.Clear();
-        //    foreach (var message in messages)
-        //    {
-        //        Messages.Add(message);
-        //    }
-        //}
+        
 
         // Property changed event to notify UI
         public event PropertyChangedEventHandler PropertyChanged;
@@ -47,6 +51,17 @@ namespace FLauncher.ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void UpdateMessages(List<Model.Message> newMessages)
+        {
+            Messages.Clear(); // Làm mới danh sách tin nhắn
+            foreach (var message in newMessages)
+            {
+                Messages.Add(message);
+            }
+
+            OnPropertyChanged(nameof(Messages));
         }
     }
 }
