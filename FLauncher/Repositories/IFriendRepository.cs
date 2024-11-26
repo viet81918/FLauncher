@@ -24,10 +24,14 @@ namespace FLauncher.Repositories
         // Get a specific friendship (if exists) between two gamers
         Task<Friend> GetFriendship(string gamerId1, string gamerId2);
 
+        Task<bool> IsFriend(string gamerId, string friendId);
+
         // Get friends who have the same game as the given gamer
         Task<IEnumerable <Gamer>> GetFriendWithTheSameGame(Game game, Gamer gamer);
         Task<IEnumerable<Gamer>> GetListFriendForGamer(string gamerId);
 
         List<Gamer> GetAllFriendByGamer(Gamer gamer);
+
+        Task Unfriend(string requestId, string acceptId);
     }
 }

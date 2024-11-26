@@ -23,7 +23,7 @@ namespace FLauncher.Repositories
 
         public async Task<Friend> GetFriendRequest(string requestId, string acceptId)
         {
-            return await _friendDAO.FindFriendRequest(requestId, acceptId);
+            return await _friendDAO.GetFriendRequest(requestId, acceptId);
         }
 
         public async Task UpdateFriendRequestStatus(string requestId, string acceptId, bool isAccepted)
@@ -43,7 +43,7 @@ namespace FLauncher.Repositories
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
-            // Use the DAO method to retrieve the list of friends asynchronously
+            
             return await _friendDAO.GetFriendsForGamer(gamer);
         }
 
@@ -62,7 +62,15 @@ namespace FLauncher.Repositories
             return await _friendDAO.GetListFriendForGamer(gamerId);
         }
 
+        public async Task<bool> IsFriend(string gamerId, string friendId)
+        {
+            return await _friendDAO.IsFriend(gamerId, friendId);
+        }
 
+        public async Task Unfriend(string requestId, string acceptId)
+        {
+             await _friendDAO.Unfriend(requestId, acceptId);
+        }
 
 
 
