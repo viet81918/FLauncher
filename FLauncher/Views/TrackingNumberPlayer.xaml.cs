@@ -20,6 +20,7 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using FLauncher.Model;
 using FLauncher.Repositories;
+using System.Xml.Linq;
 
 namespace FLauncher.Views
 {
@@ -34,6 +35,7 @@ namespace FLauncher.Views
         private IGameRepository _gameRepo;
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly TrackingPlayers trackingPlayers;
+        private Game _game;
         private PlotModel _plotModel;
         public PlotModel PlotModel
         {
@@ -49,7 +51,7 @@ namespace FLauncher.Views
         {
             InitializeComponent();
             DataContext = this;
-
+            _game = game;
             _gameRepo = new GameRepository();
             trackingPlayers = _gameRepo.GetTrackingFromGame(game).Result;
 
@@ -117,28 +119,41 @@ namespace FLauncher.Views
             PlotModel.InvalidatePlot(true);
         }
 
-        private void UpdatePlot(object sender, ElapsedEventArgs e)
+        private async void UpdatePlot(object sender, ElapsedEventArgs e)
         {
             var currentTime = DateTime.Now;
 
-            // Update with real-time data
-            var players = trackingPlayers.CurrentPlayer; // Replace with live data source
-
-            // Add a new data point
-            _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), players));
-
-            // Adjust axis range
-            var timeAxis = PlotModel.Axes[0] as DateTimeAxis;
-
-            if (timeAxis != null)
+            try
             {
-                timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddMinutes(1));
-                timeAxis.Minimum = DateTimeAxis.ToDouble(_startOfDay);
-            }
+                // Fetch the latest data from the database
+                var latestTracking = await _gameRepo.GetTrackingFromGame(_game);
 
-            // Refresh the plot
-            PlotModel.InvalidatePlot(true);
+                if (latestTracking != null)
+                {
+                    var players = latestTracking.CurrentPlayer;
+
+                    // Add a new data point
+                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), players));
+
+                    // Adjust axis range
+                    var timeAxis = PlotModel.Axes[0] as DateTimeAxis;
+                    if (timeAxis != null)
+                    {
+                        timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddMinutes(1));
+                        timeAxis.Minimum = DateTimeAxis.ToDouble(_startOfDay);
+                    }
+
+                    // Refresh the plot
+                    PlotModel.InvalidatePlot(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors in fetching data
+                Console.WriteLine($"Error updating plot: {ex.Message}");
+            }
         }
+
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
