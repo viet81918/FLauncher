@@ -48,5 +48,6 @@ namespace FLauncher.Repositories
             string lockImagePath,
             Achivement achievement);
         Task DeleteAchievement(Achivement achievement);
+        Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher);
     }
 }

@@ -57,6 +57,13 @@ namespace FLauncher.Views
             {
                 _selectedFriend = selectedFriend;
                 // Load tin nhắn với bạn bè được chọn
+                var viewModel = DataContext as MessageWindowViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.SelectedFriend.Clear();
+                    viewModel.SelectedFriend.Add(selectedFriend); // Thêm người bạn đã chọn
+                }
+
                 Messages = _messageRepo.GetMessages(_gamer.GamerId, _selectedFriend.GamerId);
                 ChatMessages.ItemsSource = Messages;
                 ScrollToBottom();
@@ -225,6 +232,14 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
+            this.Hide();
+            this.Close();
+        }
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -236,7 +251,7 @@ namespace FLauncher.Views
         {
             var CurrentWin = _user;
             string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
+            if (Search_input == "search name game")
             {
                 Search_input = string.Empty;
             }

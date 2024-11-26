@@ -31,6 +31,9 @@ namespace FLauncher.ViewModel
                 }
             }
         }
+        public ObservableCollection<Gamer> SelectedFriend { get; }
+        
+
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
@@ -40,6 +43,7 @@ namespace FLauncher.ViewModel
             Gamer = gamer;
             Friends = new ObservableCollection<Gamer>(friends);
             Messages = new ObservableCollection<Model.Message>(messages);
+            SelectedFriend = new ObservableCollection<Gamer>();
         }
 
         
