@@ -665,6 +665,22 @@
                                         </MultiBinding>
                                     </Button.Visibility>
                                 </Button>
+
+                                <Button Content="Achivement"
+         Width="120"
+         Height="40"
+         Background="Goldenrod"
+         Foreground="Silver"
+         FontWeight="Bold"
+         BorderBrush="Transparent"
+         Click="Achivement_Click">
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                            <Binding Path="IsPublished" />
+                                            <Binding Path="IsPublished" />
+                                        </MultiBinding>
+                                    </Button.Visibility>
+                                </Button>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

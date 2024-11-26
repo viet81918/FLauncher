@@ -201,6 +201,11 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingNumberPlayer( _game);
             gameDetailPage.Show();
         }
+        private void Achivement_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new AchivementManagement(_user,_game);
+            gameDetailPage.Show();
+        }
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);

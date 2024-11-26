@@ -1,0 +1,26 @@
+﻿<Window x:Class="FLauncher.Views.AddAchievementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Achievement" Height="400" Width="600">
+    <StackPanel Margin="20">
+        <TextBlock Text="Achievement ID:" />
+        <TextBox Name="AchievementIdTextBox" Margin="0,5,0,10" />
+
+        <TextBlock Text="Name:" />
+        <TextBox Name="NameTextBox" Margin="0,5,0,10" />
+
+        <TextBlock Text="Description:" />
+        <TextBox Name="DescriptionTextBox" Margin="0,5,0,10" />
+
+        <TextBlock Text="Trigger:" />
+        <TextBox Name="TriggerTextBox" Margin="0,5,0,10" />
+
+        <TextBlock Text="Unlock Icon:" />
+        <Button Name="BrowseUnlockIconButton" Content="Browse" Click="BrowseUnlockIcon_Click" Margin="0,5,0,10" />
+
+        <TextBlock Text="Lock Icon:" />
+        <Button Name="BrowseLockIconButton" Content="Browse" Click="BrowseLockIcon_Click" Margin="0,5,0,10" />
+
+        <Button Name="SaveAchievementButton" Content="Save Achievement" Click="SaveAchievement_Click" />
+    </StackPanel>
+</Window>

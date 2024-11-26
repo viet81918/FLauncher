@@ -237,6 +237,11 @@ namespace FLauncher.Views
         }
 
 
+        private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new TrackingNumberPlayer(_game);
+            gameDetailPage.Show();
+        }
         private void messageButton_Click(Object sender, MouseButtonEventArgs e)
 
         {

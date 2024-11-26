@@ -126,7 +126,7 @@ namespace FLauncher.DAO
                     HttpClientInitializer = credential
                 });
 
-                // 3. Lấy file ID từ link (for direct file download)
+                // 3. Lấy file ID từ link (for direct file   download)
                 string fileId = GetFileIdFromLink(game.GameLink);
                 if (string.IsNullOrEmpty(fileId))
                 {
@@ -157,7 +157,6 @@ namespace FLauncher.DAO
                 // Tính kích thước file sau khi tải xong
                 FileInfo fileInfo = new FileInfo(rarFilePath);
                 double fileSizeInMB = Math.Round(fileInfo.Length / (1024.0 * 1024.0), 2); // Tính kích thước (MB)
-
                 // Notify on successful download
                 MessageBox.Show($"Tải file RAR hoàn tất: {rarFilePath}");
 
@@ -610,66 +609,7 @@ namespace FLauncher.DAO
                 return null;
             }
         }
-        public async Task<IEnumerable<Achivement>> GetAchivementFromGame(Game game)
-        {
-
-            return await _dbContext.Achivements.Where(c => c.GameId == game.GameID).ToListAsync();
-        }
-        public async Task<IEnumerable<UnlockAchivement>> GetUnlockAchivements(IEnumerable<Achivement> achivements, Gamer gamer)
-        {
-            // Get the AchievementId and GameId from the list of achievements
-            var achievementIds = achivements.Select(a => a.AchivementId).Distinct();
-            var gameIds = achivements.Select(a => a.GameId).Distinct();
-
-            // Query the UnlockAchivements based on multiple AchievementId and GameId
-            return await _dbContext.UnlockAchivements
-                .Where(c => c.GamerId == gamer.GamerId &&
-                            achievementIds.Contains(c.AchievementId) &&
-                            gameIds.Contains(c.GameId))
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer)
-        {
-            // Lấy danh sách AchievementId từ danh sách achievements
-            var achievementIds = achivements.Select(a => a.AchivementId).Distinct();
-            var gameIds = achivements.Select(a => a.GameId).Distinct();
-
-            // Lấy danh sách các UnlockAchivement đã được gamer unlock
-            var unlockedAchievementIds = await _dbContext.UnlockAchivements
-                .Where(ua => ua.GamerId == gamer.GamerId &&
-                             achievementIds.Contains(ua.AchievementId) &&
-                             gameIds.Contains(ua.GameId))
-                .Select(ua => ua.AchievementId)
-                .Distinct()
-                .ToListAsync();
-
-            // Lấy danh sách các Achivement chưa được unlock (lock achievement)
-            var lockedAchievements = await _dbContext.Achivements
-                .Where(a => achievementIds.Contains(a.AchivementId) &&
-                            gameIds.Contains(a.GameId) &&
-                            !unlockedAchievementIds.Contains(a.AchivementId))
-                .ToListAsync();
-
-            return lockedAchievements;
-        }
-
-        public async Task<IEnumerable<Achivement>> GetAchivementsFromUnlocks(IEnumerable<UnlockAchivement> unlockAchivements)
-        {
-            // Lấy danh sách AchievementId và GameId từ unlockAchivements
-            var achievementIds = unlockAchivements.Select(x => x.AchievementId).Distinct();
-            var gameIds = unlockAchivements.Select(x => x.GameId).Distinct(); // Đổi tên từ gameId thành gameIds
-
-            // Truy vấn danh sách Achivements dựa vào AchievementId và GameId
-            var result = await _dbContext.Achivements
-                .Where(a => achievementIds.Contains(a.AchivementId) && gameIds.Contains(a.GameId))
-                .ToListAsync();
-
-            return result;
-        }
-        public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
-        {
-            return await _dbContext.Achivements.FirstOrDefaultAsync(c => c.AchivementId == unlock.AchievementId);
-        }
+       
         public async Task Uninstall_Game(Gamer gamer, Game game)
         {
             // Assuming _dbContext is your database context for MongoDB or any other repository context

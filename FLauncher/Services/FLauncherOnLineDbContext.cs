@@ -27,6 +27,7 @@ namespace FLauncher.Services
         public DbSet<TrackingRecords> TrackingsTime { get; init; }
         public DbSet<TrackingPlayers> TrackingPlayers { get; init; }
         public DbSet<Achivement> Achivements { get; init; }
+        public DbSet<UnlockAchivement> UnlockAchivements { get; init; }
         public DbSet<Buy> Bills { get; init; }
         public DbSet<GamePublisher> GamePublishers { get; init; }
         public DbSet<Game> Games { get; init; }
@@ -41,7 +42,7 @@ namespace FLauncher.Services
 
             modelBuilder.Entity<TrackingPlayers>();
             modelBuilder.Entity<Achivement>();
-
+            modelBuilder.Entity<UnlockAchivement>();
             modelBuilder.Entity<Buy>();
 
             modelBuilder.Entity<GamePublisher>();
