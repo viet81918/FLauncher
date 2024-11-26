@@ -1,24 +1,16 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.IO;
 using FLauncher.ViewModel;
 using FLauncher.DAO;
 using MongoDB.Bson;
 using InternalVisibleTo;
+using System.Windows.Threading;
 
 
 namespace FLauncher.Views
@@ -35,6 +27,8 @@ namespace FLauncher.Views
         private readonly UserRepository _userRepo;
         private readonly MessageRepository _messageRepo;
         private Gamer _selectedFriend;
+
+        private DispatcherTimer _messageUpdateTimer;
         public MessageWindow(Gamer gamer)
         {
             InitializeComponent();
@@ -44,10 +38,17 @@ namespace FLauncher.Views
             _user = _userRepo.GetUserByGamer(gamer);
             _gamer = gamer;
             var listFriend = _friendRepo.GetAllFriendByGamer(gamer);
-             Messages = new List<Model.Message>();
-             DataContext = new MessageWindowViewModel(gamer, listFriend, Messages);
+            Messages = new List<Model.Message>();
+            DataContext = new MessageWindowViewModel(gamer, listFriend, Messages);
 
             lvFriends.ItemsSource = listFriend;
+
+            // Khởi tạo và cấu hình Timer
+            _messageUpdateTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2) // Cập nhật mỗi 2 giây
+            };
+            _messageUpdateTimer.Tick += MessageUpdateTimer_Tick;
         }
 
         private void lvFriends_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -56,8 +57,17 @@ namespace FLauncher.Views
             {
                 _selectedFriend = selectedFriend;
                 // Load tin nhắn với bạn bè được chọn
+                var viewModel = DataContext as MessageWindowViewModel;
+                if (viewModel != null)
+                {
+                    viewModel.SelectedFriend.Clear();
+                    viewModel.SelectedFriend.Add(selectedFriend); // Thêm người bạn đã chọn
+                }
+
                 Messages = _messageRepo.GetMessages(_gamer.GamerId, _selectedFriend.GamerId);
                 ChatMessages.ItemsSource = Messages;
+                ScrollToBottom();
+                _messageUpdateTimer.Start();
             }
         }
         private void SendMessage_Click(object sender, RoutedEventArgs e)
@@ -77,17 +87,38 @@ namespace FLauncher.Views
                         TimeString = DateTime.Now
                     };
                     _messageRepo.SendMessage(message);
-
-                    //// Cập nhật danh sách tin nhắn ngay lập tức
-                    //((MessageWindowViewModel)DataContext).Messages.Add(message);
+                    Messages.Add(message);
                     Messages = _messageRepo.GetMessages(_gamer.GamerId, selectedFriend.GamerId);
+                    //ChatMessages.ItemsSource = null; // Đặt lại ItemsSource để cập nhật UI
                     ChatMessages.ItemsSource = Messages;
+
+                    /*
+                     
+                    ChatMessages.ItemsSource = Messages;
+                     */
+                    ScrollToBottom();
                     // Xóa nội dung textbox
                     txtMessage.Clear();
                 }
             }
         }
+        private  void MessageUpdateTimer_Tick(object? sender, EventArgs e)
+        {
+            var selectedFriendU = lvFriends.SelectedItem as Gamer;
+            if (selectedFriendU != null)
+            {
+                // Lấy tin nhắn mới nhất
+                var updatedMessages = _messageRepo.GetMessages(_gamer.GamerId, selectedFriendU.GamerId);
 
+                if (updatedMessages.Count != Messages.Count) // So sánh số lượng tin nhắn
+                {
+                    Messages = updatedMessages;
+                    ChatMessages.ItemsSource = null;
+                    ChatMessages.ItemsSource = Messages;
+                    ScrollToBottom();
+                }
+            }
+        }
         private void message_keydown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -187,7 +218,7 @@ namespace FLauncher.Views
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
             // Create an instance of ProfileWindow and show it
-            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
             this.Hide();
             this.Close();
@@ -198,6 +229,14 @@ namespace FLauncher.Views
         {
             CustomerWindow cus = new CustomerWindow(_user);
             cus.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
             this.Hide();
             this.Close();
         }
@@ -212,7 +251,7 @@ namespace FLauncher.Views
         {
             var CurrentWin = _user;
             string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
+            if (Search_input == "search name game")
             {
                 Search_input = string.Empty;
             }
@@ -229,5 +268,11 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
+
+        private void ScrollToBottom()
+        {
+            ChatScrollViewer.ScrollToEnd();
+        }
+
     }
 }

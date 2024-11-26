@@ -10,7 +10,7 @@
 
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#f1effb"/>
+                        <Setter Property="Background" Value="transparent"/>
                         <Setter Property="BorderBrush" Value="#6f52f9"/>
                     </Trigger>
 
@@ -35,7 +35,7 @@
                                FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{Binding ElementName=item,Path=Color}"/>
 
                     <Ellipse>
-                        <Ellipse.Style>
+                        <!--<Ellipse.Style>
                             <Style TargetType="Ellipse">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding ElementName=item,Path=Image}" Value="{x:Null}">
@@ -43,7 +43,7 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Ellipse.Style>
+                        </Ellipse.Style>-->
 
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding ElementName=item, Path=Image}"/>
@@ -54,7 +54,7 @@
             </Border>
 
             <StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="15 0 0 0">
-                <TextBlock Text="{Binding ElementName=item,Path=Title}" Foreground="red" FontSize="14" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding ElementName=item,Path=Title}" Foreground="Wheat" FontSize="14" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding ElementName=item,Path=Message}" Foreground="#8b8b8b" Margin="0 3 0 0"/>
 
             </StackPanel>

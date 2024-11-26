@@ -9,7 +9,7 @@ namespace FLauncher.ViewModel
     public class MyGameViewModel : INotifyPropertyChanged
     {
         public Gamer Gamer { get; }
-
+        public GamePublisher Publisher { get; }
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
         public ObservableCollection<Notification> UnreadNotifications { get; }
 
@@ -84,6 +84,47 @@ namespace FLauncher.ViewModel
 
 
         }
+        /*data publisher*/
+        public MyGameViewModel(GamePublisher gamerPub, IEnumerable<Game> myGames)
+        {
+            GamePublisher = gamerPub;           
+            MyGames = new ObservableCollection<Game>(myGames);
+        }
+        public MyGameViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews, GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers, IEnumerable<Game> myGames)
+        {
+            IsGamer = false;
+            IsPublisher = true;
+            IsPublished = isPublished;
+            IsBuy = false;
+            IsNotBuy = false;
+            MyGames = new ObservableCollection<Game>(myGames);
+            Game = game;
+            Genres = new ObservableCollection<Genre>(genres);
+            Reviews = new ObservableCollection<Review>(reviews);
+            Updates = new ObservableCollection<Update>(updates);
+            Gamers = new ObservableCollection<Gamer>(reviewers);
+            _gamePublisher = GamePublisher;
+            Achivement = new ObservableCollection<Achivement>(Achivements);
+            // Load the GamePublisher asynchronously
+            LoadGamePublisher(game);
+            ReviewGamerViewModels = new ObservableCollection<ReviewGamerViewModel>();
+            foreach (var review in reviews)
+            {
+                var reviewer = reviewers.FirstOrDefault(a => a.GamerId == review.GamerId);
+                if (reviewer != null)
+                {
+                    ReviewGamerViewModels.Add(new ReviewGamerViewModel
+                    {
+                        Name = reviewer.Name,
+                        AvatarLink = reviewer.AvatarLink,
+                        Rating = review.Rating,
+                        Description = review.Description
+                    });
+                }
+            }
+
+        }
+
         public MyGameViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate, IEnumerable<Game> myGames)
         {
 

@@ -1,6 +1,8 @@
 ﻿using FLauncher.Repositories;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -46,10 +48,7 @@ namespace FLauncher.Views
                     System.IO.File.Delete(jsonFilePath); // Xóa tệp nếu hết hạn
                 }
             }
-            else
-            {
-                MessageBox.Show("khong tim thay file loginInfo.json");
-            }
+            
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -74,7 +73,7 @@ namespace FLauncher.Views
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(loginInfo, Formatting.Indented);
                 System.IO.File.WriteAllText(jsonFilePath, json);
-                MessageBox.Show("da luu");
+                MessageBox.Show("da luu tai khoan dang nhap");
             }
             PerformLogin(enteredUserEmail, enteredPassword);
         }
@@ -202,6 +201,12 @@ namespace FLauncher.Views
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách gamer!");
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
+
+                // Initialize the session for the gamer
+                SessionManager.InitializeSession(loggedInUser, _gamerRepo);
+                Debug.WriteLine($"Session initialized with GamerId: {SessionManager.LoggedInGamerId}");
+
+
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
 
@@ -229,6 +234,8 @@ namespace FLauncher.Views
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true; // Đảm bảo sự kiện không bị xử lý thêm
         }
+      
+
 
     }
 }

@@ -384,7 +384,8 @@ Margin="0,0,20,0">
                 Content="{StaticResource home_icon}"
                     MouseLeftButtonUp="Home_Click"/>
                 <ListBoxItem
-                Content="{StaticResource games_icon}"/>
+                Content="{StaticResource games_icon}"
+                    MouseLeftButtonUp="MyGame_Click"/>
                 <ListBoxItem
                 Content="{StaticResource profile_icon}"
                     MouseLeftButtonUp="ProfileIcon_Click"/>
@@ -423,7 +424,16 @@ Margin="0,0,20,0">
                    Foreground="Gray"
                    Margin="8 0 0 0"/>
 
-
+            <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <ItemsControl x:Name="SelectedFriend" ItemsSource="{Binding SelectedFriend}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <cc:Item Title="{Binding Name}" Image="{Binding AvatarLink}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+                 
             <ListView
                 x:Name="lvFriends"
                 ItemsSource="{Binding Friends}"
@@ -441,7 +451,7 @@ Margin="0,0,20,0">
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-                <ScrollViewer>
+                <ScrollViewer x:Name="ChatScrollViewer">
 
                     <ItemsControl Margin="10 5 10 10" x:Name="ChatMessages" Background="Transparent">
                         <ItemsControl.ItemTemplate>
@@ -494,13 +504,7 @@ Margin="0,0,20,0">
                         </Button>
 
                     </StackPanel>
-                    <!--<Grid>
-                        <TextBlock Margin="15,0,120,0" VerticalAlignment="Center" Foreground="#868686" Panel.ZIndex="1"
-                                   IsHitTestVisible="False" Text="Type your message..."
-                                   Visibility="{Binding ElementName=txtMessage, Path=Text.IsEmpty}" Height="40"/>
-                        <TextBox x:Name="txtMessage" Style="{StaticResource messageTextBox}" />
-                    </Grid>-->
-                    <!--send Button-->
+                    
 
 
                 </Grid>
