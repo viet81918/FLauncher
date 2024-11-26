@@ -29,7 +29,7 @@ namespace FLauncher.Repositories
         {
             return await _gamerDAO.GetGamersByIds(gamerIds);
 
-
+        }
         public async Task<IEnumerable<Gamer>> GetGamersFromGame(Game game)
         {
            return await _gamerDAO.GetGamersFromGame(game);

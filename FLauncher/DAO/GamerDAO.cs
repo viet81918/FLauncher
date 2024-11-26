@@ -37,8 +37,15 @@ namespace FLauncher.DAO
 
         public Gamer GetGamerByUser(User user)
         {
+            if (user?.ID == null)
+            {
+                throw new ArgumentNullException(nameof(user.ID), "User ID cannot be null.");
+            }
+
             return _dbContext.Gamers.First(c => c.GamerId == user.ID);
         }
+
+
         public Gamer GetGamerById(string Id)
         {
             return _dbContext.Gamers.First(c => c.GamerId == Id);
