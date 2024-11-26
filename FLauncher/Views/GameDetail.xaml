@@ -494,12 +494,13 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Bottom"
                                     Margin="10,0,0,20"
-                                    Orientation="Horizontal">
+                                    Orientation="Horizontal"
+                                    Cursor="Hand">
                             <ItemsControl ItemsSource="{Binding Genres}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <cc:tags Margin="0,0,5,0"
-                                                 Text="{Binding TypeOfGenre}" />
+                                                 Text="{Binding TypeOfGenre}" MouseDown="OnTagClick"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

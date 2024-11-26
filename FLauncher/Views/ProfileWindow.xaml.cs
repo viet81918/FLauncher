@@ -33,6 +33,7 @@ namespace FLauncher.Views
             Debug.WriteLine("ProfileWindow constructor called.");
 
             InitializeComponent();
+            _userRepo = new UserRepository();
             _user = _userRepo.GetUserByGamer(gamer);
             if (_user.Role == 2) // Giả sử 1 là Publisher
             {
