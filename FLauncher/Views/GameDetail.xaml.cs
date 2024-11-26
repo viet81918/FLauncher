@@ -80,6 +80,7 @@ namespace FLauncher.Views
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
                 var Unlock = await _gameRepo.GetUnlockAchivementsFromGame(Achivements, _gamer);
                 var UnlockAchivements = await _gameRepo.GetAchivementsFromUnlocks(Unlock);
+              
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);

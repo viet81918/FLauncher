@@ -39,12 +39,16 @@ namespace FLauncher.DAO
             var achievementIds = achivements.Select(a => a.AchivementId).Distinct();
             var gameIds = achivements.Select(a => a.GameId).Distinct();
 
+
             // Query the UnlockAchivements based on multiple AchievementId and GameId
             return await _dbContext.UnlockAchivements
                 .Where(c => c.GamerId == gamer.GamerId &&
                             achievementIds.Contains(c.AchievementId) &&
                             gameIds.Contains(c.GameId))
                 .ToListAsync();
+
+           
+           
         }
         public async Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer)
         {

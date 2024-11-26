@@ -968,7 +968,7 @@
                     <StackPanel.Visibility>
                         <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
                             <Binding Path="IsBuy" />
-                            <Binding Path="IsGamer" />
+                            <Binding Path="IsGamer"/>
                         </MultiBinding>
                     </StackPanel.Visibility>
 
