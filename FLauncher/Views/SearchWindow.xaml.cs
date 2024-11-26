@@ -231,7 +231,7 @@ namespace FLauncher.Views
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
             // Create an instance of ProfileWindow and show it
-            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
             this.Hide();
             this.Close();
