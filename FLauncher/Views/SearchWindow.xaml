@@ -391,7 +391,7 @@
                 <ListBoxItem x:Name="searchButton" 
                          Content="{StaticResource search_icon}" 
                              IsSelected="True"/>
-                <ListBoxItem
+                <ListBoxItem x:Name="MessageButon"
                 Content="{StaticResource message_icon}"
                 MouseLeftButtonUp="messageButton_Click"/>
                 <!-- Add Log Out icon -->
@@ -477,12 +477,11 @@
                     
                 </Grid>
                 <!--Line 1-->
-                <StackPanel Orientation="Horizontal" Margin="45,45,45,45">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
                     <ItemsControl ItemsSource="{Binding AllGames}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="6"/>
-
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
 
@@ -496,7 +495,7 @@
                                     WindowsCompatible="True"
                                     MacCompatible="True"
                                     SteamCompatible="True"
-                                    Margin="0,10,15,10"
+                                    Margin="0,10,10,10"
                                     Effect="{StaticResource BottomShadowEffect}"
                                     MouseDown="TrendingCard_MouseDown" />
                             </DataTemplate>

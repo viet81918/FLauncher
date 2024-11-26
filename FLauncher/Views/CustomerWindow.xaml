@@ -415,7 +415,7 @@
                 <ListBoxItem x:Name="searchButton" 
                              Content="{StaticResource search_icon}" 
                              MouseLeftButtonUp="searchButton_Click"/>
-                <ListBoxItem
+                <ListBoxItem x:Name="MessageButon"
                     Content="{StaticResource message_icon}"
                     MouseLeftButtonUp="messageButton_Click"/>
                 <!-- Add Log Out icon -->
@@ -782,7 +782,7 @@
                     WindowsCompatible="True"
                     MacCompatible="True"
                     SteamCompatible="True"
-                    Margin="0,0,15,0"
+                    Margin="0,0,10,0"
                     Effect="{StaticResource BottomShadowEffect}"
                     MouseDown="TrendingCard_MouseDown" />
                             </DataTemplate>

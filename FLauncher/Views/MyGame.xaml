@@ -205,7 +205,9 @@
                           Fill="{StaticResource SecondaryBrush}"
                           Stretch="Uniform"
                           Height="15"
-                          Width="15" />
+                          Width="15"
+                          MouseLeftButtonUp="searchGame_button"
+                          Cursor="Hand"/>
 
                     <!--Search text-->
                     <TextBox x:Name="SearchTextBox"
@@ -213,10 +215,11 @@
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="{StaticResource SecondaryBrush}"
-                             Text="Search the store"
+                             Text="Search name game"
                              VerticalAlignment="Center"
                              GotFocus="SearchTextBox_GotFocus"
-                             LostFocus="SearchTextBox_LostFocus" />
+                             LostFocus="SearchTextBox_LostFocus"
+                             KeyDown="SearchTextBox_KeyDown"/>
                 </Grid>
                 <!--#endregion-->
 
@@ -355,7 +358,8 @@
                     </Style>
                 </ListBox.Resources>
 
-                <ListBoxItem Content="{StaticResource home_icon}" />
+                <ListBoxItem Content="{StaticResource home_icon}" 
+                             MouseLeftButtonUp="Home_Click"/>
 
                 <ListBoxItem Content="{StaticResource games_icon}"
                              IsSelected="True" />
@@ -367,9 +371,11 @@
 
                 <!--demo phân quyền-->
                 <ListBoxItem x:Name="settingsIconListBoxItem"
-                             Content="{StaticResource settings_icon}" />
+                             Content="{StaticResource search_icon}"
+                             MouseLeftButtonUp="searchButton_Click"/>
                 <ListBoxItem Content="{StaticResource message_icon}"
-                             MouseLeftButtonUp="messageButton_Click" />
+                             MouseLeftButtonUp="messageButton_Click"
+                             x:Name="MessageButon"/>
                 <!-- Add Log Out icon -->
                 <ListBoxItem Content="{StaticResource logout_icon}"
                              MouseLeftButtonUp="logoutButton_Click" />
@@ -734,48 +740,57 @@
                                            FontSize="22"
                                            FontWeight="SemiBold"
                                            Foreground="{StaticResource SecondaryBrush}"
-                                           Margin="0,10,10,236" />
-                                <ItemsControl ItemsSource="{Binding Updates}"
-                                              Margin="0,65,10,110">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="LightGray"
-                                                    Padding="10"
-                                                    Margin="0,5,0,0">
-                                                <StackPanel>
-                                                    <TextBlock Text="{Binding UpdateContent}"
+                                           Margin="2,5,10,236" />
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding Updates}"
+                                                Margin="0,65,10,110">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="LightGray"
+                                                        Padding="10"
+                                                        Margin="0,5,0,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding UpdateContent}"
                                                                FontSize="16"
                                                                FontWeight="Bold"
                                                                Foreground="Black" />
-                                                    <TextBlock Text="{Binding UpdateTimeString}"
+                                                        <TextBlock Text="{Binding UpdateTimeString}"
                                                                FontSize="12"
                                                                Foreground="DarkGray" />
-                                                </StackPanel>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Grid>
                             <StackPanel Orientation="Vertical"
-                                        VerticalAlignment="Top">
+            VerticalAlignment="Top">
                                 <Grid Background="DimGray"
-                                      Height="75"
-                                      Width="615"
-                                      Margin="0,20,15,20">
+          Height="75"
+          Width="615"
+          Margin="0,20,15,20">
                                     <StackPanel>
-                                         <!--Title TextBlock--> 
+                                        <!-- Title TextBlock with Visibility Control -->
                                         <TextBlock Text="Friends with the same game:"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="{StaticResource SecondaryBrush}"
-                                                   Margin="10,5,0,0" />
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource SecondaryBrush}"
+                       Margin="10,5,0,0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsGamer" />
 
-                                         <!--Container for the avatars--> 
-                                        <ItemsControl ItemsSource="{Binding Friendwiththesamegame}"
-                                                      MaxHeight="50"
-                                                      Margin="5">
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                        </TextBlock>
+                                        <!-- Container for the avatars (Visible if IsPublisher is false) -->
+                                        <ItemsControl Visibility="{Binding IsGamer, Converter={StaticResource BoolToVisibilityConverter}}"
+                          ItemsSource="{Binding Friendwiththesamegame}"
+                          MaxHeight="50"
+                          Margin="5">
                                             <ItemsControl.ItemsPanel>
-                                                 <!--UniformGrid to limit the display to max 12 avatars--> 
+                                                <!-- UniformGrid to limit the display to max 12 avatars -->
                                                 <ItemsPanelTemplate>
                                                     <UniformGrid Columns="12" />
                                                 </ItemsPanelTemplate>
@@ -783,14 +798,52 @@
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Border Width="40"
-                                                            Height="40"
-                                                            Margin="2"
-                                                            CornerRadius="20">
+                                Height="40"
+                                Margin="2"
+                                CornerRadius="20">
                                                         <Image Source="{Binding AvatarLink}"
-                                                               Width="40"
-                                                               Height="40"
-                                                               Stretch="UniformToFill"
-                                                               ClipToBounds="True" />
+                                   Width="40"
+                                   Height="40"
+                                   Stretch="UniformToFill"
+                                   ClipToBounds="True" />
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <TextBlock Text="Gamer : "
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource SecondaryBrush}"
+                       Margin="10,5,0,0">
+                                            <TextBlock.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsPublisher" />
+                                                </MultiBinding>
+                                            </TextBlock.Visibility>
+                                        </TextBlock>
+                                        <!-- Display Gamers if IsPublisher is true -->
+                                        <ItemsControl Visibility="{Binding IsPublisher, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}"
+                          ItemsSource="{Binding Gamers}"
+                          MaxHeight="50"
+                          Margin="5">
+                                            <ItemsControl.ItemsPanel>
+                                                <!-- UniformGrid to limit the display to max 12 avatars -->
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="12" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Width="40"
+                                Height="40"
+                                Margin="2"
+                                CornerRadius="20">
+                                                        <Image Source="{Binding AvatarLink}"
+                                   Width="40"
+                                   Height="40"
+                                   Stretch="UniformToFill"
+                                   ClipToBounds="True" />
                                                     </Border>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -800,20 +853,27 @@
 
 
                                 <Grid Background="DimGray"
-                                      Height="200"
-                                      Width="615"
-                                      Margin="0,0,15,0">
-                                    <TextBlock Text="Lock Achivement"
-                                               FontSize="10"
-                                               FontWeight="SemiBold"
-                                               Foreground="{StaticResource SecondaryBrush}"
-                                               Margin="0,10" />
+          Height="200"
+          Width="615"
+          Margin="0,0,15,0">
+                                    <TextBlock Text=" Achivement"
+                   FontSize="10"
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource SecondaryBrush}"
+                   Margin="0,10" />
 
-                                    <ItemsControl ItemsSource="{Binding LockAchivement}"
-                                                  Margin="0,30,0,0">
+                                    <ItemsControl   ItemsSource="{Binding LockAchivement}"
+                        Margin="0,30,0,0">
+                                        <ItemsControl.Visibility>
+
+                                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                <Binding Path="IsGamer" />
+                                                <Binding Path="IsBuy" />
+                                            </MultiBinding>
+                                        </ItemsControl.Visibility>
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                 <!--Sử dụng WrapPanel để hiển thị các biểu tượng achievement--> 
+                                                <!-- Sử dụng WrapPanel để hiển thị các biểu tượng achievement -->
                                                 <WrapPanel Orientation="Horizontal" />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
@@ -821,13 +881,13 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Border Width="40"
-                                                        Height="40"
-                                                        Margin="5">
+                            Height="40"
+                            Margin="5">
                                                     <Image Source="{Binding LockImageLink}"
-                                                           Width="40"
-                                                           Height="40">
+                               Width="40"
+                               Height="40">
                                                         <Image.ToolTip>
-                                                             <!--Hiển thị tên achievement khi di chuột vào--> 
+                                                            <!-- Hiển thị tên achievement khi di chuột vào -->
                                                             <ToolTip Content="{Binding Name}" />
                                                         </Image.ToolTip>
                                                     </Image>
@@ -835,63 +895,84 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
+
+
+                                    <ItemsControl   ItemsSource="{Binding Achivement}"
+                        Margin="0,30,0,0">
+                                        <ItemsControl.Visibility>
+
+                                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                <Binding Path="IsPublisher" />
+                                            </MultiBinding>
+                                        </ItemsControl.Visibility>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <!-- Sử dụng WrapPanel để hiển thị các biểu tượng achievement -->
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="40"
+                            Height="40"
+                            Margin="5">
+                                                    <Image Source="{Binding LockImageLink}"
+                               Width="40"
+                               Height="40">
+                                                        <Image.ToolTip>
+                                                            <!-- Hiển thị tên achievement khi di chuột vào -->
+                                                            <ToolTip Content="{Binding Name}" />
+                                                        </Image.ToolTip>
+                                                    </Image>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <ItemsControl   ItemsSource="{Binding Achivement}"
+                        Margin="0,30,0,0">
+                                        <ItemsControl.Visibility>
+
+                                            <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                <Binding Path="IsGamer" />
+                                                <Binding Path="IsNotBuy" />
+                                            </MultiBinding>
+                                        </ItemsControl.Visibility>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <!-- Sử dụng WrapPanel để hiển thị các biểu tượng achievement -->
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Width="40"
+                            Height="40"
+                            Margin="5">
+                                                    <Image Source="{Binding LockImageLink}"
+                               Width="40"
+                               Height="40">
+                                                        <Image.ToolTip>
+                                                            <!-- Hiển thị tên achievement khi di chuột vào -->
+                                                            <ToolTip Content="{Binding Name}" />
+                                                        </Image.ToolTip>
+                                                    </Image>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
                                 </Grid>
 
 
                             </StackPanel>
-
+                            <!--end-->
 
                         </StackPanel>
 
-                        <StackPanel Orientation="Vertical"
-                                    Margin="10,0,0,0">
-                            <TextBlock Text="Unlock Achievements:"
-                                       FontSize="20"
-                                       FontWeight="SemiBold"
-                                       Foreground="White"
-                                       Margin="0,10,0,10" />
-                            <ScrollViewer Height="275"
-                                          VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding UnlockAchivementViewModels}">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <WrapPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Margin="5"
-                                                        Width="150">
-                                                <Border Background="LightGray"
-                                                        CornerRadius="5"
-                                                        Padding="10">
-                                                    <StackPanel>
-                                                         <!--Icon Achievement--> 
-                                                        <Image Source="{Binding UnlockImageLink}"
-                                                               Width="100"
-                                                               Height="100"
-                                                               Stretch="Uniform" />
-                                                         <!--Tên Achievement--> 
-                                                        <TextBlock Text="{Binding Name}"
-                                                                   FontSize="14"
-                                                                   FontWeight="Bold"
-                                                                   Foreground="Black"
-                                                                   TextAlignment="Center"
-                                                                   Margin="0,5,0,0" />
-                                                         <!--Thời gian Unlock--> 
-                                                        <TextBlock Text="{Binding DateUnlockString}"
-                                                                   FontSize="12"
-                                                                   Foreground="DarkGray"
-                                                                   TextAlignment="Center" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </StackPanel>
+                        
 
                         <StackPanel Orientation="Vertical"
                                     Margin="10,0,0,0">

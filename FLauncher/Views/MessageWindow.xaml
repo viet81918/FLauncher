@@ -384,7 +384,8 @@ Margin="0,0,20,0">
                 Content="{StaticResource home_icon}"
                     MouseLeftButtonUp="Home_Click"/>
                 <ListBoxItem
-                Content="{StaticResource games_icon}"/>
+                Content="{StaticResource games_icon}"
+                    MouseLeftButtonUp="MyGame_Click"/>
                 <ListBoxItem
                 Content="{StaticResource profile_icon}"
                     MouseLeftButtonUp="ProfileIcon_Click"/>
@@ -423,7 +424,16 @@ Margin="0,0,20,0">
                    Foreground="Gray"
                    Margin="8 0 0 0"/>
 
-
+            <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <ItemsControl x:Name="SelectedFriend" ItemsSource="{Binding SelectedFriend}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <cc:Item Title="{Binding Name}" Image="{Binding AvatarLink}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+                 
             <ListView
                 x:Name="lvFriends"
                 ItemsSource="{Binding Friends}"

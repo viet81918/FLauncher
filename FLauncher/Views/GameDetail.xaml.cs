@@ -27,17 +27,23 @@ namespace FLauncher.Views
         private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
         public GameDetail(Game game, Model.User user)
-
-
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+            }
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
 
             _gameRepo = new GameRepository();
 
             _userRepo = new UserRepository();
-
+            _user = user;
             _genreRepo = new GenreRepository();
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
@@ -88,7 +94,7 @@ namespace FLauncher.Views
                 var gamers = await _gamerRepo.GetGamersFromGame(game);
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
 
-                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements, gamers);
+                DataContext = new GameDetailViewModel(game,genres ,reviews, publisher, updates, isPublish, Achivements, gamers);
             }
         }
 
@@ -214,6 +220,14 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
+            this.Hide();
+            this.Close();
+        }
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -225,7 +239,7 @@ namespace FLauncher.Views
         {
             var CurrentWin = _user;
             string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
+            if (Search_input == "search name game")
             {
                 Search_input = string.Empty;
             }

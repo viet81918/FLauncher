@@ -49,7 +49,7 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <!-- CheckBox cho mỗi genre -->
-                            <CheckBox Content="{Binding}" Margin="5" Foreground="Wheat"/>
+                            <TextBlock Text="{Binding}" Margin="5" Foreground="Wheat"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

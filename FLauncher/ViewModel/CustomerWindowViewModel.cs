@@ -10,7 +10,6 @@ namespace FLauncher.ViewModel
     {
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
-
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
         public ObservableCollection<Notification> UnreadNotifications { get; }
 

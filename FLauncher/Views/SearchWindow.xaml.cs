@@ -36,6 +36,14 @@ namespace FLauncher.Views
         public SearchWindow(User user, string inputSearch,List<string> GenreSearch, string PublisherSearch)
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+            }
             _userRepo = new UserRepository();
             _friendRepo = new FriendRepository();
             _publisherRepo = new PublisherRepository();
@@ -54,7 +62,6 @@ namespace FLauncher.Views
             var filterControl = FindName("filterControl") as FLauncher.CC.filterItems;
             if (filterControl != null)
             {
-                MessageBox.Show("Da thay file genre filter search window");
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
@@ -64,7 +71,6 @@ namespace FLauncher.Views
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
             if (filterPubControl != null)
             {
-                MessageBox.Show("Da thay file publisher filter search window");
                 filterPubControl.selectedPub += OnPubSelected;
             }
             else { MessageBox.Show("ko thay publisher filter search window"); }

@@ -33,6 +33,15 @@ namespace FLauncher
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+            }
+
             _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
@@ -47,7 +56,6 @@ namespace FLauncher
             var filterControl = FindName("filterControl") as FLauncher.CC.filterItems;
             if (filterControl != null)
             {
-                MessageBox.Show("Da thay file genre filter");
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
@@ -57,7 +65,6 @@ namespace FLauncher
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
             if (filterPubControl != null)
             {
-                MessageBox.Show("Da thay file publisher filter");
                 filterPubControl.selectedPub += OnPubSelected;
             }
             else { MessageBox.Show("ko thay publisher filter"); }
