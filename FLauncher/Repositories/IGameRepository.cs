@@ -28,6 +28,25 @@ namespace FLauncher.Repositories
         Task<TrackingPlayers> GetTrackingFromGame(Game game);
         Task<IEnumerable<Game>> GetAllGame();
         Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs);
-
+        Task<Achivement> AddAchivement(
+          string idobject,
+       string id,
+       string gameid,
+       string trigger,
+       string description,
+       string name,
+       string unlockImagePath,
+       string lockImagePath);
+        Task<Achivement> UpdateAchievement(
+            string idobject,
+            string id,
+            string gameid,
+            string trigger,
+            string description,
+            string name,
+            string unlockImagePath,
+            string lockImagePath,
+            Achivement achievement);
+        Task DeleteAchievement(Achivement achievement);
     }
 }

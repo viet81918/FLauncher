@@ -30,7 +30,7 @@ namespace FLauncher.Views
     {
         private System.Timers.Timer _timer;
         private LineSeries _series;
-        private DateTime _startTime;
+        private DateTime _startOfDay;
         private IGameRepository _gameRepo;
         public event PropertyChangedEventHandler PropertyChanged;
         private readonly TrackingPlayers trackingPlayers;
@@ -49,12 +49,15 @@ namespace FLauncher.Views
         {
             InitializeComponent();
             DataContext = this;
+
             _gameRepo = new GameRepository();
-            trackingPlayers =  _gameRepo.GetTrackingFromGame(game).Result;
-            _startTime = DateTime.Now;
+            trackingPlayers = _gameRepo.GetTrackingFromGame(game).Result;
+
+            // Start time is set to midnight of the current day
+            _startOfDay = DateTime.Today;
 
             // Initialize PlotModel
-            PlotModel = new PlotModel { Title = "Real-Time Tracking of Players" };
+            PlotModel = new PlotModel { Title = "Player Tracking (Since Midnight)" };
 
             // Setup Axes
             var timeAxis = new DateTimeAxis
@@ -62,11 +65,11 @@ namespace FLauncher.Views
                 Position = AxisPosition.Bottom,
                 StringFormat = "HH:mm:ss",
                 Title = "Time",
-                IntervalType = DateTimeIntervalType.Seconds,
-                IsPanEnabled = false,
-                IsZoomEnabled = false,
-                Minimum = DateTimeAxis.ToDouble(_startTime),
-                Maximum = DateTimeAxis.ToDouble(_startTime.AddMinutes(1))
+                IntervalType = DateTimeIntervalType.Hours,
+                IsPanEnabled = true,
+                IsZoomEnabled = true,
+                Minimum = DateTimeAxis.ToDouble(_startOfDay),
+                Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddMinutes(1))
             };
 
             var valueAxis = new LinearAxis
@@ -88,29 +91,49 @@ namespace FLauncher.Views
 
             PlotModel.Series.Add(_series);
 
+            // Load historical data
+            LoadHistoricalData();
+
             // Setup Timer
             _timer = new System.Timers.Timer(1000); // Update every second
             _timer.Elapsed += UpdatePlot;
             _timer.Start();
         }
 
+        private void LoadHistoricalData()
+        {
+            // Load historical data from trackingPlayers.TimePlayerChange
+            for (int i = 0; i < trackingPlayers.TimePlayerChange.Length; i++)
+            {
+                var time = trackingPlayers.TimePlayerChange[i];
+                var playerCount = trackingPlayers.PlayerChange[i];
+                if (time.Date == _startOfDay.Date) // Only include today's data
+                {
+                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(time), playerCount));
+                }
+            }
+
+            // Refresh the plot after loading historical data
+            PlotModel.InvalidatePlot(true);
+        }
+
         private void UpdatePlot(object sender, ElapsedEventArgs e)
         {
             var currentTime = DateTime.Now;
 
-            // Simulate the number of players
-            var players = trackingPlayers.CurrentPlayer; // Replace with real data
+            // Update with real-time data
+            var players = trackingPlayers.CurrentPlayer; // Replace with live data source
 
-            // Add data point
+            // Add a new data point
             _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), players));
 
-            // Adjust axis range if needed
+            // Adjust axis range
             var timeAxis = PlotModel.Axes[0] as DateTimeAxis;
 
             if (timeAxis != null)
             {
-                timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddSeconds(10));
-                timeAxis.Minimum = DateTimeAxis.ToDouble(currentTime.AddSeconds(-60));
+                timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddMinutes(1));
+                timeAxis.Minimum = DateTimeAxis.ToDouble(_startOfDay);
             }
 
             // Refresh the plot
@@ -128,5 +151,6 @@ namespace FLauncher.Views
             _timer.Dispose();
         }
     }
+
 
 }
