@@ -408,7 +408,8 @@
                     Content="{StaticResource home_icon}"
                     MouseLeftButtonUp="Home_Click"/>
                 <ListBoxItem
-                    Content="{StaticResource games_icon}"/>
+                    Content="{StaticResource games_icon}"
+                    MouseLeftButtonUp="MyGame_Click"/>
                 <ListBoxItem
                     Content="{StaticResource profile_icon}"
                     IsSelected="True"/>
@@ -417,7 +418,8 @@
                      MouseLeftButtonUp="searchButton_Click"/>
                 <ListBoxItem
                     Content="{StaticResource message_icon}"
-                    MouseLeftButtonUp="messageButton_Click"/>
+                    MouseLeftButtonUp="messageButton_Click"
+                    x:Name="MessageButon"/>
                 <ListBoxItem 
                     Content="{StaticResource logout_icon}"
                     MouseLeftButtonUp="logoutButton_Click"/>

@@ -27,6 +27,6 @@ namespace FLauncher.Repositories
         Task<IEnumerable<TrackingRecords>> GetTrackingFromGamerGame(Gamer gamer, Game game);
         Task<IEnumerable<Game>> GetAllGame();
         Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs);
-
+        Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher);
     }
 }

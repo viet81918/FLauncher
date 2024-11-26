@@ -407,7 +407,17 @@ namespace FLauncher.DAO
                                    .ToListAsync();
             return await games;
         }
+        public async Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher)
+        {
+            var gameByPub = await _dbContext.Publishcations
+                .Where(p => p.GamePublisherId == publisher.PublisherId)
+                .Select(p => p.GameId).ToListAsync();
 
+            var listGame = await _dbContext.Games
+                .Where(g => gameByPub.Contains(g.GameID)).ToListAsync();
+          
+            return listGame;
+        }
         public async Task PlayGame(Game game, Gamer gamer)
         {
             try

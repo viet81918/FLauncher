@@ -12,9 +12,9 @@
         <Expander Name="ListItems" VerticalAlignment="Top" ExpandDirection="Down" Margin="10">
             <Expander.Header>
                 <Grid
-        Background="{StaticResource DimBrush}"
-        Height="44"
-        Width="146">
+                    Background="{StaticResource DimBrush}"
+                    Height="44"
+                    Width="146">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <!--Text-->
@@ -23,20 +23,20 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock
-        Text="{Binding Text, ElementName=_tags2}"
-        FontWeight="SemiBold"
-        Foreground="{StaticResource SecondaryBrush}"
-        VerticalAlignment="Center"
-        Margin="12,0"/>
+                        Text="{Binding Text, ElementName=_tags2}"
+                        FontWeight="SemiBold"
+                        Foreground="{StaticResource SecondaryBrush}"
+                        VerticalAlignment="Center"
+                        Margin="12,0"/>
 
                     <Path
-        Grid.Column="1"
-        Data="{StaticResource down_icon}"
-        Fill="{StaticResource SecondaryBrush}"
-        Margin="0,17"
-        Width="10"
-        Stretch="Uniform"
-        VerticalAlignment="Bottom"/>
+                        Grid.Column="1"
+                        Data="{StaticResource down_icon}"
+                        Fill="{StaticResource SecondaryBrush}"
+                        Margin="0,17"
+                        Width="10"
+                        Stretch="Uniform"
+                        VerticalAlignment="Bottom"/>
 
 
                 </Grid>
@@ -48,8 +48,8 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <!-- CheckBox cho mỗi genre -->
-                            <RadioButton  Content="{Binding}" Margin="5" Foreground="Wheat" 
-                                          GroupName="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Name}"/>
+                            <TextBlock  Text="{Binding}" Margin="5" Foreground="Wheat" 
+                                         />
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

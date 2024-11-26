@@ -33,8 +33,17 @@ namespace FLauncher.Views
             Debug.WriteLine("ProfileWindow constructor called.");
 
             InitializeComponent();
-            _userRepo = new UserRepository();
             _user = _userRepo.GetUserByGamer(gamer);
+            if (_user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+            }
+            else if (_user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+            }
+            _userRepo = new UserRepository();
+            
             _currentGamer = gamer;
             _friendService = friendService;
             _friendRepo = new FriendRepository();
@@ -271,12 +280,20 @@ namespace FLauncher.Views
         {
             var CurrentWin = _user;
             string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
+            if (Search_input == "search name game")
             {
                 Search_input = string.Empty;
             }
             SearchWindow search = new SearchWindow(CurrentWin, Search_input, null, null);
             search.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
             this.Hide();
             this.Close();
         }

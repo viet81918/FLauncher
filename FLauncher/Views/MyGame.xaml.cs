@@ -34,6 +34,14 @@ namespace FLauncher.Views
         public MyGame(User user)
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+            }
             _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
@@ -78,8 +86,11 @@ namespace FLauncher.Views
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
-                _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
+               // _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
 
+                var gamesPub = await _gameRepo.GetGamesByPublisher(_gamePublisher);
+              
+                DataContext = new MyGameViewModel(_gamePublisher, gamesPub);
             }
 
         }
@@ -121,11 +132,12 @@ namespace FLauncher.Views
             }
             else if (_gamePublisher != null)
             {
+                var gamesPub = await _gameRepo.GetGamesByPublisher(_gamePublisher);
                 var isPublish = await _gameRepo.IsPublishGame(game, _gamePublisher);
                 var gamers = await _gamerRepo.GetGamersFromGame(game);
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
 
-                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements, gamers);
+                DataContext = new MyGameViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements, gamers, gamesPub);
             }
         }
 
@@ -283,7 +295,6 @@ namespace FLauncher.Views
             this.Close();
 
         }
-
         private void GamesListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Ensure the sender is a ListBox
@@ -301,8 +312,6 @@ namespace FLauncher.Views
                 }
             }
         }
-
-
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);
@@ -310,8 +319,34 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
-
-
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                searchGame_button(sender, e);
+            }
+        }
+        private void searchGame_button(object sender, RoutedEventArgs e)
+        {
+            var CurrentWin = _user;
+            string Search_input = SearchTextBox.Text.Trim().ToLower();
+            if (Search_input == "search name game")
+            {
+                Search_input = string.Empty;
+            }
+            SearchWindow search = new SearchWindow(CurrentWin, Search_input, null, null);
+            search.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
+        {
+            var CurrentUser = _user;
+            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
+            serchwindow.Show();
+            this.Hide();
+            this.Close();
+        }
 
     }
 }

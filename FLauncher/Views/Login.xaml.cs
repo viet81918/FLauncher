@@ -46,10 +46,7 @@ namespace FLauncher.Views
                     System.IO.File.Delete(jsonFilePath); // Xóa tệp nếu hết hạn
                 }
             }
-            else
-            {
-                MessageBox.Show("khong tim thay file loginInfo.json");
-            }
+            
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -74,7 +71,7 @@ namespace FLauncher.Views
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(loginInfo, Formatting.Indented);
                 System.IO.File.WriteAllText(jsonFilePath, json);
-                MessageBox.Show("da luu");
+                MessageBox.Show("da luu tai khoan dang nhap");
             }
             PerformLogin(enteredUserEmail, enteredPassword);
         }
