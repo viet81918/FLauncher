@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.ViewModel;
+using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -48,6 +49,7 @@ namespace FLauncher.Views
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
             _gamerRepo = new GamerRepository();
+
             InitializeData(game, user);
 
 
@@ -205,7 +207,7 @@ namespace FLauncher.Views
 
           private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
         {
-            var gameDetailPage = new TrackingNumberPlayer( _game);
+            var gameDetailPage = new TrackingNumberPlayer(_game);
             gameDetailPage.Show();
         }
         private void Achivement_Click(object sender, RoutedEventArgs e)
@@ -290,5 +292,24 @@ namespace FLauncher.Views
                 File.Delete(jsonFilePath);
             }
         }
+        private void OnTagClick(object sender, MouseButtonEventArgs e)
+        {
+            List<string> selectedGenre = new List<string>();
+            var tagControl = sender as FLauncher.CC.tags;
+            if (tagControl != null)
+            {
+                var genre = tagControl.DataContext as Genre; // Genre là lớp dữ liệu chứa TypeOfGenre
+                if (genre != null)
+                {
+                     selectedGenre.Add( genre.TypeOfGenre); // Lấy TypeOfGenre
+
+                    // Mở SearchWindow và truyền giá trị TypeOfGenre vào
+                    SearchWindow searchWindow = new SearchWindow(_user,null, selectedGenre,null); 
+                    searchWindow.Show();
+                    this.Close();
+                }
+            }
+        }
+
     }
 }

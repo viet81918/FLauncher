@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using System;
@@ -15,10 +16,18 @@ namespace FLauncher.Services
         public FLauncherOnLineDbContext()
         {
         }
-        public static FLauncherOnLineDbContext Create(IMongoDatabase database) =>
-      new(new DbContextOptionsBuilder<FLauncherOnLineDbContext>()
-          .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
-          .Options);
+        private static DbContextOptions<FLauncherOnLineDbContext> _cachedOptions;
+
+        public static FLauncherOnLineDbContext Create(IMongoDatabase database)
+        {
+            if (_cachedOptions == null)
+            {
+                _cachedOptions = new DbContextOptionsBuilder<FLauncherOnLineDbContext>()
+                    .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
+                    .Options;
+            }
+            return new FLauncherOnLineDbContext(_cachedOptions);
+        }
 
         public FLauncherOnLineDbContext(DbContextOptions<FLauncherOnLineDbContext> options)
          : base(options)
@@ -57,7 +66,9 @@ namespace FLauncher.Services
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning));
         }
+
     }
 }
