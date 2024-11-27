@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using System;
@@ -14,20 +15,31 @@ namespace FLauncher.Services
         public class FlauncherDbContext : DbContext
         {
 
+        private static DbContextOptions<FlauncherDbContext> _cachedOptions;
+
         public FlauncherDbContext()
         {
         }
-        public static FlauncherDbContext Create(IMongoDatabase database) =>
-        new(new DbContextOptionsBuilder<FlauncherDbContext>()
-            .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
-            .Options);
 
         public FlauncherDbContext(DbContextOptions<FlauncherDbContext> options)
-         : base(options)
-            {
-            }
+            : base(options)
+        {
+        }
 
-            public DbSet<Achivement> Achivements { get; init; }
+        public static FlauncherDbContext Create(IMongoDatabase database)
+        {
+            if (_cachedOptions == null)
+            {
+                _cachedOptions = new DbContextOptionsBuilder<FlauncherDbContext>()
+                    .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
+                    .Options;
+            }
+            return new FlauncherDbContext(_cachedOptions);
+        }
+
+
+
+        public DbSet<Achivement> Achivements { get; init; }
             public DbSet<Admin> Admins { get; init; }
             public DbSet<Buy> Bills { get; init; }
             public DbSet<Category> Categories { get; init; }
@@ -72,7 +84,8 @@ namespace FLauncher.Services
             }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-          
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning));
         }
     }
 
