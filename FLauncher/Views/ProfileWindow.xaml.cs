@@ -37,21 +37,10 @@ namespace FLauncher.Views
 
         public ProfileWindow(Model.User user, FriendService friendService, Gamer friend = null)
         {
-            Debug.WriteLine("ProfileWindow constructor called.");
-
-            InitializeComponent();
-            _user = _userRepo.GetUserByGamer(gamer);
-            if (_user.Role == 2) // Giả sử 1 là Publisher
-            {
-                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
-            }
-            else if (_user.Role == 3) // Giả sử 2 là Gamer
-            {
-                MessageButon.Visibility = Visibility.Visible; // Hiện
-            }
+           
             _userRepo = new UserRepository();
             
-            _currentGamer = gamer;
+            
             _friendService = friendService;
             _friendRepo = new FriendRepository();
             _gamerRepo = new GamerRepository();
