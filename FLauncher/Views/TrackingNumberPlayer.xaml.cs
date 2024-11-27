@@ -20,23 +20,23 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using FLauncher.Model;
 using FLauncher.Repositories;
-using System.Xml.Linq;
+using FLauncher.DAO;
 
 namespace FLauncher.Views
 {
-    /// <summary>
-    /// Interaction logic for TrackingNumberPlayer.xaml
-    /// </summary>
     public partial class TrackingNumberPlayer : Window, INotifyPropertyChanged
     {
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
         private System.Timers.Timer _timer;
         private LineSeries _series;
         private DateTime _startOfDay;
-        private IGameRepository _gameRepo;
         public event PropertyChangedEventHandler PropertyChanged;
-        private readonly TrackingPlayers trackingPlayers;
-        private Game _game;
+        private TrackingPlayers trackingPlayers;
+        private DateTime _lastUpdateTime;
+        private int _lastPlayerCount;
         private PlotModel _plotModel;
+        private Game _game;
+
         public PlotModel PlotModel
         {
             get => _plotModel;
@@ -51,68 +51,106 @@ namespace FLauncher.Views
         {
             InitializeComponent();
             DataContext = this;
+
+   
             _game = game;
-            _gameRepo = new GameRepository();
-            trackingPlayers = _gameRepo.GetTrackingFromGame(game).Result;
 
-            // Start time is set to midnight of the current day
-            _startOfDay = DateTime.Today;
-
-            // Initialize PlotModel
-            PlotModel = new PlotModel { Title = "Player Tracking (Since Midnight)" };
-
-            // Setup Axes
-            var timeAxis = new DateTimeAxis
-            {
-                Position = AxisPosition.Bottom,
-                StringFormat = "HH:mm:ss",
-                Title = "Time",
-                IntervalType = DateTimeIntervalType.Hours,
-                IsPanEnabled = true,
-                IsZoomEnabled = true,
-                Minimum = DateTimeAxis.ToDouble(_startOfDay),
-                Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddMinutes(1))
-            };
-
-            var valueAxis = new LinearAxis
-            {
-                Position = AxisPosition.Left,
-                Title = "Number of Players",
-                Minimum = 0
-            };
-
-            PlotModel.Axes.Add(timeAxis);
-            PlotModel.Axes.Add(valueAxis);
-
-            // Initialize Line Series
-            _series = new LineSeries
-            {
-                Title = "Players Over Time",
-                MarkerType = MarkerType.Circle
-            };
-
-            PlotModel.Series.Add(_series);
-
-            // Load historical data
-            LoadHistoricalData();
-
-            // Setup Timer
-            _timer = new System.Timers.Timer(1000); // Update every second
-            _timer.Elapsed += UpdatePlot;
-            _timer.Start();
+            // Start the async initialization process
+            InitializeAsync();
         }
 
-        private void LoadHistoricalData()
+        private async void InitializeAsync()
         {
+            try
+            {
+                TrackingDAO DAO = new TrackingDAO();
+                trackingPlayers = await DAO.GetTrackingFromGame(_game);
+
+                // Start time is set to midnight of the current day
+                _startOfDay = DateTime.Today;
+
+                // Initialize PlotModel
+                PlotModel = new PlotModel { Title = "Player Tracking (Since Midnight)" };
+
+                // Setup Axes
+                var timeAxis = new DateTimeAxis
+                {
+                    Position = AxisPosition.Bottom,
+                    StringFormat = "HH:mm:ss",
+                    Title = "Time",
+                    IntervalType = DateTimeIntervalType.Hours,
+                    IsPanEnabled = true,
+                    IsZoomEnabled = true,
+                    Minimum = DateTimeAxis.ToDouble(_startOfDay),
+                    Maximum = DateTimeAxis.ToDouble(DateTime.Now.AddMinutes(1))
+                };
+
+                var valueAxis = new LinearAxis
+                {
+                    Position = AxisPosition.Left,
+                    Title = "Number of Players",
+                    Minimum = 0
+                };
+
+                PlotModel.Axes.Add(timeAxis);
+                PlotModel.Axes.Add(valueAxis);
+
+                // Initialize Line Series
+                _series = new LineSeries
+                {
+                    Title = "Players Over Time",
+                    MarkerType = MarkerType.Circle
+                };
+
+                PlotModel.Series.Add(_series);
+
+                // Load historical data asynchronously
+                await LoadHistoricalDataAsync();
+
+                // Setup Timer
+                _timer = new System.Timers.Timer(1000); // Update every second
+                _timer.Elapsed += UpdatePlot;
+                _timer.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing tracking player: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async Task LoadHistoricalDataAsync()
+        {
+            // Initialize the last update time and player count
+            _lastUpdateTime = _startOfDay;
+            _lastPlayerCount = 0;
+
             // Load historical data from trackingPlayers.TimePlayerChange
             for (int i = 0; i < trackingPlayers.TimePlayerChange.Length; i++)
             {
                 var time = trackingPlayers.TimePlayerChange[i];
                 var playerCount = trackingPlayers.PlayerChange[i];
+
                 if (time.Date == _startOfDay.Date) // Only include today's data
                 {
-                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(time), playerCount));
+                    if (i == 0)
+                    {
+                        // Initialize the first horizontal segment
+                        _lastPlayerCount = playerCount;
+                        _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(_startOfDay), playerCount));
+                    }
+
+                    // Add vertical line if the player count changes
+                    if (playerCount != _lastPlayerCount)
+                    {
+                        _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(time), _lastPlayerCount));
+                        _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(time), playerCount));
+                        _lastPlayerCount = playerCount;
+                    }
                 }
+
+                // Always extend the horizontal line to the current time
+                _lastUpdateTime = time;
+                _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(time), playerCount));
             }
 
             // Refresh the plot after loading historical data
@@ -121,51 +159,68 @@ namespace FLauncher.Views
 
         private async void UpdatePlot(object sender, ElapsedEventArgs e)
         {
-            var currentTime = DateTime.Now;
-
+            await _semaphore.WaitAsync();
             try
             {
-                // Fetch the latest data from the database
-                var latestTracking = await _gameRepo.GetTrackingFromGame(_game);
+                var currentTime = DateTime.Now;
 
-                if (latestTracking != null)
+                // Fetch the latest data asynchronously
+                TrackingDAO DAO = new TrackingDAO();
+                trackingPlayers = await DAO.GetTrackingFromGame(_game);
+
+                var currentPlayerCount = trackingPlayers.CurrentPlayer;
+
+                // Check if the player count has changed
+                if (currentPlayerCount == _lastPlayerCount && currentTime == _lastUpdateTime)
                 {
-                    var players = latestTracking.CurrentPlayer;
-
-                    // Add a new data point
-                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), players));
-
-                    // Adjust axis range
-                    var timeAxis = PlotModel.Axes[0] as DateTimeAxis;
-                    if (timeAxis != null)
-                    {
-                        timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddMinutes(1));
-                        timeAxis.Minimum = DateTimeAxis.ToDouble(_startOfDay);
-                    }
-
-                    // Refresh the plot
-                    PlotModel.InvalidatePlot(true);
+                    return; // No change, skip updating
                 }
+
+                // Clear the series if needed (optional but ensures consistency)
+                if (_lastPlayerCount != currentPlayerCount)
+                {
+                    _series.Points.Clear();
+                    await LoadHistoricalDataAsync(); // Reload full historical data
+                }
+
+                // Update the series with the latest point
+                if (currentPlayerCount == _lastPlayerCount)
+                {
+                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), _lastPlayerCount));
+                }
+                else
+                {
+                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), _lastPlayerCount)); // Vertical line start
+                    _series.Points.Add(new DataPoint(DateTimeAxis.ToDouble(currentTime), currentPlayerCount)); // Vertical line end
+                    _lastPlayerCount = currentPlayerCount;
+                }
+
+                // Update the last update time
+                _lastUpdateTime = currentTime;
+
+                // Adjust axis range
+                if (PlotModel.Axes[0] is DateTimeAxis timeAxis)
+                {
+                    timeAxis.Maximum = DateTimeAxis.ToDouble(currentTime.AddMinutes(1));
+                    timeAxis.Minimum = DateTimeAxis.ToDouble(_startOfDay);
+                }
+
+                // Refresh the plot
+                PlotModel.InvalidatePlot(true);
             }
             catch (Exception ex)
             {
-                // Handle any errors in fetching data
-                Console.WriteLine($"Error updating plot: {ex.Message}");
+                MessageBox.Show($"Error updating plot: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
-
-
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            _timer.Stop();
-            _timer.Dispose();
-        }
     }
-
-
 }
