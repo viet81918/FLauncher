@@ -35,10 +35,12 @@ namespace FLauncher
             if (user.Role == 2) // Giả sử 1 là Publisher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
                 MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
             }
 
             _user = user;

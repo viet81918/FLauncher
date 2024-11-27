@@ -254,34 +254,7 @@
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 
-                    <!--Notifications Icon With Count-->
-                    <StackPanel Orientation="Horizontal"
-                                VerticalAlignment="Bottom"
-                                Margin="0,0,20,0">
-                        <Path Data="{StaticResource notification_icon}"
-                              Fill="{StaticResource PrimaryBrush}"
-                              VerticalAlignment="Bottom"
-                              Stretch="Uniform"
-                              Width="16" />
-
-                        <!-- Count -->
-                        <Grid VerticalAlignment="Top"
-                              Margin="-8,0,0,15">
-                            <Ellipse Fill="{StaticResource TertiaryBrush}"
-                                     StrokeThickness="1"
-                                     Stroke="{StaticResource CanvasBrush}"
-                                     Height="15"
-                                     Width="15" />
-
-                            <!-- Notification Count -->
-                            <TextBlock FontSize="8"
-                                       Foreground="{StaticResource SecondaryBrush}"
-                                       Margin="0,0,0,.5"
-                                       HorizontalAlignment="Center"
-                                       Text="{Binding UnreadNotificationCount}" />
-                            <!-- Binding the unread notification count -->
-                        </Grid>
-                    </StackPanel>
+                    
 
                     <!--Friends Icon and Count-->
                     <StackPanel Orientation="Horizontal"
@@ -366,7 +339,7 @@
 
                 <!-- Profile Icon Item with Click Event -->
 
-                <ListBoxItem Content="{StaticResource profile_icon}"
+                <ListBoxItem x:Name="profileButton" Content="{StaticResource profile_icon}"
                              MouseLeftButtonUp="ProfileIcon_Click" />
 
                 <!--demo phân quyền-->
@@ -520,12 +493,13 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="10,0,0,20"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            Cursor="Hand">
                     <ItemsControl ItemsSource="{Binding Genres}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <cc:tags Margin="0,0,5,0"
-                                         Text="{Binding TypeOfGenre}" />
+                                         Text="{Binding TypeOfGenre}" MouseDown="OnTagClick"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
