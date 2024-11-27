@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using FLauncher.Views;
 using Microsoft.IdentityModel.Tokens;
@@ -183,6 +184,7 @@ namespace FLauncher
 
             if (result == MessageBoxResult.Yes)
             {
+                SessionManager.ClearSession();
                 DeleteLoginInfoFile();
                 this.Hide();
                 Login login = new Login();
@@ -201,17 +203,27 @@ namespace FLauncher
                 File.Delete(jsonFilePath);
             }
         }
+
+
+
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
-            // Create an instance of ProfileWindow and show it
+            // Only initialize the session if it's not already initialized (to avoid redundant calls)
+            if (string.IsNullOrEmpty(SessionManager.LoggedInGamerId))
+            {
+                SessionManager.InitializeSession(_user, _gamerRepo);
+            }
+
+            // Create an instance of FriendService
             _friendService = new FriendService(_friendRepo, _gamerRepo);
 
-            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            // Pass the _user object to ProfileWindow
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
+
+            // Hide and close the current window
             this.Hide();
             this.Close();
-            // Optionally, close the current window (MainWindow)
-            // this.Close();
         }
         private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
         {

@@ -1,5 +1,6 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
+using MongoDB.Bson;
 
 namespace FLauncher.Repositories
 {
@@ -10,17 +11,17 @@ namespace FLauncher.Repositories
 
         public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
         {
-            return await GameDAO.Instance.GetAchivementFromUnlock(unlock);
+            return await AchivementDAO.Instance.GetAchivementFromUnlock(unlock);
         }
 
         public async Task<IEnumerable<Achivement>> GetAchivementsFromUnlocks(IEnumerable<UnlockAchivement> unlockAchivements)
         {
-            return await GameDAO.Instance.GetAchivementsFromUnlocks(unlockAchivements);
+            return await AchivementDAO.Instance.GetAchivementsFromUnlocks(unlockAchivements);
         }
 
         public async Task<IEnumerable<Achivement>> GetAchivesFromGame(Game game)
         {
-            return await GameDAO.Instance.GetAchivementFromGame(game);
+            return await AchivementDAO.Instance.GetAchivementFromGame(game);
         }
 
         public async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
@@ -30,7 +31,7 @@ namespace FLauncher.Repositories
 
         public async Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer)
         {
-            return await GameDAO.Instance.GetLockAchivement(achivements, gamer);
+            return await AchivementDAO.Instance.GetLockAchivement(achivements, gamer);
         }
 
         public async Task<IEnumerable<Game>> GetTopGames()
@@ -40,7 +41,7 @@ namespace FLauncher.Repositories
 
         public async Task<IEnumerable<UnlockAchivement>> GetUnlockAchivementsFromGame(IEnumerable<Achivement> achivement, Gamer gamer)
         {
-            return await GameDAO.Instance.GetUnlockAchivements(achivement, gamer);
+            return await AchivementDAO.Instance.GetUnlockAchivements(achivement, gamer);
         }
 
         public async Task<bool> IsBuyGame(Game game, Gamer gamer)
@@ -106,6 +107,26 @@ namespace FLauncher.Repositories
         public async Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher)
         {
             return await GameDAO.Instance.GetGamesByPublisher(publisher);
+        }
+
+        public  async Task <TrackingPlayers> GetTrackingFromGame(Game game)
+        {
+          return   await TrackingDAO.Instance.GetTrackingFromGame(game);
+        }
+
+        public async Task<Achivement> AddAchivement(string idobject, string id ,string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath)
+        {
+          return  await AchivementDAO.Instance.AddAchivement(idobject,id, gameid ,trigger, description, name, unlockImagePath, lockImagePath);
+        }
+
+        public async Task DeleteAchievement(Achivement achievement)
+        {
+            await AchivementDAO.Instance.DeleteAchievement(achievement);
+        }
+
+        public Task<Achivement> UpdateAchievement(string idobject, string id, string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath, Achivement achievement)
+        {
+            return AchivementDAO.Instance.UpdateAchievement(idobject, id, gameid, trigger, description, name, unlockImagePath, lockImagePath, achievement);
         }
     }
 }

@@ -80,18 +80,27 @@ namespace FLauncher.DAO
 
         public async Task InsertFriendRequest(Friend friendRequest)
         {
-            _dbContext.Friends.Add(friendRequest);
-            await _dbContext.SaveChangesAsync(); 
+            try
+            {
+                _dbContext.Friends.Add(friendRequest);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in AddFriendRequest: {ex.Message}");
+                throw; // Re-throw the exception to handle it in the calling method.
+            }
         }
 
         public async Task<List<Friend>> GetFriendsForGamer(Gamer gamer)
         {
-            // Use async query to fetch friends for the given gamer
             return await _dbContext.Friends
-                .Where(f => f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId && f.IsAccept==true )
-                .ToListAsync(); // Using ToListAsync for asynchronous operation
+                .Where(f =>
+                    (f.RequestId == gamer.GamerId || f.AcceptId == gamer.GamerId) &&
+                    f.IsAccept == true) // Ensure IsAccept is true for both cases
+                .ToListAsync();
         }
-                                                                                                        
+
 
         public List<Friend> GetFriendsForAGamer(Gamer gamer)
         {
@@ -137,11 +146,15 @@ namespace FLauncher.DAO
 
 
 
-        public async Task<Friend> FindFriendRequest(string requestId, string acceptId)
+        public async Task<Friend> GetFriendRequest(string requestId, string acceptId)
         {
-            return await _dbContext.Friends
-                .Where(friend => friend.RequestId == requestId && friend.AcceptId == acceptId && friend.IsAccept == null)
-                .FirstOrDefaultAsync();
+            var result = await _dbContext.Friends
+                .FirstOrDefaultAsync(f =>
+                    (f.RequestId == requestId && f.AcceptId == acceptId) ||
+                    (f.RequestId == acceptId && f.AcceptId == requestId));
+
+            Debug.WriteLine($"GetFriendRequest Query: RequestId={requestId}, AcceptId={acceptId}, Result={result != null}");
+            return result;
         }
 
         public async Task UpdateFriendRequestStatus(string requestId, string acceptId, bool isAccepted)
@@ -175,6 +188,18 @@ namespace FLauncher.DAO
                     friend.IsAccept == true)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<bool> IsFriend(string gamerId, string friendId)
+        {
+            var friendRecord = await _dbContext.Friends
+                .FirstOrDefaultAsync(friend =>
+                    (friend.RequestId == gamerId && friend.AcceptId == friendId ||
+                     friend.RequestId == friendId && friend.AcceptId == gamerId) &&
+                    friend.IsAccept == true);
+
+            return friendRecord != null;
+        }
+
 
         public async Task<IEnumerable<Friend>> GetFriendshipsForGamer(string gamerId)
         {
@@ -233,7 +258,18 @@ namespace FLauncher.DAO
             return friends;
         }
 
+        public async Task Unfriend(string requestId, string acceptId)
+        {
+            var friendRecord = await _dbContext.Friends
+                .FirstOrDefaultAsync(f => (f.RequestId == requestId && f.AcceptId == acceptId) ||
+                                          (f.RequestId == acceptId && f.AcceptId == requestId));
 
+            if (friendRecord != null)
+            {
+                _dbContext.Friends.Remove(friendRecord);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
 
 
     }

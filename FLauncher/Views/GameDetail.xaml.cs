@@ -52,6 +52,7 @@ namespace FLauncher.Views
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
             _gamerRepo = new GamerRepository();
+
             InitializeData(game, user);
 
 
@@ -84,6 +85,7 @@ namespace FLauncher.Views
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
                 var Unlock = await _gameRepo.GetUnlockAchivementsFromGame(Achivements, _gamer);
                 var UnlockAchivements = await _gameRepo.GetAchivementsFromUnlocks(Unlock);
+              
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
@@ -203,7 +205,19 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
             gameDetailPage.Show();
         }
+        
 
+
+          private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new TrackingNumberPlayer(_game);
+            gameDetailPage.Show();
+        }
+        private void Achivement_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new AchivementManagement(_user,_game);
+            gameDetailPage.Show();
+        }
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);

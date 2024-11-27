@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using MongoDB.Driver;
 using MongoDB.EntityFrameworkCore.Extensions;
 using System;
@@ -15,17 +16,27 @@ namespace FLauncher.Services
         public FLauncherOnLineDbContext()
         {
         }
-        public static FLauncherOnLineDbContext Create(IMongoDatabase database) =>
-      new(new DbContextOptionsBuilder<FLauncherOnLineDbContext>()
-          .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
-          .Options);
+        private static DbContextOptions<FLauncherOnLineDbContext> _cachedOptions;
+
+        public static FLauncherOnLineDbContext Create(IMongoDatabase database)
+        {
+            if (_cachedOptions == null)
+            {
+                _cachedOptions = new DbContextOptionsBuilder<FLauncherOnLineDbContext>()
+                    .UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
+                    .Options;
+            }
+            return new FLauncherOnLineDbContext(_cachedOptions);
+        }
 
         public FLauncherOnLineDbContext(DbContextOptions<FLauncherOnLineDbContext> options)
          : base(options)
         {
         }
-        public DbSet<TrackingRecords> Trackings { get; init; }
+        public DbSet<TrackingRecords> TrackingsTime { get; init; }
+        public DbSet<TrackingPlayers> TrackingPlayers { get; init; }
         public DbSet<Achivement> Achivements { get; init; }
+        public DbSet<UnlockAchivement> UnlockAchivements { get; init; }
         public DbSet<Buy> Bills { get; init; }
         public DbSet<GamePublisher> GamePublishers { get; init; }
         public DbSet<Game> Games { get; init; }
@@ -38,8 +49,9 @@ namespace FLauncher.Services
 
             modelBuilder.Entity<TrackingRecords>();
 
+            modelBuilder.Entity<TrackingPlayers>();
             modelBuilder.Entity<Achivement>();
-
+            modelBuilder.Entity<UnlockAchivement>();
             modelBuilder.Entity<Buy>();
 
             modelBuilder.Entity<GamePublisher>();
@@ -54,7 +66,9 @@ namespace FLauncher.Services
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            optionsBuilder.ConfigureWarnings(warnings =>
+                warnings.Ignore(CoreEventId.ManyServiceProvidersCreatedWarning));
         }
+
     }
 }
