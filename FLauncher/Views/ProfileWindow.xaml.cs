@@ -37,6 +37,7 @@ namespace FLauncher.Views
 
         public ProfileWindow(Model.User user, FriendService friendService, Gamer friend = null)
         {
+
             Debug.WriteLine("ProfileWindow constructor called.");
 
             InitializeComponent();
@@ -50,9 +51,9 @@ namespace FLauncher.Views
             {
                 MessageButon.Visibility = Visibility.Visible; // Hiện
             }
+
             _userRepo = new UserRepository();
             
-            _currentGamer = gamer;
             _friendService = friendService;
             _friendRepo = new FriendRepository();
             _gamerRepo = new GamerRepository();

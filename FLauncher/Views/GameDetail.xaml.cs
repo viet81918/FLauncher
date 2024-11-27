@@ -49,6 +49,7 @@ namespace FLauncher.Views
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
             _gamerRepo = new GamerRepository();
+
             InitializeData(game, user);
 
 
@@ -206,7 +207,7 @@ namespace FLauncher.Views
 
           private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
         {
-            var gameDetailPage = new TrackingNumberPlayer( _game);
+            var gameDetailPage = new TrackingNumberPlayer(_game);
             gameDetailPage.Show();
         }
         private void Achivement_Click(object sender, RoutedEventArgs e)

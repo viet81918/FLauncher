@@ -109,9 +109,9 @@ namespace FLauncher.Repositories
             return await GameDAO.Instance.GetGamesByPublisher(publisher);
         }
 
-        public async Task<TrackingPlayers> GetTrackingFromGame(Game game)
+        public  async Task <TrackingPlayers> GetTrackingFromGame(Game game)
         {
-          return  await TrackingDAO.Instance.GetTrackingFromGame(game);
+          return   await TrackingDAO.Instance.GetTrackingFromGame(game);
         }
 
         public async Task<Achivement> AddAchivement(string idobject, string id ,string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath)
