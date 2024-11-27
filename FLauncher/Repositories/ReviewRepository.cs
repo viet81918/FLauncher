@@ -1,10 +1,5 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FLauncher.Repositories
 {
@@ -17,9 +12,9 @@ namespace FLauncher.Repositories
 
         public async Task<IEnumerable<Review>> GetReviewsByGame(Game game)
         {
-           return await ReviewDAO.Instance.GetReviewsByGame(game);    
+            return await ReviewDAO.Instance.GetReviewsByGame(game);
         }
 
-      
+
     }
 }

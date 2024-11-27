@@ -1,4 +1,5 @@
-﻿using FLauncher.Model;
+﻿using FLauncher.DAO;
+using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.ViewModel;
@@ -30,6 +31,7 @@ namespace FLauncher.Views
 
         private readonly IUserRepository _userRepo;
 
+        private readonly CategoryDAO _categoryDAO;
 
         public MyGame(User user)
         {
@@ -49,6 +51,10 @@ namespace FLauncher.Views
 
 
             _reviewRepo = new ReviewRepository();
+
+            _categoryDAO = CategoryDAO.Instance; // Singleton instance of CategoryDAO
+
+
 
             InitializeData(user);
         }
@@ -74,7 +80,7 @@ namespace FLauncher.Views
 
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
-                DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games);
+                DataContext = new MyGameViewModel(_categoryDAO, _gamer, unreadNotifications, friendInvitations, games);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
@@ -117,7 +123,7 @@ namespace FLauncher.Views
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
                 var isUpdate = await _gamerRepo.IsUpdate(game, _gamer);
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
-                DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games);
+                DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games, _categoryDAO);
             }
             else if (_gamePublisher != null)
             {
@@ -311,7 +317,116 @@ namespace FLauncher.Views
             this.Close();
         }
 
+        private async void AddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            string newCategory = Microsoft.VisualBasic.Interaction.InputBox("Enter the new category name:", "Add Category", "");
+
+            if (!string.IsNullOrWhiteSpace(newCategory))
+            {
+                var viewModel = DataContext as MyGameViewModel;
+                if (viewModel != null)
+                {
+                    await viewModel.AddCategoryAsync(newCategory);
+                    MessageBox.Show($"Category '{newCategory}' added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("ViewModel is not set correctly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Category name cannot be empty.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private async void DeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+            string categoryToDelete = Microsoft.VisualBasic.Interaction.InputBox("Enter the category name to delete:", "Delete Category", "");
+
+            if (!string.IsNullOrWhiteSpace(categoryToDelete))
+            {
+                var viewModel = DataContext as MyGameViewModel;
+                if (viewModel != null)
+                {
+                    await viewModel.DeleteCategoryAsync(categoryToDelete);
+                    MessageBox.Show($"Category '{categoryToDelete}' deleted successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("ViewModel is not set correctly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid category name.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+
+        private async void AddGameToCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = DataContext as MyGameViewModel;
+            if (viewModel == null)
+            {
+                MessageBox.Show("ViewModel is not set correctly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Open the SelectCategoryWindow to let the user choose a category
+            var selectCategoryWindow = new SelectCategoryWindow(viewModel.Categories);
+            if (selectCategoryWindow.ShowDialog() == true)
+            {
+                var selectedCategory = selectCategoryWindow.SelectedCategory?.NameCategories;
+                var selectedGameId = _game?.GameID.ToString();
+
+                if (!string.IsNullOrWhiteSpace(selectedCategory) && !string.IsNullOrWhiteSpace(selectedGameId))
+                {
+                    await viewModel.AddGameToCategoryAsync(selectedCategory, selectedGameId);
+                    MessageBox.Show($"Game added to category '{selectedCategory}'", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Please select a game and category.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+
+        private void RemoveGameFromCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedGame = _game; // Ensure a valid game is selected
+            if (selectedGame == null)
+            {
+                MessageBox.Show("No game selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var viewModel = DataContext as MyGameViewModel;
+            if (viewModel == null)
+            {
+                MessageBox.Show("ViewModel is not set correctly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // Open the RemoveGameFromCategoryWindow and pass the selected game
+            var removeGameWindow = new RemoveGameFromCategoryWindow(selectedGame, viewModel.Categories, _categoryDAO);
+            if (removeGameWindow.ShowDialog() == true)
+            {
+                MessageBox.Show("Game removed from category successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Operation canceled.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
 
 
     }
+
+
+
+
 }
+

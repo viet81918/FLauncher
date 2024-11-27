@@ -391,7 +391,8 @@
 
                 <!-- Left Side: Collapsible Bars -->
                 <StackPanel Grid.Column="0"
-                            Background="#1b1e23">
+                            Background="#1b1e23"
+                            x:Name="CategoriesPanel">
                     <!-- All Games -->
                     <Expander Header="All Games"
                               Background="{StaticResource DimBrush}"
@@ -426,6 +427,32 @@
 
                     </Expander>
 
+                    <!-- Categories (New Expander added dynamically) -->
+                    <ItemsControl ItemsSource="{Binding Categories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Expander Header="{Binding NameCategories}"
+                                          Background="{StaticResource DimBrush}"
+                                          Foreground="{StaticResource SecondaryBrush}"
+                                          BorderBrush="Transparent"
+                                          Padding="10"
+                                          Margin="0,10,0,0">
+                                    <!-- A ListBox to hold the games for this category -->
+                                    <ListBox ItemsSource="{Binding Games}"
+                                             Background="#2c2f34"
+                                             Foreground="White">
+                                        <!-- Dynamically populated games in each category will go here -->
+                                        <StackPanel>
+                                            <!-- Bind the Game Name here -->
+                                            <TextBlock Text="{Binding Name}"
+                                                       Foreground="{StaticResource SecondaryBrush}" />
+                                        </StackPanel>
+                                    </ListBox>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
                 </StackPanel>
 
                 <!-- Right Side: Game Details -->
@@ -433,272 +460,346 @@
                       Background="{StaticResource DefaultBackgroundBrush}">
                     <StackPanel Margin="40">
 
-                        
+
+
                         <Grid Margin="0,20,0,0">
-                            <TextBlock Foreground="{StaticResource SecondaryBrush}"
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <!-- For Game information -->
+                                <ColumnDefinition Width="Auto" />
+                                <!-- For Buttons -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Text on the left -->
+                            <TextBlock Grid.Column="0"
+                                       Foreground="{StaticResource SecondaryBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="22"
                                        Text="Game information"
                                        VerticalAlignment="Bottom" />
 
+                            <!-- Buttons on the right -->
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+
+
+
+                                <!-- Add Game to Category Button -->
+                                <Button Content="Add Game to Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="5"
+                                        Background="LightGreen"
+                                        Foreground="Black"
+                                        Click="AddGameToCategory_Click">
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+
+                                            <Binding Path="IsGamer" />
+                                        </MultiBinding>
+                                    </Button.Visibility>
+                                </Button>
+
+
+
+                                <!-- Remove Game from Category Button -->
+                                <Button Content="Remove from Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="5"
+                                        Background="Salmon"
+                                        Foreground="White"
+                                        Click="RemoveGameFromCategory_Click">
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                            <Binding Path="IsBuy" />
+                                            <Binding Path="IsGamer" />
+                                        </MultiBinding>
+                                    </Button.Visibility>
+                                </Button>
+
+                                <!-- Add Category Button -->
+                                <Button Content="Add Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="5"
+                                        Background="Aquamarine"
+                                        Foreground="MidnightBlue"
+                                        Click="AddCategory_Click">
+
+                                </Button>
+
+                                <!-- Delete Category Button -->
+                                <Button Content="Delete Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="5"
+                                        Background="Tomato"
+                                        Foreground="White"
+                                        Click="DeleteCategory_Click">
+
+                                </Button>
+                            </StackPanel>
 
                         </Grid>
 
-                                <StackPanel Orientation="Horizontal"
-                    Margin="0,10,0,0">
-            <Grid Height="275"
-                  Width="325"
-                  Margin="0,0,0,0">
-                 <!--Define Grid structure--> 
-                <Grid.ColumnDefinitions>
-                     <!--Image Column--> 
-                    <ColumnDefinition Width="220" />
-                     <!--Content Column--> 
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                     <!--Top Row--> 
-                    <RowDefinition Height="Auto" />
-                    <!-- Middle Row -->
-                    <RowDefinition Height="*" />
-                    <!-- Bottom Row -->
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
 
-                <!-- Game Background (Larger Image) -->
-                <Grid Grid.Column="0"
-                      Grid.RowSpan="3"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Image Source="{Binding Game.AvatarLink}"
-                           Width="220"
-                           Height="220"
-                           Stretch="Fill"
-                           Margin="0,0,10,0" />
-                </Grid>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0,10,0,0">
+                            <Grid Height="275"
+                                  Width="325"
+                                  Margin="0,0,0,0">
+                                <!--Define Grid structure-->
+                                <Grid.ColumnDefinitions>
+                                    <!--Image Column-->
+                                    <ColumnDefinition Width="220" />
+                                    <!--Content Column-->
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <!--Top Row-->
+                                    <RowDefinition Height="Auto" />
+                                    <!-- Middle Row -->
+                                    <RowDefinition Height="*" />
+                                    <!-- Bottom Row -->
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
 
-                <!-- Like Percentage -->
-                <Grid Grid.Column="1"
-                      Grid.Row="0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Margin="10,20,0,0"
-                      Height="40">
-                    <!-- Background -->
-                    <Border Background="{StaticResource CanvasBrush}"
-                            Opacity=".8"
-                            CornerRadius="5" />
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <!-- Like Icon -->
-                            <Path Data="{StaticResource like_icon}"
-                                  Fill="{StaticResource SecondaryBrush}"
-                                  Margin="5,12"
-                                  Stretch="Uniform"
-                                  Height="16"
-                                  Width="35" />
-                            <!-- Percentage Text -->
-                            <TextBlock Text="{Binding AverageRating}"
-                                       Margin="0,0,8,0"
-                                       Foreground="{StaticResource SecondaryBrush}"
-                                       FontWeight="SemiBold"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </DockPanel>
-                </Grid>
+                                <!-- Game Background (Larger Image) -->
+                                <Grid Grid.Column="0"
+                                      Grid.RowSpan="3"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Image Source="{Binding Game.AvatarLink}"
+                                           Width="220"
+                                           Height="220"
+                                           Stretch="Fill"
+                                           Margin="0,0,10,0" />
+                                </Grid>
 
-                <!-- Tags -->
-                <StackPanel Grid.Column="1"
-                            Grid.Row="2"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Bottom"
-                            Margin="10,0,0,20"
-                            Orientation="Horizontal">
-                    <ItemsControl ItemsSource="{Binding Genres}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <cc:tags Margin="0,0,5,0"
-                                         Text="{Binding TypeOfGenre}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-            </Grid>
+                                <!-- Like Percentage -->
+                                <Grid Grid.Column="1"
+                                      Grid.Row="0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      Margin="10,20,0,0"
+                                      Height="40">
+                                    <!-- Background -->
+                                    <Border Background="{StaticResource CanvasBrush}"
+                                            Opacity=".8"
+                                            CornerRadius="5" />
+                                    <DockPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- Like Icon -->
+                                            <Path Data="{StaticResource like_icon}"
+                                                  Fill="{StaticResource SecondaryBrush}"
+                                                  Margin="5,12"
+                                                  Stretch="Uniform"
+                                                  Height="16"
+                                                  Width="35" />
+                                            <!-- Percentage Text -->
+                                            <TextBlock Text="{Binding AverageRating}"
+                                                       Margin="0,0,8,0"
+                                                       Foreground="{StaticResource SecondaryBrush}"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Grid>
 
-            <Grid Height="275"
+                                <!-- Tags -->
+                                <StackPanel Grid.Column="1"
+                                            Grid.Row="2"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Bottom"
+                                            Margin="10,0,0,20"
+                                            Orientation="Horizontal">
+                                    <ItemsControl ItemsSource="{Binding Genres}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <cc:tags Margin="0,0,5,0"
+                                                         Text="{Binding TypeOfGenre}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Height="275"
                                   Width="585"
                                   Margin="0,0,0,0"
-                  Background="{StaticResource CanvasBrush}">
-                <!-- Game Title -->
-                <TextBlock HorizontalAlignment="Left"
-                           Margin="10,10,0,0"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Top"
-                           FontSize="32"
-                           FontWeight="Bold"
-                           Foreground="{StaticResource SecondaryBrush}">
+                                  Background="{StaticResource CanvasBrush}">
+                                <!-- Game Title -->
+                                <TextBlock HorizontalAlignment="Left"
+                                           Margin="10,10,0,0"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Top"
+                                           FontSize="32"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource SecondaryBrush}">
 <Run Text="{Binding Game.Name}" />
-                </TextBlock>
+                                </TextBlock>
 
-                <!-- Game Details Section -->
-                <StackPanel Orientation="Vertical"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="10,70,0,0">
-                    <TextBlock FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource SecondaryBrush}">
+                                <!-- Game Details Section -->
+                                <StackPanel Orientation="Vertical"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Margin="10,70,0,0">
+                                    <TextBlock FontSize="20"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource SecondaryBrush}">
     <Run Text="Price: " />
     <Run Text="{Binding Game.Price, StringFormat=C}" />
     <Run Text=" VND" />
-                    </TextBlock>
-                    <TextBlock FontSize="18"
-                               FontWeight="Regular"
-                               Foreground="{StaticResource SecondaryBrush}">
+                                    </TextBlock>
+                                    <TextBlock FontSize="18"
+                                               FontWeight="Regular"
+                                               Foreground="{StaticResource SecondaryBrush}">
     <Run Text="Publish Day: " />
     <Run Text="{Binding Game.PublishDay, StringFormat='dd-MM-yyyy'}" />
-                    </TextBlock>
-                    <TextBlock FontSize="18"
-                               FontWeight="Regular"
-                               Foreground="{StaticResource SecondaryBrush}">
+                                    </TextBlock>
+                                    <TextBlock FontSize="18"
+                                               FontWeight="Regular"
+                                               Foreground="{StaticResource SecondaryBrush}">
     <Run Text="Number of buyers: " />
     <Run Text="{Binding Game.NumberOfBuyers}" />
-                    </TextBlock>
-                    <TextBlock FontSize="18"
-                               FontWeight="Regular"
-                               Foreground="{StaticResource SecondaryBrush}">
+                                    </TextBlock>
+                                    <TextBlock FontSize="18"
+                                               FontWeight="Regular"
+                                               Foreground="{StaticResource SecondaryBrush}">
     <Run Text="Publisher: " />
     <Run Text="{Binding GamePublisher.Name}" />
-                    </TextBlock>
-                </StackPanel>
+                                    </TextBlock>
+                                </StackPanel>
 
 
 
-                <!-- Button Section -->
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Margin="0,10,10,0">
-                    <!-- Uninstall & Download Buttons -->
-                    <StackPanel Orientation="Vertical"
-                                Margin="0,0,10,0">
-                        <Button Content="Uninstall"
-                                Width="120"
-                                Height="40"
-                                Background="Aquamarine"
-                                Foreground="MidnightBlue"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Uninstall_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsBuy" />
-                                    <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                        <Button Content="Download"
-                                Width="120"
-                                Height="40"
-                                Background="Aquamarine"
-                                Foreground="MidnightBlue"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Download_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsBuy" />
-                                    <Binding Path="IsGamer" />
-                                    <Binding Path="IsNotDown" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                    </StackPanel>
+                                <!-- Button Section -->
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Top"
+                                            Margin="0,10,10,0">
+                                    <!-- Uninstall & Download Buttons -->
+                                    <StackPanel Orientation="Vertical"
+                                                Margin="0,0,10,0">
+                                        <Button Content="Uninstall"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Aquamarine"
+                                                Foreground="MidnightBlue"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Uninstall_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsDownload" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                        <Button Content="Download"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Aquamarine"
+                                                Foreground="MidnightBlue"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Download_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsNotDown" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                    </StackPanel>
 
-                    <!-- Play & Update Buttons -->
-                    <StackPanel Orientation="Vertical"
-                                Margin="0,0,10,0">
-                        <Button Content="Play Game"
-                                Width="120"
-                                Height="40"
-                                Background="Gray"
-                                Foreground="White"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Play_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsBuy" />
-                                    <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
-                                    <Binding Path="IsUpdate" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                        <Button Content="Update Game"
-                                Width="120"
-                                Height="40"
-                                Background="Yellow"
-                                Foreground="Magenta"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Update_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsPublished" />
-                                    <Binding Path="IsPublisher" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                    </StackPanel>
+                                    <!-- Play & Update Buttons -->
+                                    <StackPanel Orientation="Vertical"
+                                                Margin="0,0,10,0">
+                                        <Button Content="Play Game"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Gray"
+                                                Foreground="White"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Play_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsDownload" />
+                                                    <Binding Path="IsUpdate" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                        <Button Content="Update Game"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Yellow"
+                                                Foreground="Magenta"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Update_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsPublished" />
+                                                    <Binding Path="IsPublisher" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                    </StackPanel>
 
-                    <!-- Tracking Buttons -->
-                    <StackPanel Orientation="Vertical">
-                        <Button Content="Tracking Game"
-                                Width="120"
-                                Height="40"
-                                Background="Gray"
-                                Foreground="White"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Tracking_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsBuy" />
-                                    <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
-                                    <Binding Path="IsUpdate" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                        <Button Content="Tracking Game (Publisher)"
-                                Width="120"
-                                Height="40"
-                                Background="Yellow"
-                                Foreground="Magenta"
-                                FontWeight="Bold"
-                                BorderBrush="Transparent"
-                                Click="Tracking_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsPublished" />
-                                    <Binding Path="IsPublisher" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-
-
+                                    <!-- Tracking Buttons -->
+                                    <StackPanel Orientation="Vertical">
+                                        <Button Content="Tracking Game"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Gray"
+                                                Foreground="White"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Tracking_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsDownload" />
+                                                    <Binding Path="IsUpdate" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                        <Button Content="Tracking Game (Publisher)"
+                                                Width="120"
+                                                Height="40"
+                                                Background="Yellow"
+                                                Foreground="Magenta"
+                                                FontWeight="Bold"
+                                                BorderBrush="Transparent"
+                                                Click="Tracking_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsPublished" />
+                                                    <Binding Path="IsPublisher" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
 
 
 
 
-            </StackPanel>
-            <!--Title-->
+
+
+                        </StackPanel>
+                        <!--Title-->
                         <Grid Margin="0,20,0,0">
                             <TextBlock Foreground="{StaticResource SecondaryBrush}"
                                        FontWeight="SemiBold"
@@ -718,13 +819,13 @@
                                   Height="269"
                                   Width="615"
                                   Margin="0,0,15,0">
-                                 <!--Existing Content 
+                                <!--Existing Content 
 
                                  Title 
 
 
 
-                                 Updates Section--> 
+                                 Updates Section-->
                                 <StackPanel Orientation="Vertical"
                                             Margin="10,220,0,0">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -763,19 +864,19 @@
                                       Width="615"
                                       Margin="0,20,15,20">
                                     <StackPanel>
-                                         <!--Title TextBlock--> 
+                                        <!--Title TextBlock-->
                                         <TextBlock Text="Friends with the same game:"
                                                    FontSize="12"
                                                    FontWeight="SemiBold"
                                                    Foreground="{StaticResource SecondaryBrush}"
                                                    Margin="10,5,0,0" />
 
-                                         <!--Container for the avatars--> 
+                                        <!--Container for the avatars-->
                                         <ItemsControl ItemsSource="{Binding Friendwiththesamegame}"
                                                       MaxHeight="50"
                                                       Margin="5">
                                             <ItemsControl.ItemsPanel>
-                                                 <!--UniformGrid to limit the display to max 12 avatars--> 
+                                                <!--UniformGrid to limit the display to max 12 avatars-->
                                                 <ItemsPanelTemplate>
                                                     <UniformGrid Columns="12" />
                                                 </ItemsPanelTemplate>
@@ -813,7 +914,7 @@
                                                   Margin="0,30,0,0">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                 <!--Sử dụng WrapPanel để hiển thị các biểu tượng achievement--> 
+                                                <!--Sử dụng WrapPanel để hiển thị các biểu tượng achievement-->
                                                 <WrapPanel Orientation="Horizontal" />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
@@ -827,7 +928,7 @@
                                                            Width="40"
                                                            Height="40">
                                                         <Image.ToolTip>
-                                                             <!--Hiển thị tên achievement khi di chuột vào--> 
+                                                            <!--Hiển thị tên achievement khi di chuột vào-->
                                                             <ToolTip Content="{Binding Name}" />
                                                         </Image.ToolTip>
                                                     </Image>
@@ -867,19 +968,19 @@
                                                         CornerRadius="5"
                                                         Padding="10">
                                                     <StackPanel>
-                                                         <!--Icon Achievement--> 
+                                                        <!--Icon Achievement-->
                                                         <Image Source="{Binding UnlockImageLink}"
                                                                Width="100"
                                                                Height="100"
                                                                Stretch="Uniform" />
-                                                         <!--Tên Achievement--> 
+                                                        <!--Tên Achievement-->
                                                         <TextBlock Text="{Binding Name}"
                                                                    FontSize="14"
                                                                    FontWeight="Bold"
                                                                    Foreground="Black"
                                                                    TextAlignment="Center"
                                                                    Margin="0,5,0,0" />
-                                                         <!--Thời gian Unlock--> 
+                                                        <!--Thời gian Unlock-->
                                                         <TextBlock Text="{Binding DateUnlockString}"
                                                                    FontSize="12"
                                                                    Foreground="DarkGray"
@@ -917,20 +1018,20 @@
                                                         CornerRadius="5"
                                                         Padding="10">
                                                     <StackPanel>
-                                                         <!--Avatar--> 
+                                                        <!--Avatar-->
                                                         <Image Source="{Binding AvatarLink}"
                                                                Width="50"
                                                                Height="50"
                                                                Stretch="Uniform"
                                                                Margin="0,5,0,0" />
-                                                         <!--Name of Reviewer--> 
+                                                        <!--Name of Reviewer-->
                                                         <TextBlock Text="{Binding Name}"
                                                                    FontSize="16"
                                                                    FontWeight="Bold"
                                                                    Foreground="Black"
                                                                    TextAlignment="Center"
                                                                    Margin="0,5,0,0" />
-                                                         <!--Rating--> 
+                                                        <!--Rating-->
                                                         <TextBlock Text="Rating:"
                                                                    FontSize="14"
                                                                    FontWeight="SemiBold"
@@ -938,7 +1039,7 @@
                                                         <TextBlock Text="{Binding Rating}"
                                                                    FontSize="14"
                                                                    Foreground="DarkBlue" />
-                                                         <!--Description of Review--> 
+                                                        <!--Description of Review-->
                                                         <TextBlock Text="Description:"
                                                                    FontSize="14"
                                                                    FontWeight="SemiBold"
