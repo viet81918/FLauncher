@@ -24,6 +24,7 @@ namespace FLauncher.Views
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
         private FriendService _friendService;
+        private readonly ICategoryRepository _categoryRepo;
         private Game _game;
 
         private readonly IReviewRepository _reviewRepo;
@@ -51,7 +52,7 @@ namespace FLauncher.Views
             _publisherRepo = new PublisherRepository();
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
-
+            _categoryRepo = new CategoryRepository();
 
             _userRepo = new UserRepository();
 
@@ -79,10 +80,11 @@ namespace FLauncher.Views
             {
 
                 var games = await _gameRepo.GetGamesByGamer(_gamer);
-
+                
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
-                DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games);
+                var categories = await _categoryRepo.GetAllCategoriesByGamerAsync(_gamer);
+                DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games, categories);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
@@ -128,7 +130,8 @@ namespace FLauncher.Views
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
                 var isUpdate = await _gamerRepo.IsUpdate(game, _gamer);
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
-                DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games);
+                var categories = await _categoryRepo.GetAllCategoriesByGamerAsync(_gamer);
+                DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games, categories);
             }
             else if (_gamePublisher != null)
             {
@@ -184,6 +187,75 @@ namespace FLauncher.Views
 
             _gameRepo.Play_Game(_game, _gamer);
         }
+        private async void AddCategory_Click(object sender, RoutedEventArgs e)
+        {
+            // Show the InputBox to prompt the user for the category name
+            string categoryName = Microsoft.VisualBasic.Interaction.InputBox(
+                "Enter the name of the new category:", // Prompt message
+                "Add Category",                       // Title of the dialog
+                string.Empty                          // Default value (empty string)
+            );
+
+            // Check if the user entered a valid name (not empty or whitespace)
+            if (!string.IsNullOrWhiteSpace(categoryName))
+            {
+                // Create a new Category object
+                var newCategory = new Category
+                {
+                    NameCategories = categoryName,
+                    // Add other properties as necessary, such as GamerId
+                };
+
+                // Add the new category to the Categories collection in your ViewModel
+                if (DataContext is MyGameViewModel viewModel)
+                {
+                    newCategory = await _categoryRepo.AddCategoryAsync(_gamer, categoryName);
+                    viewModel.Categories.Add(newCategory);
+                 
+                }
+            }
+            else
+            {
+                // Optionally, show an error message if the input is invalid
+                MessageBox.Show("Category name cannot be empty.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+        private void DeleteCategory_Click(object sender, RoutedEventArgs e)
+        {
+            // Get the categories collection from the ViewModel (assumed you are using MyGameViewModel)
+            if (DataContext is MyGameViewModel viewModel)
+            {
+                var deleteCategoryWindow = new CategorySelection(viewModel.Categories);
+                deleteCategoryWindow.ShowDialog(); // Show the window as a dialog, so the user can interact with it
+            }
+        }
+        private void AddGameToCategory_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MyGameViewModel viewModel && viewModel.Game != null)
+            {
+                // Open the CategorySelection window for adding a game to a category
+                var categorySelectionWindow = new CategorySelection(viewModel.Categories, viewModel.Game);
+                categorySelectionWindow.ShowDialog();
+
+                // Refresh the Categories collection in the view model
+                viewModel.RefreshCategories();
+            }
+        }
+
+        private void RemoveGameFromCategory_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MyGameViewModel viewModel && viewModel.Game != null)
+            {
+                // Open the CategorySelection window for removing a game from a category
+                var categorySelectionWindow = new CategorySelection(viewModel.Categories, viewModel.Game, viewModel.Gamer);
+                categorySelectionWindow.ShowDialog();
+
+                // Refresh the Categories collection in the view model
+                viewModel.RefreshCategories();
+            }
+        }
+
+
         private void Update_Click(object sender, RoutedEventArgs e)
         {
             // Bước 1: Tạo OpenFileDialog để chọn file
@@ -213,7 +285,7 @@ namespace FLauncher.Views
                 _gameRepo.Upload_game(_gamePublisher, _game, selectedFilePath, message);
             }
         }
-
+    
 
 
 
