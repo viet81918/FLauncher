@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:FLauncher.Views" xmlns:cc="clr-namespace:FLauncher.CC"
         mc:Ignorable="d"
         x:Name="mainWindow"
+         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         AllowsTransparency="True"
         Background="Transparent"
         Title="MainWindow" Height="800" Width="1400"
@@ -469,248 +470,34 @@
                         Foreground="{StaticResource SecondaryBrush}"
                         FontWeight="SemiBold"
                         FontSize="22"
-                        Text="Hot &amp; New"
+                        Text="Hot Publisher"
                         VerticalAlignment="Bottom"/>
 
-                    <TextBlock
-                        Foreground="{StaticResource SecondaryBrush}"
-                        FontWeight="SemiBold"
-                        HorizontalAlignment="Right"
-                        Text="SEE MORE >"
-                        VerticalAlignment="Center"/>
                 </Grid>
 
-                <!--Cards-->
-                <StackPanel
-                    Orientation="Horizontal"
-                    Margin="0,10,0,0" Panel.ZIndex="0">
-                    <Grid
-                        Background="{StaticResource PrimaryBrush}"
-                        Height="275"
-                        Width="615"
-                        Margin="0,0,15,0">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                    <ItemsControl ItemsSource="{Binding TopPublishers}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
 
-                        <!--Game Character Background-->
-                        <Image
-                            Source="/assets/gg.png"
-                            Stretch="UniformToFill"/>
-
-                        <!--Overlay-->
-                        <Grid
-                            Background="{StaticResource GradientBrush}"/>
-
-                        <!--Like Percentage-->
-                        <Grid
-                            Height="40"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Margin="25">
-                            <!--background-->
-                            <Border
-                                Background="{StaticResource
-                                CanvasBrush}"
-                                Opacity=".8"
-                                CornerRadius="5"/>
-                            <DockPanel>
-                                <StackPanel
-                                    Orientation="Horizontal">
-                                    <!--Like Icon-->
-                                    <Path
-                                        Data="{StaticResource like_icon}"
-                                        Fill="{StaticResource SecondaryBrush}"
-                                        Margin="5,12"
-                                        Stretch="Uniform"
-                                        Height="16"
-                                        Width="35"/>
-
-                                    <!--Percentage Text-->
-                                    <TextBlock
-                                        Text="93%"
-                                        Margin="0,0,8,0"
-                                        Foreground="{StaticResource SecondaryBrush}"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DockPanel>
-                        </Grid>
-
-                        <!--Tags-->
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="39,105,0,0">
-                            <cc:tags
-                                Margin="0,0,5,0"
-                                Text="FREE TO PLAY"/>
-                            <cc:tags
-                                Margin="0,0,5,0"
-                                Text="MOBA"/>
-                            <cc:tags
-                                Text="ACTION"/>
-                        </StackPanel>
-
-                        <!--Title-->
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            Margin="30,146,0,0"                            
-                            TextWrapping="Wrap"
-                            VerticalAlignment="Top"
-                            FontSize="40"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource SecondaryBrush}"><Run Text="Gigantic Open Beta"/><LineBreak/><Run Text="Starts Now"/></TextBlock>
-                    </Grid>
-
-                    <!--Repeat...-->
-                    <Grid
-                        Background="{StaticResource PrimaryBrush}"
-                        Height="275"
-                        Width="615"
-                        Margin="0,0,15,0">
-
-                        <!--Game Character Background-->
-                        <Image
-                            Source="/assets/fh.png"
-                            Stretch="UniformToFill"/>
-                        <!--Overlay-->
-                        <Grid
-                            Background="{StaticResource GradientBrush}"/>
-                        <!--Like Percentage-->
-                        <Grid
-                            Height="40"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Margin="25">
-                            <!--background-->
-                            <Border
-                                Background="{StaticResource
-                                CanvasBrush}"
-                                Opacity=".8"
-                                CornerRadius="5"/>
-                            <DockPanel>
-                                <StackPanel
-                                    Orientation="Horizontal">
-                                    <!--Like Icon-->
-                                    <Path
-                                        Data="{StaticResource like_icon}"
-                                        Fill="{StaticResource SecondaryBrush}"
-                                        Margin="5,12"
-                                        Stretch="Uniform"
-                                        Height="16"
-                                        Width="35"/>
-
-                                    <!--Percentage Text-->
-                                    <TextBlock
-                                        Text="93%"
-                                        Margin="0,0,8,0"
-                                        Foreground="{StaticResource SecondaryBrush}"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DockPanel>
-                        </Grid>
-
-                        <!--Tags-->
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="39,105,0,0">
-                            <cc:tags
-                                Margin="0,0,5,0"
-                                Text="ACTION"/>
-                            <cc:tags
-                                Margin="0,0,5,0"
-                                Text="HARDCORE"/>
-                        </StackPanel>
-
-                        <!--Title-->
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            Margin="30,146,0,0"                            
-                            TextWrapping="Wrap"
-                            VerticalAlignment="Top"
-                            FontSize="40"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource SecondaryBrush}"><Run Text="For Honor"/><LineBreak/><Run Text="Is Now Available"/></TextBlock>
-                    </Grid>
-
-                    <Grid
-                        Background="{StaticResource PrimaryBrush}"
-                        Height="275"
-                        Width="615"
-                        Margin="0,0,15,0">
-
-                        <!--Game Character Background-->
-                        <Image
-                            Source="/assets/wt.png"
-                            Stretch="UniformToFill"/>
-                        <!--Overlay-->
-                        <Grid
-                            Background="{StaticResource GradientBrush}"/>
-                        <!--Like Percentage-->
-                        <Grid
-                            Height="40"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Margin="25">
-                            <!--background-->
-                            <Border
-                                Background="{StaticResource
-                                CanvasBrush}"
-                                Opacity=".8"
-                                CornerRadius="5"/>
-                            <DockPanel>
-                                <StackPanel
-                                    Orientation="Horizontal">
-                                    <!--Like Icon-->
-                                    <Path
-                                        Data="{StaticResource like_icon}"
-                                        Fill="{StaticResource SecondaryBrush}"
-                                        Margin="5,12"
-                                        Stretch="Uniform"
-                                        Height="16"
-                                        Width="35"/>
-
-                                    <!--Percentage Text-->
-                                    <TextBlock
-                                        Text="93%"
-                                        Margin="0,0,8,0"
-                                        Foreground="{StaticResource SecondaryBrush}"
-                                        FontWeight="SemiBold"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DockPanel>
-                        </Grid>
-
-                        <!--Tags-->
-                        <StackPanel
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Margin="39,105,0,0">
-                            <cc:tags
-                                Margin="0,0,5,0"
-                                Text="ROLE-PLAY"/>
-                            <cc:tags
-                                Text="ACTION"/>
-                        </StackPanel>
-
-                        <!--Title-->
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            Margin="30,146,0,0"                            
-                            TextWrapping="Wrap"
-                            VerticalAlignment="Top"
-                            FontSize="40"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource SecondaryBrush}"><Run Text="The Witcher"/><LineBreak/><Run Text="Now Available"/></TextBlock>
-                    </Grid>
-
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Bind properties to Item -->
+                                <cc:Item 
+                    Title="{Binding Name}" 
+                    Image="{Binding AvatarLink}" 
+                    Margin="0,0,10,0" 
+                    Effect="{StaticResource BottomShadowEffect}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
+
+
+
                 <!--#endregion-->
 
                 <!--#region Hot & New Title & Cards-->
@@ -724,12 +511,7 @@
                         Text="Trending"
                         VerticalAlignment="Bottom"/>
 
-                    <TextBlock
-                        Foreground="{StaticResource SecondaryBrush}"
-                        FontWeight="SemiBold"
-                        HorizontalAlignment="Right"
-                        Text="SEE MORE >"
-                        VerticalAlignment="Center"/>
+                   
                 </Grid>
                 <!--Cards-->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,0">

@@ -49,5 +49,6 @@ namespace FLauncher.Repositories
             Achivement achievement);
         Task DeleteAchievement(Achivement achievement);
         Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher);
+         Task<Game> GetGamesByGameID(String Id);
     }
 }

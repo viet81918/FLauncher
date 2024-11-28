@@ -23,6 +23,7 @@
         <b:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <b:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
         <b:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
+        <b:GameIdToGameConverter x:Key="GameIdToGameConverter" />
     </Window.Resources>
 
     <Grid Margin="5"
@@ -369,43 +370,62 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Left Side: Collapsible Bars -->
-                <StackPanel Grid.Column="0"
-                            Background="#1b1e23">
-                    <!-- All Games -->
+                <StackPanel Grid.Column="0" Background="#1b1e23">
+                    <!-- All Games Expander -->
                     <Expander Header="All Games"
-                              Background="{StaticResource DimBrush}"
-                              Foreground="{StaticResource SecondaryBrush}"
-                              BorderBrush="Transparent"
-                              Padding="10"
-                              Margin="0,10,0,0">
+              Background="{StaticResource DimBrush}"
+              Foreground="{StaticResource SecondaryBrush}"
+              BorderBrush="Transparent"
+              Padding="10"
+              Margin="0,10,0,0">
                         <ListBox ItemsSource="{Binding MyGames}"
-                                 Background="#2c2f34"
-                                 Foreground="White"
-                                 SelectionChanged="GamesListBox_SelectionChanged">
+                 Background="#2c2f34"
+                 Foreground="White"
+                 SelectionChanged="GamesListBox_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
                                         <!-- Bind the Game Name here -->
-                                        <TextBlock Text="{Binding Name}"
-                                                   Foreground="{StaticResource SecondaryBrush}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource SecondaryBrush}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Margin"
-                                            Value="0,5" />
-                                    <Setter Property="Height"
-                                            Value="50" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
                         </ListBox>
-
-
                     </Expander>
 
+                    <!-- Categories Expander -->
+                    <ItemsControl ItemsSource="{Binding Categories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Individual Category Expander -->
+                                <Expander Header="{Binding NameCategories}"
+                          Background="{StaticResource DimBrush}"
+                          Foreground="{StaticResource SecondaryBrush}"
+                          BorderBrush="Transparent"
+                          Padding="10"
+                          Margin="0,10,0,0"
+                          Visibility="{Binding DataContext.IsGamer, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <!-- List of Games in Category -->
+                                    <ListBox ItemsSource="{Binding GameIds, Converter={StaticResource GameIdToGameConverter}}"
+                             Background="#2c2f34"
+                             Foreground="White"
+                                              SelectionChanged="GamesListBox_SelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <!-- Bind the Game Name -->
+                                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource SecondaryBrush}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
+
+
 
                 <!-- Right Side: Game Details -->
                 <Grid Grid.Column="1"
@@ -419,7 +439,43 @@
                                        FontSize="22"
                                        Text="Game information"
                                        VerticalAlignment="Bottom" />
+                            <Button Content="Add Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="227,5,563,5"
+                                        Background="Aquamarine"
+                                        Foreground="MidnightBlue"
+                                        Click="AddCategory_Click">
 
+                            </Button>
+                            <!-- Delete Category Button -->
+                            <Button Content="Delete Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="373,4,417,6"
+                                        Background="Tomato"
+                                        Foreground="White"
+                                        Click="DeleteCategory_Click">
+
+                            </Button>
+                            <Button Content="Add Game to Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="513,5,217,5"
+                                        Background="LightGreen"
+                                        Foreground="Black"
+                                        Click="AddGameToCategory_Click">
+                                
+                            </Button>
+                            <Button Content="Remove from Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="720,4,10,6"
+                                        Background="Salmon"
+                                        Foreground="White"
+                                        Click="RemoveGameFromCategory_Click">
+                                
+                            </Button>
 
                         </Grid>
 
