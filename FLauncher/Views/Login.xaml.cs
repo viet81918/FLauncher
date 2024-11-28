@@ -178,7 +178,7 @@ namespace FLauncher.Views
             }
         }
 
-        
+        /*
         private void PerformLogin(string UserEmail, string UserPassword)
         {
             if (isCustomerWindowOpened) return;
@@ -197,6 +197,44 @@ namespace FLauncher.Views
             else
             {
                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
+            }
+        }*/
+
+        private void PerformLogin(string UserEmail, string UserPassword)
+        {
+
+            if (isCustomerWindowOpened) return;
+            string accountType = CheckLogin(UserEmail, UserPassword);
+
+            if (accountType == "gamer")
+            {
+                MessageBox.Show("Đăng nhập thành công với tư cách gamer!");
+                Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
+
+                // Initialize the session for the gamer
+                SessionManager.InitializeSession(loggedInUser, _gamerRepo);
+                Debug.WriteLine($"Session initialized with GamerId: {SessionManager.LoggedInGamerId}");
+
+
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
+                customerWindow.Show();
+                isCustomerWindowOpened = true;
+                this.Close();
+            }
+            else if (accountType == "publisher")
+            {
+                MessageBox.Show("Đăng nhập thành công với tư cách nhà phát hành!");
+                Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
+                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
+                customerWindow.Show();
+                isCustomerWindowOpened = true;
+                this.Close();
+            }
+            else
+            {
+
+                MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
+
             }
         }
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
