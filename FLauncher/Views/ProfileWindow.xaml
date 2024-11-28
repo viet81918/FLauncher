@@ -22,7 +22,7 @@
     <Window.Resources>
 		<b:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <b:InvitationMultiBoolToVisibilityConverter x:Key="InvitationMultiBoolToVisibilityConverter"/>
-		<b:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
+        <b:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
         <Style x:Key="CircleImageStyle" TargetType="Image">
             <Setter Property="Clip">
                 <Setter.Value>
@@ -31,7 +31,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    
+
     <Grid
         Margin="5"
             Effect="{StaticResource BottomShadowEffect}"
