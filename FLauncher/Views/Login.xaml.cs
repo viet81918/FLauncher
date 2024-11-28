@@ -187,12 +187,6 @@ namespace FLauncher.Views
             if (accountType == "gamer" || accountType == "publisher")
             {
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
-
-                // Initialize the session for the gamer
-                SessionManager.InitializeSession(loggedInUser, _gamerRepo);
-                Debug.WriteLine($"Session initialized with GamerId: {SessionManager.LoggedInGamerId}");
-
-
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
                 isCustomerWindowOpened = true;

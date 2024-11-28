@@ -17,9 +17,6 @@ using FLauncher.Utilities;
 
 namespace FLauncher.Views
 {
-    /// <summary>
-    /// Interaction logic for ProfileWindow.xaml
-    /// </summary>
     public partial class ProfileWindow : Window
     {
         
@@ -37,10 +34,10 @@ namespace FLauncher.Views
 
         public ProfileWindow(Model.User user, FriendService friendService, Gamer friend = null)
         {
-           
+            InitializeComponent();
             _userRepo = new UserRepository();
             
-            
+
             _friendService = friendService;
             _friendRepo = new FriendRepository();
             _gamerRepo = new GamerRepository();
