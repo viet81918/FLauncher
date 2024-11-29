@@ -222,9 +222,10 @@ namespace FLauncher
             ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
 
-            // Hide and close the current window
             this.Hide();
             this.Close();
+
+            
         }
         private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
         {

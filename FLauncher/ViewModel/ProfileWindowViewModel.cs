@@ -23,6 +23,8 @@ namespace FLauncher.ViewModel
         private readonly IPublisherRepository _publisherRepository;
         private readonly IUserRepository _userRepository;
         private  FriendService _friendService;
+
+
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
 
@@ -34,16 +36,7 @@ namespace FLauncher.ViewModel
         public bool IsGamer { get; set; }
         public bool IsFriend { get; set; }
 
-        private bool _hasPendingInvitation;
-        public bool HasPendingInvitation
-        {
-            get => _hasPendingInvitation;
-            set
-            {
-                _hasPendingInvitation = value;
-                OnPropertyChanged(nameof(HasPendingInvitation));
-            }
-        }
+       
 
         private bool _isCurrentUser;
         public bool IsCurrentUser
@@ -55,21 +48,60 @@ namespace FLauncher.ViewModel
                 OnPropertyChanged(nameof(IsCurrentUser));
             }
         }
-
+        public ObservableCollection<Achivement> UnlockAchivement { get; }
+        public ObservableCollection<UnlockAchivement> Unlock { get; }
+        public ObservableCollection<UnlockAchivementViewModel> UnlockAchivementViewModels { get; set; }
+        public ObservableCollection<TrackingMyGameViewModel> TrackingMyGames { get; set; }
 
         // Constructor to initialize the ViewModel with repositories
-        public ProfileWindowViewModel(Gamer gamer, IFriendRepository friendRepository, IGamerRepository gamerRepository, IEnumerable<Gamer> friends)
+        public ProfileWindowViewModel(Gamer gamer, IFriendRepository friendRepository,
+            IGamerRepository gamerRepository, IEnumerable<Gamer> friends,
+            IEnumerable<Achivement> UnlockAchivements,
+            IEnumerable<UnlockAchivement> unlockAchivementsData,
+            IEnumerable<(Game Game, double TotalHours, DateTime LastPlayed)> gameWithHours)
         {
             Gamer = gamer;
             IsGamer = true;
-             
+
             _friendRepository = friendRepository;
             _gamerRepository = gamerRepository;
             ListFriend = new ObservableCollection<Gamer>(friends);
 
-            
+            // Assign the unlocked achievements to the UnlockAchievements ObservableCollection
+            UnlockAchivement = new ObservableCollection<Achivement>(UnlockAchivements);
+
+            // Initialize the UnlockAchievementViewModels collection
+            UnlockAchivementViewModels = new ObservableCollection<UnlockAchivementViewModel>();
+
+            // Populate the UnlockAchievementViewModels collection
+            foreach (var unlock in unlockAchivementsData)
+            {
+                var achievement = UnlockAchivement.FirstOrDefault(a => a.AchivementId == unlock.AchievementId && a.GameId == unlock.GameId);
+                if (achievement != null)
+                {
+                    UnlockAchivementViewModels.Add(new UnlockAchivementViewModel
+                    {
+                        Name = achievement.Name,
+                        UnlockImageLink = achievement.UnlockImageLink,
+                        DateUnlockString = unlock.DateUnlockString,
+                        AchivmentId = unlock.AchievementId,
+                        GameId = unlock.GameId,
+                        GamerId = unlock.GamerId
+                    });
+                }
+            }
+            // Populate TrackingMyGames
+            TrackingMyGames = new ObservableCollection<TrackingMyGameViewModel>(
+                gameWithHours.Select(g => new TrackingMyGameViewModel
+                {
+                    GameName = g.Game.Name, 
+                    GameImage =g.Game.AvatarLink, 
+                    TotalPlayingHours = g.TotalHours,       // Use TotalHours provided
+                    LastPlayedDate = g.LastPlayed.ToString("dd/MM/yyyy") // Format LastPlayed
+                }));
+
         }
-       
+
 
         public async Task LoadFriendStatusAsync(string viewerId)
         {
@@ -84,8 +116,7 @@ namespace FLauncher.ViewModel
         // Method to load profile data (name, avatar, and friend count)
         public async Task LoadProfileData(User user)
         {
-            if (user.Role == 3) // Role 3 - Gamer
-            {
+           
                 // Retrieve Gamer info
                 var gamer = _gamerRepository.GetGamerByUser(user);
                 if (gamer != null)
@@ -97,39 +128,7 @@ namespace FLauncher.ViewModel
                     var friends = await _friendRepository.GetFriendsForGamer(gamer);
                     FriendCount = friends.Count;
                 }
-                else
-                {
-                    Name = "Unknown Gamer";
-                    AvatarLink = "default_avatar.png";
-                    FriendCount = 0;
-                }
-            }
-            else if (user.Role == 2) // Role 2 - Game Publisher
-            {
-                // Retrieve Game Publisher info
-                var gamePublisher = _publisherRepository.GetPublisherByUser(user);
-                if (gamePublisher != null)
-                {
-                    Name = gamePublisher.Name;
-                    AvatarLink = gamePublisher.AvatarLink;
-
-                    // Publishers don't have friends; set FriendCount to 0 or any relevant value
-                    FriendCount = 0;
-                }
-                else
-                {
-                    Name = "Unknown Publisher";
-                    AvatarLink = "default_avatar.png";
-                    FriendCount = 0;
-                }
-            }
-            else
-            {
-                // Handle other roles or invalid role cases
-                Name = "Unknown User";
-                AvatarLink = "default_avatar.png";
-                FriendCount = 0;
-            }
+                
 
             // Notify the UI of property changes
             OnPropertyChanged(nameof(Name));
