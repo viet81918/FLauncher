@@ -1,5 +1,6 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
 using FLauncher.ViewModel;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
@@ -23,7 +24,7 @@ namespace FLauncher.Views
         private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
-
+        
 
         private readonly IGamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
@@ -33,10 +34,12 @@ namespace FLauncher.Views
             if (user.Role == 2) // Giả sử 1 là Publisher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
                 MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
             }
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
@@ -310,6 +313,6 @@ namespace FLauncher.Views
                 }
             }
         }
-
+       
     }
 }

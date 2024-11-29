@@ -1,5 +1,7 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
+using FLauncher.Repositories;
+using JetBrains.Annotations;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -66,6 +68,7 @@ namespace FLauncher.ViewModel
         public ObservableCollection<UnlockAchivementViewModel> UnlockAchivementViewModels { get; set; }
         public ObservableCollection<ReviewGamerViewModel> ReviewGamerViewModels { get; set; }
         public ObservableCollection<Gamer> Gamers { get; }
+        public ObservableCollection<Category> Categories { get; }
         public bool IsGamer { get; set; }
         public bool IsPublisher { get; set; }
         public bool IsBuy { get; set; }
@@ -76,13 +79,13 @@ namespace FLauncher.ViewModel
         public bool IsUpdate { get; set; }
         public bool IsNotUpdate { get; set; }
 
-        public MyGameViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> myGames)
+        public MyGameViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> myGames, IEnumerable<Category> categories)
         {
             Gamer = gamer;
             UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
             FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
             MyGames = new ObservableCollection<Game>(myGames);
-
+            Categories = new ObservableCollection<Category>(categories);
 
         }
         /*data publisher*/
@@ -126,9 +129,9 @@ namespace FLauncher.ViewModel
 
         }
 
-        public MyGameViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate, IEnumerable<Game> myGames)
+        public MyGameViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate, IEnumerable<Game> myGames, IEnumerable<Category> categories)
         {
-
+            Categories = new ObservableCollection<Category>(categories);
             MyGames = new ObservableCollection<Game>(myGames);
             IsGamer = true;
             IsPublisher = false;
@@ -215,10 +218,25 @@ namespace FLauncher.ViewModel
             // Assuming GetPublisherByGame is a method that returns Task<GamePublisher>
             GamePublisher = await PublisherDAO.Instance.GetPublisherByGame(game);
         }
+        public async void RefreshCategories()
+        {
+            if (Gamer != null && Game != null)
+            {
+                // Reload the categories from the database or repository
+                var updatedCategories = await CategoryDAO.Instance.GetAllCategoriesByGamerAsync(Gamer);
+
+                // Update the ObservableCollection
+                Categories.Clear();
+                foreach (var category in updatedCategories)
+                {
+                    Categories.Add(category);
+                }
+            }
+        }
 
         #region INotifyPropertyChanged implimentation
         public event PropertyChangedEventHandler PropertyChanged;
-        //[NotifyPropertyChangedInvocator]
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;

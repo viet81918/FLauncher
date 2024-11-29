@@ -18,9 +18,6 @@ using System.Xml.Linq;
 
 namespace FLauncher.Views
 {
-    /// <summary>
-    /// Interaction logic for ProfileWindow.xaml
-    /// </summary>
     public partial class ProfileWindow : Window
     {
         

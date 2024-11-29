@@ -13,10 +13,16 @@ namespace FLauncher.Services
 {
     public class FLauncherOnLineDbContext : DbContext
     {
+        private static DbContextOptions<FLauncherOnLineDbContext> _cachedOptions;
+
         public FLauncherOnLineDbContext()
         {
         }
-        private static DbContextOptions<FLauncherOnLineDbContext> _cachedOptions;
+
+        public FLauncherOnLineDbContext(DbContextOptions<FLauncherOnLineDbContext> options)
+            : base(options)
+        {
+        }
 
         public static FLauncherOnLineDbContext Create(IMongoDatabase database)
         {
@@ -27,11 +33,6 @@ namespace FLauncher.Services
                     .Options;
             }
             return new FLauncherOnLineDbContext(_cachedOptions);
-        }
-
-        public FLauncherOnLineDbContext(DbContextOptions<FLauncherOnLineDbContext> options)
-         : base(options)
-        {
         }
         public DbSet<TrackingRecords> TrackingsTime { get; init; }
         public DbSet<TrackingPlayers> TrackingPlayers { get; init; }

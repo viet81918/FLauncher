@@ -407,9 +407,17 @@ namespace FLauncher.DAO
 
             return games;
         }
+
        
 
 
+
+
+
+        public async Task<Game> GetGamesByGameID(String Id)
+        {
+            return await _dbContext.Games.FirstOrDefaultAsync(c => c.GameID == Id);
+        }
 
         public async Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher)
         {

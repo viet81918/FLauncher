@@ -23,6 +23,7 @@
         <b:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <b:MultiBoolToVisibilityConverter x:Key="MultiBoolToVisibilityConverter" />
         <b:InvertedBoolToVisibilityConverter x:Key="InvertedBoolToVisibilityConverter" />
+        <b:GameIdToGameConverter x:Key="GameIdToGameConverter" />
     </Window.Resources>
 
     <Grid Margin="5"
@@ -254,34 +255,7 @@
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
 
-                    <!--Notifications Icon With Count-->
-                    <StackPanel Orientation="Horizontal"
-                                VerticalAlignment="Bottom"
-                                Margin="0,0,20,0">
-                        <Path Data="{StaticResource notification_icon}"
-                              Fill="{StaticResource PrimaryBrush}"
-                              VerticalAlignment="Bottom"
-                              Stretch="Uniform"
-                              Width="16" />
-
-                        <!-- Count -->
-                        <Grid VerticalAlignment="Top"
-                              Margin="-8,0,0,15">
-                            <Ellipse Fill="{StaticResource TertiaryBrush}"
-                                     StrokeThickness="1"
-                                     Stroke="{StaticResource CanvasBrush}"
-                                     Height="15"
-                                     Width="15" />
-
-                            <!-- Notification Count -->
-                            <TextBlock FontSize="8"
-                                       Foreground="{StaticResource SecondaryBrush}"
-                                       Margin="0,0,0,.5"
-                                       HorizontalAlignment="Center"
-                                       Text="{Binding UnreadNotificationCount}" />
-                            <!-- Binding the unread notification count -->
-                        </Grid>
-                    </StackPanel>
+                    
 
                     <!--Friends Icon and Count-->
                     <StackPanel Orientation="Horizontal"
@@ -366,7 +340,7 @@
 
                 <!-- Profile Icon Item with Click Event -->
 
-                <ListBoxItem Content="{StaticResource profile_icon}"
+                <ListBoxItem x:Name="profileButton" Content="{StaticResource profile_icon}"
                              MouseLeftButtonUp="ProfileIcon_Click" />
 
                 <!--demo phân quyền-->
@@ -396,43 +370,62 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Left Side: Collapsible Bars -->
-                <StackPanel Grid.Column="0"
-                            Background="#1b1e23">
-                    <!-- All Games -->
+                <StackPanel Grid.Column="0" Background="#1b1e23">
+                    <!-- All Games Expander -->
                     <Expander Header="All Games"
-                              Background="{StaticResource DimBrush}"
-                              Foreground="{StaticResource SecondaryBrush}"
-                              BorderBrush="Transparent"
-                              Padding="10"
-                              Margin="0,10,0,0">
+              Background="{StaticResource DimBrush}"
+              Foreground="{StaticResource SecondaryBrush}"
+              BorderBrush="Transparent"
+              Padding="10"
+              Margin="0,10,0,0">
                         <ListBox ItemsSource="{Binding MyGames}"
-                                 Background="#2c2f34"
-                                 Foreground="White"
-                                 SelectionChanged="GamesListBox_SelectionChanged">
+                 Background="#2c2f34"
+                 Foreground="White"
+                 SelectionChanged="GamesListBox_SelectionChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel>
                                         <!-- Bind the Game Name here -->
-                                        <TextBlock Text="{Binding Name}"
-                                                   Foreground="{StaticResource SecondaryBrush}" />
+                                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource SecondaryBrush}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Margin"
-                                            Value="0,5" />
-                                    <Setter Property="Height"
-                                            Value="50" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
                         </ListBox>
-
-
                     </Expander>
 
+                    <!-- Categories Expander -->
+                    <ItemsControl ItemsSource="{Binding Categories}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Individual Category Expander -->
+                                <Expander Header="{Binding NameCategories}"
+                          Background="{StaticResource DimBrush}"
+                          Foreground="{StaticResource SecondaryBrush}"
+                          BorderBrush="Transparent"
+                          Padding="10"
+                          Margin="0,10,0,0"
+                          Visibility="{Binding DataContext.IsGamer, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <!-- List of Games in Category -->
+                                    <ListBox ItemsSource="{Binding GameIds, Converter={StaticResource GameIdToGameConverter}}"
+                             Background="#2c2f34"
+                             Foreground="White"
+                                              SelectionChanged="GamesListBox_SelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <!-- Bind the Game Name -->
+                                                    <TextBlock Text="{Binding Name}" Foreground="{StaticResource SecondaryBrush}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
+
+
 
                 <!-- Right Side: Game Details -->
                 <Grid Grid.Column="1"
@@ -446,7 +439,43 @@
                                        FontSize="22"
                                        Text="Game information"
                                        VerticalAlignment="Bottom" />
+                            <Button Content="Add Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="227,5,563,5"
+                                        Background="Aquamarine"
+                                        Foreground="MidnightBlue"
+                                        Click="AddCategory_Click">
 
+                            </Button>
+                            <!-- Delete Category Button -->
+                            <Button Content="Delete Category"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="373,4,417,6"
+                                        Background="Tomato"
+                                        Foreground="White"
+                                        Click="DeleteCategory_Click">
+
+                            </Button>
+                            <Button Content="Add Game to Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="513,5,217,5"
+                                        Background="LightGreen"
+                                        Foreground="Black"
+                                        Click="AddGameToCategory_Click">
+                                
+                            </Button>
+                            <Button Content="Remove from Category"
+                                        Width="180"
+                                        Height="30"
+                                        Margin="720,4,10,6"
+                                        Background="Salmon"
+                                        Foreground="White"
+                                        Click="RemoveGameFromCategory_Click">
+                                
+                            </Button>
 
                         </Grid>
 
@@ -520,12 +549,13 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Margin="10,0,0,20"
-                            Orientation="Horizontal">
+                            Orientation="Horizontal"
+                            Cursor="Hand">
                     <ItemsControl ItemsSource="{Binding Genres}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <cc:tags Margin="0,0,5,0"
-                                         Text="{Binding TypeOfGenre}" />
+                                         Text="{Binding TypeOfGenre}" MouseDown="OnTagClick"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

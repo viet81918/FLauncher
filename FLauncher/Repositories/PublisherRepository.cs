@@ -1,5 +1,6 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,10 @@ namespace FLauncher.Repositories
         {
             return PublisherDAO.Instance.GetPublisherByUser(user);
         }
+        public async Task<IEnumerable<GamePublisher>> GetTopPublishersAsync()
+        {
+         return await PublisherDAO.Instance.GetTopPublishersAsync();    
+        }
+
     }
 }

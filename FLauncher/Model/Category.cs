@@ -21,7 +21,7 @@ namespace FLauncher.Model
         [BsonElement("NameCategories")] // Matches the JSON key "NameCategories"
         public string NameCategories { get; set; }
         [BsonElement("GameIds")]
-        public List<string> GameIds { get; set; } = new List<string>(); // Holds IDs of games
-
+        public List<string> GameIds { get; set; }  // Holds IDs of games
+        
     }
 }

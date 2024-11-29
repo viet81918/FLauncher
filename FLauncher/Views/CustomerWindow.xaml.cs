@@ -36,10 +36,12 @@ namespace FLauncher
             if (user.Role == 2) // Giả sử 1 là Publisher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
                 MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
             }
 
             _user = user;
@@ -99,13 +101,14 @@ namespace FLauncher
                 _gamer = _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
-
-                DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+                var topPublishersData = await _publisherRepo.GetTopPublishersAsync();
+                DataContext = new CustomerWindowViewModel(topPublishersData, _gamer, unreadNotifications, friendInvitations, topGames, genres);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
-                DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
+                var topPublishersData = await _publisherRepo.GetTopPublishersAsync();
+                DataContext = new CustomerWindowViewModel(topPublishersData, _gamePublisher, topGames, genres);
             }
         }
 
