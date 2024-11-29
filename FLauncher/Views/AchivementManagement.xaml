@@ -197,55 +197,11 @@
 
                 <StackPanel Orientation="Horizontal"
                          HorizontalAlignment="Left"
-                         Margin="40,0">
-                    <RadioButton Content="Games"
-                              IsChecked="True"
-                              Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Apps"
-                              Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Movies"
-                              Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Music"
-                              Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Comics"
-                              Style="{StaticResource TopNavigationStyle}" />
-                </StackPanel>
+                         Margin="40,0"/>
 
                 <!--#endregion-->
 
                 <!--#region SearchBox-->
-                <Grid Background="{StaticResource DimBrush}"
-                   HorizontalAlignment="Stretch"
-                   Height="40"
-                   MinWidth="400"
-                   Margin="450,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <!--Search Icon-->
-                        <ColumnDefinition />
-                        <!--Textbox-->
-                    </Grid.ColumnDefinitions>
-
-                    <Path Data="{StaticResource search_icon}"
-                       Fill="{StaticResource SecondaryBrush}"
-                       Stretch="Uniform"
-                       Height="15"
-                       Width="15"
-                       MouseLeftButtonUp="searchGame_button"
-                       Cursor="Hand" />
-
-                    <!--Search text-->
-                    <TextBox x:Name="SearchTextBox"
-                          Grid.Column="1"
-                          Background="Transparent"
-                          BorderThickness="0"
-                          Foreground="{StaticResource SecondaryBrush}"
-                          Text="Search name game"
-                          VerticalAlignment="Center"
-                          GotFocus="SearchTextBox_GotFocus"
-                          LostFocus="SearchTextBox_LostFocus"
-                          KeyDown="SearchTextBox_KeyDown" />
-                </Grid>
                 <!--#endregion-->
 
 
@@ -280,49 +236,8 @@
                     </Grid>
 
                     <!--Notifications Icon With Count-->
-                    <StackPanel Orientation="Horizontal"
-                             VerticalAlignment="Bottom"
-                             Margin="0,0,20,0">
-                        <Path Data="{StaticResource notification_icon}"
-                           Fill="{StaticResource PrimaryBrush}"
-                           VerticalAlignment="Bottom"
-                           Stretch="Uniform"
-                           Width="16" />
-
-                        <!-- Count -->
-                        <Grid VerticalAlignment="Top"
-                           Margin="-8,0,0,15">
-                            <Ellipse Fill="{StaticResource TertiaryBrush}"
-                                  StrokeThickness="1"
-                                  Stroke="{StaticResource CanvasBrush}"
-                                  Height="15"
-                                  Width="15" />
-
-                            <!-- Notification Count -->
-                            <TextBlock FontSize="8"
-                                    Foreground="{StaticResource SecondaryBrush}"
-                                    Margin="0,0,0,.5"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding UnreadNotificationCount}" />
-                            <!-- Binding the unread notification count -->
-                        </Grid>
-                    </StackPanel>
 
                     <!--Friends Icon and Count-->
-                    <StackPanel Orientation="Horizontal"
-                             VerticalAlignment="Bottom">
-                        <Path Data="{StaticResource friends_icon}"
-                           Fill="{StaticResource PrimaryBrush}"
-                           Margin="5,0"
-                           Stretch="Uniform"
-                           Height="16" />
-
-                        <!-- Count for Friend Invitations -->
-                        <TextBlock Text="{Binding FriendInvitationCount}"
-                                Foreground="{StaticResource SecondaryBrush}"
-                                FontWeight="SemiBold"
-                                VerticalAlignment="Center" />
-                    </StackPanel>
                 </StackPanel>
                 <!--#endregion-->
             </Grid>
@@ -385,14 +300,10 @@
                 <ListBoxItem MouseLeftButtonUp="Home_Click"
                           Content="{StaticResource home_icon}" />
                 <ListBoxItem Content="{StaticResource games_icon}" />
-                <ListBoxItem Content="{StaticResource profile_icon}" />
 
                 <ListBoxItem x:Name="searchButton"
                           Content="{StaticResource search_icon}"
                           MouseLeftButtonUp="searchButton_Click" />
-
-                <ListBoxItem Content="{StaticResource message_icon}"
-                          MouseLeftButtonUp="messageButton_Click" />
 
                 <!-- Add Log Out icon -->
                 <ListBoxItem Content="{StaticResource logout_icon}"
