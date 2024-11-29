@@ -475,7 +475,7 @@
 
                 </Grid>
 
-                <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Cursor="Hand">
                     <ItemsControl ItemsSource="{Binding TopPublishers}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -490,7 +490,8 @@
                     Title="{Binding Name}" 
                     Image="{Binding AvatarLink}" 
                     Margin="0,0,10,0" 
-                    Effect="{StaticResource BottomShadowEffect}" />
+                    Effect="{StaticResource BottomShadowEffect}" 
+                    MouseDown="OnItemPubClick"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

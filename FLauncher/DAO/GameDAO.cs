@@ -296,7 +296,11 @@ namespace FLauncher.DAO
                 .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
                 .ToListAsync();
         }
-
+        public async Task<Game> GetGameByName(string NameGame)
+        {
+            return await _dbContext.Games.FirstAsync(g => g.Name.Equals(NameGame));
+                
+        }
         public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
         {
             // lay id game co ten bat dau bang input name ex: gta => gta 1 , 2 ,3 ...

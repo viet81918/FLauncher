@@ -15,6 +15,9 @@ using System.IO;
 using Google.Apis.Drive.v3.Data;
 using FLauncher.Utilities;
 using System.Xml.Linq;
+using Microsoft.IdentityModel.Tokens;
+using static Azure.Core.HttpHeader;
+using FLauncher.DAO;
 
 namespace FLauncher.Views
 {
@@ -522,6 +525,25 @@ namespace FLauncher.Views
             MyGame myGameWindow = new MyGame(_user);
             myGameWindow.Show();
             this.Hide();
+            this.Close();
+        }
+        private async void GameName_Selected(object sender, MouseButtonEventArgs e)
+        {
+            var gameSelected = sender as TextBlock;
+            if (gameSelected == null)
+            {
+                MessageBox.Show("Sự kiện không được gửi từ TextBlock!");
+                return;
+            }
+            var gameData = gameSelected.DataContext as TrackingMyGameViewModel;
+            if (gameData == null) return;
+            string gameName = gameData.GameName;
+            MessageBox.Show("game detail " + gameData.GameName);
+            var GameN = await _gameRepo.GetGameByName(gameName);
+            Game _gameN = GameN as Game;
+            GameDetail gameDTW = new GameDetail(_gameN, _user);           
+            this.Hide();
+            gameDTW.Show();
             this.Close();
         }
     }
