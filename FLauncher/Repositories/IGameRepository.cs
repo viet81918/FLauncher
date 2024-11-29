@@ -1,4 +1,5 @@
 ﻿using FLauncher.Model;
+using FLauncher.ViewModel;
 
 namespace FLauncher.Repositories
 {
@@ -49,5 +50,7 @@ namespace FLauncher.Repositories
             Achivement achievement);
         Task DeleteAchievement(Achivement achievement);
         Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher);
+
+        Task<IEnumerable<(Game Game, double TotalHours, DateTime LastPlayed)>> GetGamesWithPlayingHoursAndLastPlayed(string gamerId);
     }
 }

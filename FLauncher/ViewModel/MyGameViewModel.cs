@@ -18,6 +18,7 @@ namespace FLauncher.ViewModel
 
         public string Name => Gamer?.Name;
         public double Money => Gamer?.Money ?? 0.0;
+        public int TotalPlayingHours { get; set; }
         public ObservableCollection<Game> MyGames { get; }
 
 

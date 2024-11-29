@@ -1,6 +1,8 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
+using FLauncher.ViewModel;
 using MongoDB.Bson;
+using System.Windows;
 
 namespace FLauncher.Repositories
 {
@@ -28,6 +30,8 @@ namespace FLauncher.Repositories
         {
             return await GameDAO.Instance.GetGamesByGamer(gamer);
         }
+
+     
 
         public async Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer)
         {
@@ -127,6 +131,11 @@ namespace FLauncher.Repositories
         public Task<Achivement> UpdateAchievement(string idobject, string id, string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath, Achivement achievement)
         {
             return AchivementDAO.Instance.UpdateAchievement(idobject, id, gameid, trigger, description, name, unlockImagePath, lockImagePath, achievement);
+        }
+
+        public async Task<IEnumerable<(Game Game, double TotalHours, DateTime LastPlayed)>> GetGamesWithPlayingHoursAndLastPlayed(string gamerId)
+        {
+            return await TrackingDAO.Instance.GetGamesWithPlayingHoursAndLastPlayedAsync(gamerId);
         }
     }
 }
