@@ -446,7 +446,12 @@
                                         Background="Aquamarine"
                                         Foreground="MidnightBlue"
                                         Click="AddCategory_Click">
-
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                        <Binding Path="IsBuy" />
+                                        <Binding Path="IsGamer" />
+                                    </MultiBinding>
+                                </Button.Visibility>
                             </Button>
                             <!-- Delete Category Button -->
                             <Button Content="Delete Category"
@@ -456,7 +461,12 @@
                                         Background="Tomato"
                                         Foreground="White"
                                         Click="DeleteCategory_Click">
-
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                        <Binding Path="IsBuy" />
+                                        <Binding Path="IsGamer" />
+                                    </MultiBinding>
+                                </Button.Visibility>
                             </Button>
                             <Button Content="Add Game to Category"
                                         Width="180"
@@ -465,7 +475,13 @@
                                         Background="LightGreen"
                                         Foreground="Black"
                                         Click="AddGameToCategory_Click">
-                                
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                        <Binding Path="IsBuy" />
+                                        <Binding Path="IsGamer" />
+                                    </MultiBinding>
+                                </Button.Visibility>
+
                             </Button>
                             <Button Content="Remove from Category"
                                         Width="180"
@@ -474,7 +490,13 @@
                                         Background="Salmon"
                                         Foreground="White"
                                         Click="RemoveGameFromCategory_Click">
-                                
+                                <Button.Visibility>
+                                    <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                        <Binding Path="IsBuy" />
+                                        <Binding Path="IsGamer" />
+                                    </MultiBinding>
+                                </Button.Visibility>
+
                             </Button>
 
                         </Grid>
@@ -618,7 +640,7 @@
                             Margin="0,10,10,0">
                     <!-- Uninstall & Download Buttons -->
                     <StackPanel Orientation="Vertical"
-                                Margin="0,0,10,0">
+                                Margin="60,90,0,0">
                         <Button Content="Uninstall"
                                 Width="120"
                                 Height="40"
@@ -627,14 +649,14 @@
                                 FontWeight="Bold"
                                 BorderBrush="Transparent"
                                 Click="Uninstall_Click">
-                            <Button.Visibility>
-                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
-                                    <Binding Path="IsBuy" />
-                                    <Binding Path="IsGamer" />
-                                    <Binding Path="IsDownload" />
-                                </MultiBinding>
-                            </Button.Visibility>
-                        </Button>
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsDownload" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
                         <Button Content="Download"
                                 Width="120"
                                 Height="40"
@@ -1002,7 +1024,62 @@
 
                         </StackPanel>
 
-                        
+                        <StackPanel Orientation="Vertical"
+             Margin="10,0,0,0">
+                            <StackPanel.Visibility>
+                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                    <Binding Path="IsBuy" />
+                                    <Binding Path="IsGamer"/>
+                                </MultiBinding>
+                            </StackPanel.Visibility>
+
+                            <TextBlock Text="Unlock Achievements:"
+                FontSize="20"
+                FontWeight="SemiBold"
+                Foreground="White"
+                Margin="0,10,0,10" />
+                            <ScrollViewer Height="275"
+                   VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding UnlockAchivementViewModels}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5"
+                                 Width="150">
+                                                <Border Background="LightGray"
+                                 CornerRadius="5"
+                                 Padding="10">
+                                                    <StackPanel>
+                                                        <!-- Icon Achievement -->
+                                                        <Image Source="{Binding UnlockImageLink}"
+                                        Width="100"
+                                        Height="100"
+                                        Stretch="Uniform" />
+                                                        <!-- Tên Achievement -->
+                                                        <TextBlock Text="{Binding Name}"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Foreground="Black"
+                                            TextAlignment="Center"
+                                            Margin="0,5,0,0" />
+                                                        <!-- Thời gian Unlock -->
+                                                        <TextBlock Text="{Binding DateUnlockString}"
+                                            FontSize="12"
+                                            Foreground="DarkGray"
+                                            TextAlignment="Center" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
 
                         <StackPanel Orientation="Vertical"
                                     Margin="10,0,0,0">
