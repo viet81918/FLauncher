@@ -394,23 +394,31 @@ namespace FLauncher.DAO
 
         public async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
         {
-            // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
-            var purchasedGameIds = _dbContext.Bills
-                                              .Where(b => b.GamerId == gamer.GamerId)
-                                              .Select(b => b.GameId)
-                                              .ToList();
+            // Get a list of purchased game IDs from the Bills table
+            var purchasedGameIds = await _dbContext.Bills
+                                                    .Where(b => b.GamerId == gamer.GamerId)
+                                                    .Select(b => b.GameId)
+                                                    .ToListAsync();
 
-            // Lấy thông tin các game từ bảng Games dựa trên danh sách GameID đã mua
-            var games = _dbContext.Games
-                                  .Where(g => purchasedGameIds.Contains(g.GameID))
-                                   .ToListAsync();
-            return await games;
+            // Get the corresponding game details from the Games table based on the purchased game IDs
+            var games = await _dbContext.Games
+                                        .Where(g => purchasedGameIds.Contains(g.GameID))
+                                        .ToListAsync();
+
+            return games;
         }
+
+       
+
+
+
+
 
         public async Task<Game> GetGamesByGameID(String Id)
         {
             return await _dbContext.Games.FirstOrDefaultAsync(c => c.GameID == Id);
         }
+
         public async Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher)
         {
             var gameByPub = await _dbContext.Publishcations
