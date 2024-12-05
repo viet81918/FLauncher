@@ -73,7 +73,6 @@ namespace FLauncher.Views
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(loginInfo, Formatting.Indented);
                 System.IO.File.WriteAllText(jsonFilePath, json);
-                MessageBox.Show("da luu tai khoan dang nhap");
             }
             PerformLogin(enteredUserEmail, enteredPassword);
         }
@@ -178,27 +177,7 @@ namespace FLauncher.Views
             }
         }
 
-        /*
-        private void PerformLogin(string UserEmail, string UserPassword)
-        {
-            if (isCustomerWindowOpened) return;
-            string accountType = CheckLogin(UserEmail, UserPassword);
-            
-            if (accountType == "gamer" || accountType == "publisher")
-            {
-                Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
-                // Initialize the session for the gamer
-                SessionManager.InitializeSession(loggedInUser, _gamerRepo);
-                CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
-                customerWindow.Show();
-                isCustomerWindowOpened = true;
-                this.Close();
-            }           
-            else
-            {
-                MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng.");
-            }
-        }*/
+        
 
         private void PerformLogin(string UserEmail, string UserPassword)
         {
