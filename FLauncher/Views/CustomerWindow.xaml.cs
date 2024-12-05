@@ -138,6 +138,9 @@ namespace FLauncher
                 // Navigate to the GameDetail page and pass the selected game and gamer
                 var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
+
+                this.Hide();
+                this.Close();
             }
         }
 

@@ -52,7 +52,7 @@ namespace FLauncher.Views
             }
         }
      
-              private void GoBackButton_Click(object sender, MouseButtonEventArgs e)
+              private void GoBackButton_Click(object sender, RoutedEventArgs e)
         {
             GameDetail GameDetail = new GameDetail(_game, _user);
             GameDetail.Show();

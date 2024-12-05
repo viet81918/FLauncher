@@ -464,15 +464,12 @@
 
                                 <!-- Games Owned -->
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Center" Margin="10">
-                                    <TextBlock Text="Games Owned" FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="30" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Gamer Id" FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Gamer.GamerId}" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
                                 <!-- Achievements -->
-                                <StackPanel Grid.Column="2" HorizontalAlignment="Center" Margin="10">
-                                    <TextBlock Text="Achievements" FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
-                                    <TextBlock Text="245" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
-                                </StackPanel>
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center" Margin="10" />
                             </Grid>
 
                             <!-- Bio or Description -->

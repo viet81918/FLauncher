@@ -179,6 +179,13 @@ namespace FLauncher.Views
         {
             _gameRepo.Reinstall(_game, _gamer);
         }
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            GameDetail seriously  = new GameDetail(_game,_user);
+            seriously.Show();
+            this.Close();
+        }
+
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {

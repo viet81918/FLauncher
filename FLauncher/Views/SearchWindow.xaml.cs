@@ -111,19 +111,16 @@ namespace FLauncher.Views
         // Xử lý khi một danh sach genre va pub được chọn
         private void OnGenreSelected(List<string> genre)
         {
-            // Xử lý logic với giá trị genre được chọn
-            MessageBox.Show($"Genre được chọn search window: {genre}");
+            
             selectedGenre = genre;
             string selectedGenresText = string.Join(", ", selectedGenre);
-            MessageBox.Show($"Các genre được chọn search window: {selectedGenresText}");
         }
         private void OnPubSelected(string publisher)
         {
-            // Xử lý logic với giá trị publisher được chọn
-            MessageBox.Show($"Publisher được chọn search window: {publisher}");
+         
             selectedPub = publisher;
             string selectedPubsText = string.Join(", ", selectedPub);
-            MessageBox.Show($"Các publisher được chọn search window: {selectedPubsText}");
+           
         }
         private async void searchGame_button(object sender, RoutedEventArgs e)
         {
