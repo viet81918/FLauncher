@@ -295,7 +295,12 @@ namespace FLauncher.Views
         {
             _gameRepo.Reinstall(_game, _gamer);
         }
-
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            MyGame seriously = new MyGame(_user);
+            seriously.Show();
+            this.Close();
+        }
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchTextBox.Text == "Search name game")
@@ -322,7 +327,12 @@ namespace FLauncher.Views
             gameDetailPage.Show();
         }
 
-
+        private void Achivement_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new AchivementManagement(_user, _game);
+            gameDetailPage.Show();
+            this.Close();
+        }
         private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
         {
             var gameDetailPage = new TrackingNumberPlayer(_game);

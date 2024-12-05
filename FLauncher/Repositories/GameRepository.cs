@@ -141,5 +141,9 @@ namespace FLauncher.Repositories
         {
             return await TrackingDAO.Instance.GetGamesWithPlayingHoursAndLastPlayedAsync(gamerId);
         }
+        public async Task<Game> GetGameByName(string NameGame)
+        {
+            return await GameDAO.Instance.GetGameByName(NameGame);
+        }
     }
 }

@@ -67,7 +67,7 @@ namespace FLauncher.Views
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
-            else { MessageBox.Show("ko thay genre filter search window"); }
+            else { MessageBox.Show("không tìm thấy genre filter trong search window"); }
 
             // Tìm đối tượng filterItems được khai báo trong XAML : Publiser
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
@@ -75,7 +75,7 @@ namespace FLauncher.Views
             {
                 filterPubControl.selectedPub += OnPubSelected;
             }
-            else { MessageBox.Show("ko thay publisher filter search window"); }
+            else { MessageBox.Show("Không tìm thấy publisher filter trong search window"); }
         }
         private async void InitializeData(User user, string inputSearch, List<string> GenreSearch, string PublisherSearch)
         {        
@@ -111,19 +111,16 @@ namespace FLauncher.Views
         // Xử lý khi một danh sach genre va pub được chọn
         private void OnGenreSelected(List<string> genre)
         {
-            // Xử lý logic với giá trị genre được chọn
-            MessageBox.Show($"Genre được chọn search window: {genre}");
+            
             selectedGenre = genre;
             string selectedGenresText = string.Join(", ", selectedGenre);
-            MessageBox.Show($"Các genre được chọn search window: {selectedGenresText}");
         }
         private void OnPubSelected(string publisher)
         {
-            // Xử lý logic với giá trị publisher được chọn
-            MessageBox.Show($"Publisher được chọn search window: {publisher}");
+         
             selectedPub = publisher;
             string selectedPubsText = string.Join(", ", selectedPub);
-            MessageBox.Show($"Các publisher được chọn search window: {selectedPubsText}");
+           
         }
         private async void searchGame_button(object sender, RoutedEventArgs e)
         {

@@ -130,10 +130,10 @@ namespace FLauncher.DAO
                 string fileId = GetFileIdFromLink(game.GameLink);
                 if (string.IsNullOrEmpty(fileId))
                 {
-                    MessageBox.Show("Không tìm thấy File ID từ link của game.");
+                 
                     return;
                 }
-                MessageBox.Show($"File ID: {fileId}"); // Debug: Log the file ID
+            
 
                 // 4. Tải file .rar xuống
                 string rarFilePath = Path.Combine(saveLocation, game.Name + ".rar");
@@ -240,7 +240,7 @@ namespace FLauncher.DAO
                 if (File.Exists(rarFilePath))
                 {
                     File.Delete(rarFilePath);
-                    MessageBox.Show($"Đã xóa file RAR: {rarFilePath}");
+                 
                 }
 
                 // Trả về đường dẫn thư mục đã giải nén
@@ -296,22 +296,24 @@ namespace FLauncher.DAO
                 .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
                 .ToListAsync();
         }
-
+        public async Task<Game> GetGameByName(string NameGame)
+        {
+            return await _dbContext.Games.FirstAsync(g => g.Name.Equals(NameGame));
+                
+        }
         public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
         {
             // lay id game co ten bat dau bang input name ex: gta => gta 1 , 2 ,3 ...
             var GameN = new List<string>();
             if (!string.IsNullOrEmpty(inputName))
             {
-                MessageBox.Show("inputName Game DAO la " + inputName);
+             
                 GameN = await _dbContext.Games
                     .Where(g => g.Name.ToLower().StartsWith(inputName))
                     .Select(n => n.GameID).ToListAsync();
 
-                MessageBox.Show("so luong id trong GameN: " + GameN.Count);
 
                 string NamdautieneG = string.Join(", ", GameN);
-                MessageBox.Show($"danh sach id bame trong GameN: {NamdautieneG}");
             }
 
 
@@ -328,15 +330,12 @@ namespace FLauncher.DAO
                     .Select(group => group.Key) // Lấy ID_Game
                     .ToList();
 
-                MessageBox.Show("so luong id trong GameGenre: " + GameGenre.Count);
                 string aftersacrh = string.Join(", ", GameGenre);
-                MessageBox.Show($"danh sach GameGenre: {aftersacrh}");
             }
 
 
 
-            //lay danh sach gid ame co publisher = pub truyen vao 
-            MessageBox.Show("publisher la " + pubs);
+         
             var pubInStore = await _dbContext.GamePublishers //lay dc id publisher 
                 .Where(p => p.Name.Equals(pubs))
                 .Select(b => b.PublisherId).ToListAsync();
@@ -345,7 +344,7 @@ namespace FLauncher.DAO
                 .Where(s => pubInStore.Contains(s.GamePublisherId))
                 .Select(c => c.GameId).ToListAsync();
 
-            MessageBox.Show("So luong game id trong GameP: " + GameP.Count);
+          
 
             //var GamesValid = GameN.Intersect(GameGenre).Intersect(GameP);
 
@@ -384,7 +383,7 @@ namespace FLauncher.DAO
             {
                 GamesValid = GamesValid.Intersect(GameP).ToList();
             }
-            MessageBox.Show("So luong game id trong GamesValid = " + GamesValid.Count());
+         
 
             var resultG = await _dbContext.Games.Where(f => GamesValid.Contains(f.GameID)).ToListAsync();
 
@@ -526,11 +525,9 @@ namespace FLauncher.DAO
             {
                 service.Files.Delete(fileId).Execute();
 
-                MessageBox.Show("Đã xóa file cũ khỏi Google Drive.");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi xóa file cũ: {ex.Message}");
             }
             if (DoesFileExist(service, fileId))
             {

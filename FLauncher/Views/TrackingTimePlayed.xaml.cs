@@ -163,8 +163,7 @@ namespace FLauncher.Views
             if (PlotModel.Series[0] is LineSeries lineSeries)
             {
                 var records = await trackDatas;
-                MessageBox.Show($"Records fetched: {records?.Count() ?? 0}");
-
+               
 
                 // Add each record to the line series
                 foreach (var record in records)
@@ -179,7 +178,6 @@ namespace FLauncher.Views
                             // Convert TimePlayed to minutes for X-axis
                             double endTimeHours = endTime.TotalHours;
 
-                            MessageBox.Show(record.TimeStart);
                             // Add the data point to the line series
                             lineSeries.Points.Add(new DataPoint(0, startTimeHours));
                             lineSeries.Points.Add(new DataPoint(timePlayedMinutes, endTimeHours));

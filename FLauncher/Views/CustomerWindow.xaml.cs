@@ -37,6 +37,7 @@ namespace FLauncher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
                 profileButton.Visibility = Visibility.Collapsed;
+
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
@@ -137,6 +138,9 @@ namespace FLauncher
                 // Navigate to the GameDetail page and pass the selected game and gamer
                 var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
+
+                this.Hide();
+                this.Close();
             }
         }
 
@@ -274,6 +278,25 @@ namespace FLauncher
             myGameWindow.Show();
             this.Hide();
             this.Close();
+        }
+        private void OnItemPubClick(object sender, MouseButtonEventArgs e)
+        {
+            string selectPublisher = string.Empty;
+            var ItemPub = sender as FLauncher.CC.Item;
+            if (ItemPub != null)
+            {
+                var pubs = ItemPub.DataContext as GamePublisher; // Genre là lớp dữ liệu chứa TypeOfGenre
+                if (pubs != null)
+                {
+                    selectPublisher = pubs.Name; // Lấy TypeOfGenre
+
+                    // Mở SearchWindow và truyền giá trị TypeOfGenre vào
+                    MessageBox.Show($"pub dc chon la = {selectPublisher}");
+                    SearchWindow searchWindow = new SearchWindow(_user, null, null, selectPublisher);
+                    searchWindow.Show();
+                    this.Close();
+                }
+            }
         }
     }
 }
