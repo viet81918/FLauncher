@@ -37,6 +37,7 @@ namespace FLauncher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
                 profileButton.Visibility = Visibility.Collapsed;
+
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {

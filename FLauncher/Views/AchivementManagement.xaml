@@ -236,6 +236,23 @@
                     </Grid>
 
                     <!--Notifications Icon With Count-->
+                    <StackPanel Orientation="Horizontal"
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,20,0">
+
+                        <!-- Count -->
+                        <Grid VerticalAlignment="Top"
+                           Margin="-8,0,0,15">
+
+                            <!-- Notification Count -->
+                            <TextBlock FontSize="8"
+                                    Foreground="{StaticResource SecondaryBrush}"
+                                    Margin="0,0,0,.5"
+                                    HorizontalAlignment="Center"
+                                    Text="{Binding UnreadNotificationCount}" />
+                            <!-- Binding the unread notification count -->
+                        </Grid>
+                    </StackPanel>
 
                     <!--Friends Icon and Count-->
                 </StackPanel>
@@ -326,6 +343,7 @@
                    FontSize="22"
                    Text="All Achievements"
                    VerticalAlignment="Bottom" />
+                    <Button Content="Go Back" Width="100" Height="40" Margin="5" HorizontalAlignment="Right" VerticalAlignment="Top" Click="GoBackButton_Click" />
                 </Grid>
                 <Button Content="Add Achievement"
         Width="150"

@@ -53,10 +53,7 @@ namespace FLauncher.ViewModel
             Genres = new ObservableCollection<Genre>(genres);
 
             TopPublishers = topPublishers.Take(9);// Take top 9 publishers
-            foreach (var publisher in topPublishers)
-            {
-                MessageBox.Show(publisher.AvatarLink);
-            }
+           
           
         }
 

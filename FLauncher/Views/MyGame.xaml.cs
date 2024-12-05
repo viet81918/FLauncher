@@ -322,7 +322,12 @@ namespace FLauncher.Views
             gameDetailPage.Show();
         }
 
-
+        private void Achivement_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new AchivementManagement(_user, _game);
+            gameDetailPage.Show();
+            this.Close();
+        }
         private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
         {
             var gameDetailPage = new TrackingNumberPlayer(_game);
