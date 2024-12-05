@@ -67,7 +67,7 @@ namespace FLauncher.Views
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
-            else { MessageBox.Show("ko thay genre filter search window"); }
+            else { MessageBox.Show("không tìm thấy genre filter trong search window"); }
 
             // Tìm đối tượng filterItems được khai báo trong XAML : Publiser
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
@@ -75,7 +75,7 @@ namespace FLauncher.Views
             {
                 filterPubControl.selectedPub += OnPubSelected;
             }
-            else { MessageBox.Show("ko thay publisher filter search window"); }
+            else { MessageBox.Show("Không tìm thấy publisher filter trong search window"); }
         }
         private async void InitializeData(User user, string inputSearch, List<string> GenreSearch, string PublisherSearch)
         {        
