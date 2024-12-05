@@ -37,6 +37,7 @@ namespace FLauncher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
                 profileButton.Visibility = Visibility.Collapsed;
+
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
@@ -137,6 +138,9 @@ namespace FLauncher
                 // Navigate to the GameDetail page and pass the selected game and gamer
                 var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
+
+                this.Hide();
+                this.Close();
             }
         }
 
