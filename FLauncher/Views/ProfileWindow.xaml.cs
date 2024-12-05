@@ -61,129 +61,165 @@ namespace FLauncher.Views
             }
         }
 
-        // Load data for the current user
-        private async void InitializeProfileDataAsync(Model.User user)
-        {
+       // Load data for the current user
+  private async void InitializeProfileDataAsync(Model.User user)
+  {
+      try
+      {
+          Debug.WriteLine("Logged-in user (from session): " + SessionManager.LoggedInGamerId);
 
-            Debug.WriteLine("Logged-in user (from session): " + SessionManager.LoggedInGamerId);
+          // Get the logged-in gamer and their friends
+          _gamer = _gamerRepo.GetGamerByUser(user);
+          var friendsList = await _friendRepo.GetListFriendForGamer(_gamer.GamerId);
 
-            // Get the logged-in gamer and their friends
-            _gamer = _gamerRepo.GetGamerByUser(user);
-            var friendsList = await _friendRepo.GetListFriendForGamer(_gamer.GamerId);
+          // Retrieve all games purchased by the gamer
+          var games = await _gameRepo.GetGamesByGamer(_gamer);
 
-            // Retrieve all games purchased by the gamer
-            var games = await _gameRepo.GetGamesByGamer(_gamer);
+          // Initialize collections for achievements and unlocks
+          List<Achivement> allAchievements = new List<Achivement>();
+          List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
 
-            // Initialize collections for achievements and unlocks
-            List<Achivement> allAchievements = new List<Achivement>();
-            List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
+          if (games != null && games.Any())
+          {
+              Debug.WriteLine($"Found {games.Count()} purchased games. Loading achievements...");
 
-            if (games != null && games.Any())
-            {
-                Debug.WriteLine($"Found {games.Count()} purchased games. Loading achievements...");
+              foreach (var game in games)
+              {
+                  Debug.WriteLine($"Processing game: {game.Name}");
 
-                foreach (var game in games)
-                {
-                    Debug.WriteLine($"Processing game: {game.Name}");
+                  // Retrieve achievements for the current game
+                  var achievements = await _gameRepo.GetAchivesFromGame(game);
 
-                    // Retrieve achievements for the current game
-                    var achievements = await _gameRepo.GetAchivesFromGame(game);
+                  if (achievements != null && achievements.Any())
+                  {
+                      allAchievements.AddRange(achievements);
 
-                    if (achievements != null && achievements.Any())
-                    {
-                        allAchievements.AddRange(achievements);
+                      // Retrieve unlocks for the current game's achievements
+                      var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, _gamer);
 
-                        // Retrieve unlocks for the current game's achievements
-                        var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, _gamer);
+                      if (unlocks != null && unlocks.Any())
+                      {
+                          allUnlocks.AddRange(unlocks);
+                      }
+                  }
+                  else
+                  {
+                      Debug.WriteLine($"No achievements found for game: {game.Name}");
+                  }
+              }
+          }
+          else
+          {
+              Debug.WriteLine("No games found for the gamer.");
+          }
 
-                        if (unlocks != null && unlocks.Any())
-                        {
-                            allUnlocks.AddRange(unlocks);
-                        }
-                    }
-                }
-            }
+          // Retrieve unlocked achievement details
+          var allUnlockedAchievements = allUnlocks != null && allUnlocks.Any()
+              ? await _gameRepo.GetAchivementsFromUnlocks(allUnlocks)
+              : new List<Achivement>();
 
-            // Retrieve unlocked achievement details
-            var allUnlockedAchievements = await _gameRepo.GetAchivementsFromUnlocks(allUnlocks);
+          // Retrieve games with hours and last played date
+          var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(_gamer.GamerId) ?? Enumerable.Empty<(Game Game, double TotalHours, DateTime LastPlayed)>();
 
-            // Retrieve games with hours and last played date
-            var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(_gamer.GamerId);
 
-            // Create and set the ViewModel
-            _viewModel = new ProfileWindowViewModel(_gamer, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
-            {
-                IsCurrentUser = SessionManager.LoggedInGamerId == _gamer.GamerId // Is it the current user?
-            };
+          // Create and set the ViewModel
+          _viewModel = new ProfileWindowViewModel(_gamer, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
+          {
+              IsCurrentUser = SessionManager.LoggedInGamerId == _gamer.GamerId // Is it the current user?
+          };
 
-            DataContext = _viewModel;
-           
+          DataContext = _viewModel;
 
-            await _viewModel.LoadProfileData(user);
+          await _viewModel.LoadProfileData(user);
 
-            Debug.WriteLine("User profile data loaded.");
-        }
+          Debug.WriteLine("User profile data loaded.");
+      }
+      catch (Exception ex)
+      {
+          Debug.WriteLine($"Error initializing profile data: {ex.Message}");
+      }
+  }
 
-        // Load data for a friend's profile
-        private async void InitializeFriendProfileDataAsync(Gamer friend)
-        {
-            Debug.WriteLine("Logged-in user (from session): " + SessionManager.LoggedInGamerId);
-            
+  // Load data for a friend's profile
+  private async void InitializeFriendProfileDataAsync(Gamer friend)
+  {
+      try
+      {
+          Debug.WriteLine("Logged-in user (from session): " + SessionManager.LoggedInGamerId);
 
-            var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
+          // Retrieve the friend's list of friends
+          var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
 
-            var games = await _gameRepo.GetGamesByGamer(friend);
+          // Retrieve all games purchased by the friend
+          var games = await _gameRepo.GetGamesByGamer(friend);
 
-            // Initialize collections for achievements and unlocks
-            List<Achivement> allAchievements = new List<Achivement>();
-            List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
+          // Initialize collections for achievements and unlocks
+          List<Achivement> allAchievements = new List<Achivement>();
+          List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
 
-            if (games != null && games.Any())
-            {
-                Debug.WriteLine($"Found {games.Count()} purchased games. Loading achievements...");
+          if (games.Any())
+          {
+              Debug.WriteLine($"Found purchased games. Loading achievements...");
 
-                foreach (var game in games)
-                {
-                    Debug.WriteLine($"Processing game: {game.Name}");
+              foreach (var game in games)
+              {
+                  Debug.WriteLine($"Processing game: {game.Name}");
 
-                    // Retrieve achievements for the current game
-                    var achievements = await _gameRepo.GetAchivesFromGame(game);
+                  // Retrieve achievements for the current game
+                  var achievements = await _gameRepo.GetAchivesFromGame(game);
 
-                    if (achievements != null && achievements.Any())
-                    {
-                        allAchievements.AddRange(achievements);
+                  if (achievements != null && achievements.Any())
+                  {
+                      allAchievements.AddRange(achievements);
 
-                        // Retrieve unlocks for the current game's achievements
-                        var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, _gamer);
+                      // Retrieve unlocks for the current game's achievements
+                      var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, friend);
 
-                        if (unlocks != null && unlocks.Any())
-                        {
-                            allUnlocks.AddRange(unlocks);
-                        }
-                    }
-                }
-            }
+                      if (unlocks != null && unlocks.Any())
+                      {
+                          allUnlocks.AddRange(unlocks);
+                      }
+                  }
+                  else
+                  {
+                      Debug.WriteLine($"No achievements found for game: {game.Name}");
+                  }
+              }
+          }
+          else
+          {
+              Debug.WriteLine("No games found for the friend.");
+          }
 
-            // Retrieve unlocked achievement details
-            var allUnlockedAchievements = await _gameRepo.GetAchivementsFromUnlocks(allUnlocks);
+          // Retrieve unlocked achievement details
+          var allUnlockedAchievements = allUnlocks.Any()
+              ? await _gameRepo.GetAchivementsFromUnlocks(allUnlocks)
+              : new List<Achivement>();
 
-            var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId);
+          // Retrieve games with hours and last played date
+          var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId)
+                              ?? Enumerable.Empty<(Game Game, double TotalHours, DateTime LastPlayed)>();
 
-            _viewModel = new ProfileWindowViewModel(friend, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
-            {
-                IsCurrentUser = SessionManager.LoggedInGamerId == friend.GamerId // Compare against the logged-in user ID
-            };
+          // Create and set the ViewModel
+          _viewModel = new ProfileWindowViewModel(friend, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
+          {
+              IsCurrentUser = SessionManager.LoggedInGamerId == friend.GamerId // Compare against the logged-in user ID
+          };
 
-            DataContext = _viewModel;
+          DataContext = _viewModel;
 
-            await _viewModel.LoadFriendStatusAsync(SessionManager.LoggedInGamerId); // Use the logged-in user's ID
-            _user = _userRepo.GetUserByGamer(friend);
-            await _viewModel.LoadProfileData(_user);
+          // Load additional profile data
+          await _viewModel.LoadFriendStatusAsync(SessionManager.LoggedInGamerId); // Use the logged-in user's ID
+          _user = _userRepo.GetUserByGamer(friend);
+          await _viewModel.LoadProfileData(_user);
 
-            Debug.WriteLine("Friend profile data loaded.");
-            
-        }
-
+          Debug.WriteLine("Friend profile data loaded.");
+      }
+      catch (Exception ex)
+      {
+          Debug.WriteLine($"Error initializing friend profile data: {ex.Message}");
+      }
+  }
 
         private void OnFriendSelected(object sender, RoutedEventArgs e)
         {
