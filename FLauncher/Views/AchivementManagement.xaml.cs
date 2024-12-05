@@ -2,9 +2,11 @@
 using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +50,13 @@ namespace FLauncher.Views
                     viewModel.SelectedAchievement = achievement;
                 }
             }
+        }
+     
+              private void GoBackButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            GameDetail GameDetail = new GameDetail(_game, _user);
+            GameDetail.Show();
+            this.Close();
         }
 
         private async void EditAchievementButton_Click(object sender, RoutedEventArgs e)
@@ -115,7 +124,7 @@ namespace FLauncher.Views
                     }
 
 
-                    MessageBox.Show("Achievement updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                   
                 }
             }
         }
@@ -189,7 +198,7 @@ namespace FLauncher.Views
                             viewModel.Achievements.Remove(achievement);
 
                             // Inform the user of success
-                            MessageBox.Show("Achievement deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -222,7 +231,6 @@ namespace FLauncher.Views
                     achievement.LockImageLink
                 );
 
-                MessageBox.Show("Achievement saved to database successfully!");
                 return Achivement;
             }
             catch (Exception ex)
@@ -231,7 +239,14 @@ namespace FLauncher.Views
                 return null;
             }
         }
-
+        private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
+        {
+            var CurrentUser = _user;
+            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
+            serchwindow.Show();
+            this.Hide();
+            this.Close();
+        }
 
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -258,45 +273,23 @@ namespace FLauncher.Views
             //Close the App
             Close();
         }
-        private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-        }
-        private void SearchTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-          
-        }
-        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
 
-        {
-            
-        }
         private void logoutButton_Click(object sender, MouseButtonEventArgs e)
         {
-           
-        }
-        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
-        {
-         
-        }
-        private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
-        {
-            var CurrentUser = _user;
-            SearchWindow serchwindow = new SearchWindow(CurrentUser, null, null, null);
-            serchwindow.Show();
-            this.Hide();
-            this.Close();
-        }
-        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
+            var result = MessageBox.Show("Bạn muốn đăng xuất?", "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
             {
-                searchGame_button(sender, e);
+                SessionManager.ClearSession();
+                DeleteLoginInfoFile();
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+
+                this.Close();
             }
         }
-        private void searchGame_button(object sender, RoutedEventArgs e)
-        {
-          
-        }
+
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);
@@ -304,5 +297,16 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
+        private void DeleteLoginInfoFile()
+        {
+            string appDataPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "FLauncher");
+            string jsonFilePath = System.IO.Path.Combine(appDataPath, "loginInfo.json");
+
+            if (File.Exists(jsonFilePath))
+            {
+                File.Delete(jsonFilePath);
+            }
+        }
+
     }
 }

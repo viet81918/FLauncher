@@ -217,6 +217,7 @@ namespace FLauncher.Views
         {
             var gameDetailPage = new AchivementManagement(_user,_game);
             gameDetailPage.Show();
+            this.Close();
         }
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {

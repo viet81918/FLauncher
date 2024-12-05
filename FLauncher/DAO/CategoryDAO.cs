@@ -62,11 +62,11 @@ namespace FLauncher.Repositories
                 _dbContext.Categories.Update(category);
                 await _dbContext.SaveChangesAsync();
 
-                MessageBox.Show($"Game '{game.GameID}' added to category '{category.NameCategories}'.");
+               
             }
             else
             {
-                MessageBox.Show($"Game '{game.GameID}' is already in category '{category.NameCategories}'.");
+              
             }
         }
         public async Task DeleteCategoryAsync(Category category)
@@ -78,8 +78,6 @@ namespace FLauncher.Repositories
          
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
-
-            MessageBox.Show($"Category '{category.NameCategories}' deleted successfully.");
         }
         public async Task RemoveGameFromCategoryAsync(Category category, Game game)
         {
@@ -103,11 +101,11 @@ namespace FLauncher.Repositories
                 _dbContext.Categories.Update(category);
                 await _dbContext.SaveChangesAsync();
 
-                MessageBox.Show($"Game '{game.GameID}' removed from category '{category.NameCategories}'.");
+               
             }
             else
             {
-                MessageBox.Show($"Game '{game.GameID}' does not exist in category '{category.NameCategories}'.");
+                MessageBox.Show($"Game  does not exist in category '{category.NameCategories}'.");
             }
         }
         public async Task<IEnumerable<Category>> GetAllCategoriesByGamerAsync(Gamer gamer)
