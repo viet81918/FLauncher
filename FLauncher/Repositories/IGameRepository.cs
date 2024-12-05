@@ -52,5 +52,8 @@ namespace FLauncher.Repositories
         Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher);
 
         Task<IEnumerable<(Game Game, double TotalHours, DateTime LastPlayed)>> GetGamesWithPlayingHoursAndLastPlayed(string gamerId);
+
+         Task<Game> GetGamesByGameID(String Id);
+        Task<Game> GetGameByName(string NameGame);
     }
 }

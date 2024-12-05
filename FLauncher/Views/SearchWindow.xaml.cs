@@ -39,10 +39,12 @@ namespace FLauncher.Views
             if (user.Role == 2) // Giả sử 1 là Publisher
             {
                 MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
             }
             else if (user.Role == 3) // Giả sử 2 là Gamer
             {
                 MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
             }
             _userRepo = new UserRepository();
             _friendRepo = new FriendRepository();
@@ -65,7 +67,7 @@ namespace FLauncher.Views
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
-            else { MessageBox.Show("ko thay genre filter search window"); }
+            else { MessageBox.Show("không tìm thấy genre filter trong search window"); }
 
             // Tìm đối tượng filterItems được khai báo trong XAML : Publiser
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
@@ -73,20 +75,18 @@ namespace FLauncher.Views
             {
                 filterPubControl.selectedPub += OnPubSelected;
             }
-            else { MessageBox.Show("ko thay publisher filter search window"); }
+            else { MessageBox.Show("Không tìm thấy publisher filter trong search window"); }
         }
         private async void InitializeData(User user, string inputSearch, List<string> GenreSearch, string PublisherSearch)
         {        
             // Fetch top games and genres asynchronously
             
             if (!inputSearch.IsNullOrEmpty() || !GenreSearch.IsNullOrEmpty() || !PublisherSearch.IsNullOrEmpty()) // 1 trong 3 thang co value
-            {
-                MessageBox.Show("an 1 trong 3");
+            {               
                 allGames = await _gameRepo.GetGameByInformation(inputSearch, GenreSearch, PublisherSearch);               
             }
             else // 3 thằng đều rỗng
-            {
-                MessageBox.Show("3 roõng");
+            {             
                 allGames = await _gameRepo.GetAllGame();
             }
 
@@ -111,19 +111,16 @@ namespace FLauncher.Views
         // Xử lý khi một danh sach genre va pub được chọn
         private void OnGenreSelected(List<string> genre)
         {
-            // Xử lý logic với giá trị genre được chọn
-            MessageBox.Show($"Genre được chọn search window: {genre}");
+            
             selectedGenre = genre;
             string selectedGenresText = string.Join(", ", selectedGenre);
-            MessageBox.Show($"Các genre được chọn search window: {selectedGenresText}");
         }
         private void OnPubSelected(string publisher)
         {
-            // Xử lý logic với giá trị publisher được chọn
-            MessageBox.Show($"Publisher được chọn search window: {publisher}");
+         
             selectedPub = publisher;
             string selectedPubsText = string.Join(", ", selectedPub);
-            MessageBox.Show($"Các publisher được chọn search window: {selectedPubsText}");
+           
         }
         private async void searchGame_button(object sender, RoutedEventArgs e)
         {
@@ -135,9 +132,7 @@ namespace FLauncher.Views
             if (!string.IsNullOrEmpty(Search_input) || !selectedGenre.IsNullOrEmpty() || !selectedPub.IsNullOrEmpty())
             {
                 //allGames = await _gameRepo.GetGameByName(Search_input);
-                MessageBox.Show("Da chay toi searchgame_button");
                 allGames = await _gameRepo.GetGameByInformation(Search_input, selectedGenre, selectedPub);
-                MessageBox.Show("so luong game = " + allGames.Count());
                 if (_user.Role == 3) DataContext = new SearchWindowViewModel(_gamer, unreadNotifications, friendInvitations, allGames, genres);
                 if(_user.Role == 2) DataContext = new SearchWindowViewModel(_gamePublisher, allGames, genres);
                 SearchTextBox.Clear();
@@ -259,6 +254,13 @@ namespace FLauncher.Views
                 searchGame_button(sender, e);
             }
         }
-        
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
+            this.Hide();
+            this.Close();
+        }
     }
 }

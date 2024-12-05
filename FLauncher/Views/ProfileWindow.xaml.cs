@@ -15,12 +15,12 @@ using System.IO;
 using Google.Apis.Drive.v3.Data;
 using FLauncher.Utilities;
 using System.Xml.Linq;
+using Microsoft.IdentityModel.Tokens;
+using static Azure.Core.HttpHeader;
+using FLauncher.DAO;
 
 namespace FLauncher.Views
 {
-    /// <summary>
-    /// Interaction logic for ProfileWindow.xaml
-    /// </summary>
     public partial class ProfileWindow : Window
     {
         
@@ -131,7 +131,7 @@ namespace FLauncher.Views
                 DataContext = _viewModel;
 
                 await _viewModel.LoadProfileData(user);
-
+            await _viewModel.LoadProfileData(user);
                 Debug.WriteLine("User profile data loaded.");
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace FLauncher.Views
                 Debug.WriteLine($"Error initializing profile data: {ex.Message}");
             }
         }
-
+        }
         // Load data for a friend's profile
         private async void InitializeFriendProfileDataAsync(Gamer friend)
         {
@@ -149,32 +149,32 @@ namespace FLauncher.Views
 
                 // Retrieve the friend's list of friends
                 var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
-
+            var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
                 // Retrieve all games purchased by the friend
                 var games = await _gameRepo.GetGamesByGamer(friend);
-
+            var games = await _gameRepo.GetGamesByGamer(friend);
                 // Initialize collections for achievements and unlocks
                 List<Achivement> allAchievements = new List<Achivement>();
                 List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
-
+            List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
                 if (games.Any())
                 {
                     Debug.WriteLine($"Found purchased games. Loading achievements...");
-
+                Debug.WriteLine($"Found {games.Count()} purchased games. Loading achievements...");
                     foreach (var game in games)
                     {
                         Debug.WriteLine($"Processing game: {game.Name}");
-
+                    Debug.WriteLine($"Processing game: {game.Name}");
                         // Retrieve achievements for the current game
                         var achievements = await _gameRepo.GetAchivesFromGame(game);
-
+                    var achievements = await _gameRepo.GetAchivesFromGame(game);
                         if (achievements != null && achievements.Any())
                         {
                             allAchievements.AddRange(achievements);
-
+                        allAchievements.AddRange(achievements);
                             // Retrieve unlocks for the current game's achievements
                             var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, friend);
-
+                        var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, _gamer);
                             if (unlocks != null && unlocks.Any())
                             {
                                 allUnlocks.AddRange(unlocks);
@@ -190,29 +190,29 @@ namespace FLauncher.Views
                 {
                     Debug.WriteLine("No games found for the friend.");
                 }
-
+            }
                 // Retrieve unlocked achievement details
                 var allUnlockedAchievements = allUnlocks.Any()
                     ? await _gameRepo.GetAchivementsFromUnlocks(allUnlocks)
                     : new List<Achivement>();
-
+            var allUnlockedAchievements = await _gameRepo.GetAchivementsFromUnlocks(allUnlocks);
                 // Retrieve games with hours and last played date
                 var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId)
                                     ?? Enumerable.Empty<(Game Game, double TotalHours, DateTime LastPlayed)>();
-
+            var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId);
                 // Create and set the ViewModel
                 _viewModel = new ProfileWindowViewModel(friend, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
                 {
                     IsCurrentUser = SessionManager.LoggedInGamerId == friend.GamerId // Compare against the logged-in user ID
                 };
-
+            };
                 DataContext = _viewModel;
-
+            DataContext = _viewModel;
                 // Load additional profile data
                 await _viewModel.LoadFriendStatusAsync(SessionManager.LoggedInGamerId); // Use the logged-in user's ID
                 _user = _userRepo.GetUserByGamer(friend);
                 await _viewModel.LoadProfileData(_user);
-
+            await _viewModel.LoadProfileData(_user);
                 Debug.WriteLine("Friend profile data loaded.");
             }
             catch (Exception ex)
@@ -221,7 +221,7 @@ namespace FLauncher.Views
             }
         }
 
-
+        }
 
         private void OnFriendSelected(object sender, RoutedEventArgs e)
         {
@@ -563,6 +563,24 @@ namespace FLauncher.Views
             MyGame myGameWindow = new MyGame(_user);
             myGameWindow.Show();
             this.Hide();
+            this.Close();
+        }
+        private async void GameName_Selected(object sender, MouseButtonEventArgs e)
+        {
+            var gameSelected = sender as TextBlock;
+            if (gameSelected == null)
+            {
+                MessageBox.Show("Sự kiện không được gửi từ TextBlock!");
+                return;
+            }
+            var gameData = gameSelected.DataContext as TrackingMyGameViewModel;
+            if (gameData == null) return;
+            string gameName = gameData.GameName;
+            var GameN = await _gameRepo.GetGameByName(gameName);
+            Game _gameN = GameN as Game;
+            GameDetail gameDTW = new GameDetail(_gameN, _user);           
+            this.Hide();
+            gameDTW.Show();
             this.Close();
         }
     }

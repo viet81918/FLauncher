@@ -128,14 +128,22 @@ namespace FLauncher.Repositories
             await AchivementDAO.Instance.DeleteAchievement(achievement);
         }
 
-        public Task<Achivement> UpdateAchievement(string idobject, string id, string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath, Achivement achievement)
+        public async Task<Achivement> UpdateAchievement(string idobject, string id, string gameid, string trigger, string description, string name, string unlockImagePath, string lockImagePath, Achivement achievement)
         {
-            return AchivementDAO.Instance.UpdateAchievement(idobject, id, gameid, trigger, description, name, unlockImagePath, lockImagePath, achievement);
+             return await AchivementDAO.Instance.UpdateAchievement(idobject, id, gameid, trigger, description, name, unlockImagePath, lockImagePath, achievement);
+        }
+        public async Task<Game> GetGamesByGameID(String Id)
+        {
+            return await GameDAO.Instance.GetGamesByGameID(Id);
         }
 
         public async Task<IEnumerable<(Game Game, double TotalHours, DateTime LastPlayed)>> GetGamesWithPlayingHoursAndLastPlayed(string gamerId)
         {
             return await TrackingDAO.Instance.GetGamesWithPlayingHoursAndLastPlayedAsync(gamerId);
+        }
+        public async Task<Game> GetGameByName(string NameGame)
+        {
+            return await GameDAO.Instance.GetGameByName(NameGame);
         }
     }
 }
