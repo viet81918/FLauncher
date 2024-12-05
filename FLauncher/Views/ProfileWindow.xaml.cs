@@ -18,6 +18,7 @@ using System.Xml.Linq;
 using Microsoft.IdentityModel.Tokens;
 using static Azure.Core.HttpHeader;
 using FLauncher.DAO;
+using System.Windows.Threading;
 
 namespace FLauncher.Views
 {
@@ -36,7 +37,7 @@ namespace FLauncher.Views
         private Model.User _user;
         private readonly UserRepository _userRepo;
         private readonly IGameRepository _gameRepo;
-
+        
 
         public ProfileWindow(Model.User user, FriendService friendService, Gamer friend = null)
         {
@@ -59,7 +60,9 @@ namespace FLauncher.Views
             {
                  InitializeProfileDataAsync(user);
             }
+          
         }
+
 
         // Load data for the current user
         private async void InitializeProfileDataAsync(Model.User user)
@@ -131,7 +134,7 @@ namespace FLauncher.Views
                 DataContext = _viewModel;
 
                 await _viewModel.LoadProfileData(user);
-            await _viewModel.LoadProfileData(user);
+
                 Debug.WriteLine("User profile data loaded.");
             }
             catch (Exception ex)
@@ -139,7 +142,7 @@ namespace FLauncher.Views
                 Debug.WriteLine($"Error initializing profile data: {ex.Message}");
             }
         }
-        }
+
         // Load data for a friend's profile
         private async void InitializeFriendProfileDataAsync(Gamer friend)
         {
@@ -149,32 +152,32 @@ namespace FLauncher.Views
 
                 // Retrieve the friend's list of friends
                 var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
-            var friendsList = await _friendRepo.GetListFriendForGamer(friend.GamerId);
+
                 // Retrieve all games purchased by the friend
                 var games = await _gameRepo.GetGamesByGamer(friend);
-            var games = await _gameRepo.GetGamesByGamer(friend);
+
                 // Initialize collections for achievements and unlocks
                 List<Achivement> allAchievements = new List<Achivement>();
                 List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
-            List<UnlockAchivement> allUnlocks = new List<UnlockAchivement>();
+
                 if (games.Any())
                 {
                     Debug.WriteLine($"Found purchased games. Loading achievements...");
-                Debug.WriteLine($"Found {games.Count()} purchased games. Loading achievements...");
+
                     foreach (var game in games)
                     {
                         Debug.WriteLine($"Processing game: {game.Name}");
-                    Debug.WriteLine($"Processing game: {game.Name}");
+
                         // Retrieve achievements for the current game
                         var achievements = await _gameRepo.GetAchivesFromGame(game);
-                    var achievements = await _gameRepo.GetAchivesFromGame(game);
+
                         if (achievements != null && achievements.Any())
                         {
                             allAchievements.AddRange(achievements);
-                        allAchievements.AddRange(achievements);
+
                             // Retrieve unlocks for the current game's achievements
                             var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, friend);
-                        var unlocks = await _gameRepo.GetUnlockAchivementsFromGame(achievements, _gamer);
+
                             if (unlocks != null && unlocks.Any())
                             {
                                 allUnlocks.AddRange(unlocks);
@@ -190,29 +193,29 @@ namespace FLauncher.Views
                 {
                     Debug.WriteLine("No games found for the friend.");
                 }
-            }
+
                 // Retrieve unlocked achievement details
                 var allUnlockedAchievements = allUnlocks.Any()
                     ? await _gameRepo.GetAchivementsFromUnlocks(allUnlocks)
                     : new List<Achivement>();
-            var allUnlockedAchievements = await _gameRepo.GetAchivementsFromUnlocks(allUnlocks);
+
                 // Retrieve games with hours and last played date
                 var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId)
                                     ?? Enumerable.Empty<(Game Game, double TotalHours, DateTime LastPlayed)>();
-            var gameWithHours = await _gameRepo.GetGamesWithPlayingHoursAndLastPlayed(friend.GamerId);
+
                 // Create and set the ViewModel
                 _viewModel = new ProfileWindowViewModel(friend, _friendRepo, _gamerRepo, friendsList, allUnlockedAchievements, allUnlocks, gameWithHours)
                 {
                     IsCurrentUser = SessionManager.LoggedInGamerId == friend.GamerId // Compare against the logged-in user ID
                 };
-            };
+
                 DataContext = _viewModel;
-            DataContext = _viewModel;
+
                 // Load additional profile data
                 await _viewModel.LoadFriendStatusAsync(SessionManager.LoggedInGamerId); // Use the logged-in user's ID
                 _user = _userRepo.GetUserByGamer(friend);
                 await _viewModel.LoadProfileData(_user);
-            await _viewModel.LoadProfileData(_user);
+
                 Debug.WriteLine("Friend profile data loaded.");
             }
             catch (Exception ex)
@@ -221,7 +224,8 @@ namespace FLauncher.Views
             }
         }
 
-        }
+      
+
 
         private void OnFriendSelected(object sender, RoutedEventArgs e)
         {
@@ -482,6 +486,7 @@ namespace FLauncher.Views
             // Refresh the UI by reloading the profile data
              InitializeProfileDataAsync(_user);
         }
+     
 
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
@@ -517,10 +522,13 @@ namespace FLauncher.Views
                 System.IO.File.Delete(jsonFilePath);
             }
         }
-        private void messageButton_Click(Object sender, MouseButtonEventArgs e)
+        private void messageButton_Click(object sender, RoutedEventArgs e)
         {
-            var messWindow = new MessageWindow(_gamer);
-            messWindow.Show();
+            // Create and show the MessageWindow
+            _gamer = _gamerRepo.GetGamerById(SessionManager.LoggedInGamerId);
+            var friend = _gamerRepo.GetGamerByUser(_user);
+            MessageWindow messageWindow = new MessageWindow(_gamer, friend);
+            messageWindow.Show();
             this.Hide();
             this.Close();
         }

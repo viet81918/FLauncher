@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using Microsoft.IdentityModel.Tokens;
 using System.IO;
@@ -285,6 +286,7 @@ namespace FLauncher.Views
 
             if (result == MessageBoxResult.Yes)
             {
+                SessionManager.ClearSession();
                 DeleteLoginInfoFile();
                 this.Hide();
                 Login login = new Login();
