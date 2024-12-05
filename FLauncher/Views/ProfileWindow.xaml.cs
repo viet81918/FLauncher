@@ -538,7 +538,6 @@ namespace FLauncher.Views
             var gameData = gameSelected.DataContext as TrackingMyGameViewModel;
             if (gameData == null) return;
             string gameName = gameData.GameName;
-            MessageBox.Show("game detail " + gameData.GameName);
             var GameN = await _gameRepo.GetGameByName(gameName);
             Game _gameN = GameN as Game;
             GameDetail gameDTW = new GameDetail(_gameN, _user);           
