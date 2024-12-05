@@ -62,7 +62,7 @@ namespace FLauncher
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
-            else { MessageBox.Show("ko thay genre filter"); }
+            else { MessageBox.Show("không tìm thấy genre filter"); }
 
             // Tìm đối tượng filterItems được khai báo trong XAML : Publiser
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
@@ -70,25 +70,21 @@ namespace FLauncher
             {
                 filterPubControl.selectedPub += OnPubSelected;
             }
-            else { MessageBox.Show("ko thay publisher filter"); }
+            else { MessageBox.Show("không tìm thấy publisher filter"); }
 
         }
         // Xử lý khi một danh sach genre va pub được chọn
         private void OnGenreSelected(List<string> genre)
         {
             // Xử lý logic với giá trị genre được chọn
-            MessageBox.Show($"Genre được chọn: {genre}");
             selectedGenre = genre;
             string selectedGenresText = string.Join(", ", selectedGenre);
-            MessageBox.Show($"Các genre được chọn: {selectedGenresText}");
         }
         private void OnPubSelected(string publisher)
         {
             // Xử lý logic với giá trị publisher được chọn
-            MessageBox.Show($"Publisher được chọn: {publisher}");
             selectedPub = publisher;
             string selectedPubsText = string.Join(", ", selectedPub);
-            MessageBox.Show($"Các publisher được chọn: {selectedPubsText}");
         }
 
         private async void InitializeData(User user)
@@ -257,12 +253,10 @@ namespace FLauncher
             if (!selectedGenre.IsNullOrEmpty())
             {
                 string selectedGenresText = string.Join(", ", selectedGenre);
-                MessageBox.Show($"Các genre được chọn truyen toi SEARCH button: {selectedGenresText}");
             }
             if (!selectedPub.IsNullOrEmpty())
             {
                 string selectedPubsText = string.Join(", ", selectedPub);
-                MessageBox.Show($"Các publisher được chọn truyen toi SEARCH button: {selectedPubsText}");
             }
 
             SearchWindow search = new SearchWindow(CurrentWin, Search_input, selectedGenre, selectedPub);
@@ -291,7 +285,6 @@ namespace FLauncher
                     selectPublisher = pubs.Name; // Lấy TypeOfGenre
 
                     // Mở SearchWindow và truyền giá trị TypeOfGenre vào
-                    MessageBox.Show($"pub dc chon la = {selectPublisher}");
                     SearchWindow searchWindow = new SearchWindow(_user, null, null, selectPublisher);
                     searchWindow.Show();
                     this.Close();

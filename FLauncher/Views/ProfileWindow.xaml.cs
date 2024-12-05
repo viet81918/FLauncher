@@ -532,7 +532,6 @@ namespace FLauncher.Views
             var gameSelected = sender as TextBlock;
             if (gameSelected == null)
             {
-                MessageBox.Show("Sự kiện không được gửi từ TextBlock!");
                 return;
             }
             var gameData = gameSelected.DataContext as TrackingMyGameViewModel;

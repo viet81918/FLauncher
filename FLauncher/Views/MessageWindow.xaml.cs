@@ -69,7 +69,7 @@ namespace FLauncher.Views
                 ScrollToBottom();
                 _messageUpdateTimer.Start();
             }
-        }
+        }      
         private void SendMessage_Click(object sender, RoutedEventArgs e)
         {
             var messageContent = txtMessage.Text.Trim();
