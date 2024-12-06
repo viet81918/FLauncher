@@ -1,4 +1,5 @@
-﻿using FLauncher.Model;
+﻿using FLauncher.DAO;
+using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
 using FLauncher.Utilities;
@@ -32,6 +33,7 @@ namespace FLauncher.Views
 
         private readonly IUserRepository _userRepo;
 
+        private readonly CategoryDAO _categoryDAO;
 
         public MyGame(User user)
         {
@@ -62,6 +64,10 @@ namespace FLauncher.Views
 
             _reviewRepo = new ReviewRepository();
 
+            _categoryDAO = CategoryDAO.Instance; // Singleton instance of CategoryDAO
+
+
+
             InitializeData(user);
         }
 
@@ -86,8 +92,10 @@ namespace FLauncher.Views
                 
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer);
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer);
+
                 var categories = await _categoryRepo.GetAllCategoriesByGamerAsync(_gamer);
                 DataContext = new MyGameViewModel(_gamer, unreadNotifications, friendInvitations, games, categories);
+
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
@@ -133,8 +141,10 @@ namespace FLauncher.Views
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
                 var isUpdate = await _gamerRepo.IsUpdate(game, _gamer);
                 var isDownLoad = await _gameRepo.isDownload(game, _gamer);
+
                 var categories = await _categoryRepo.GetAllCategoriesByGamerAsync(_gamer);
                 DataContext = new MyGameViewModel(game, _gamer, genres, reviews, unreadNotifications, friendInvitations, publisher, updates, friendwithsamegame, UnlockAchivements, Achivements, LockAchivements, Unlock, reviewers, isBuy, isDownLoad, isUpdate, games, categories);
+
             }
             else if (_gamePublisher != null)
             {
@@ -449,6 +459,7 @@ namespace FLauncher.Views
                 {
                     selectedGenre.Add(genre.TypeOfGenre); // Lấy TypeOfGenre
 
+
                     // Mở SearchWindow và truyền giá trị TypeOfGenre vào
                     SearchWindow searchWindow = new SearchWindow(_user, null, selectedGenre, null);
                     searchWindow.Show();
@@ -456,5 +467,11 @@ namespace FLauncher.Views
                 }
             }
         }
+
     }
+
+
+
+
 }
+
