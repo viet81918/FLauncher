@@ -192,7 +192,7 @@
                         <!--<Run Text="I'm not"/>-->
                         <Run Text="{Binding Text, ElementName=userName}"/>
                         <Hyperlink NavigateUri="http://localhost:9999/FPTeam/Register.jsp" RequestNavigate="Hyperlink_RequestNavigate">
-                            <Run Text="I'm not"/>
+                            <Run Text="New Account"/>
                         </Hyperlink>
                 </TextBlock>
 

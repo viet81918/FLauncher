@@ -56,7 +56,6 @@ namespace FLauncher.Views
             _genreRepo = new GenreRepository();
             _publisherRepo = new PublisherRepository();
             _notiRepo = new NotiRepository();
-            _friendRepo = new FriendRepository();
             _categoryRepo = new CategoryRepository();
 
             _userRepo = new UserRepository();
@@ -162,6 +161,10 @@ namespace FLauncher.Views
             //To move the window on mouse down
             if (e.ChangedButton == MouseButton.Left)
                 DragMove();
+        }
+        private void Uninstall_Click(object sender, RoutedEventArgs e)
+        {
+            _gameRepo.Uninstall_Game(_gamer, _game);
         }
 
         private void minimizeButton_Click(object sender, RoutedEventArgs e)
@@ -302,7 +305,7 @@ namespace FLauncher.Views
 
 
 
-        private void Uninstall_Click(object sender, RoutedEventArgs e)
+        private void Reinstall_Click(object sender, RoutedEventArgs e)
         {
             _gameRepo.Reinstall(_game, _gamer);
         }

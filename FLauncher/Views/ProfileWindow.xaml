@@ -487,8 +487,8 @@
                                 </Button.Visibility>
                             </Button>
                             <!-- Re-add Friend Button -->
-                            <Button Content="Re-add Friend" Width="120" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" 
-        Margin="0,10,0,10" Background="Orange" Foreground="White" FontWeight="Bold" Click="ReAddFriendButton_Click">
+                            <Button Content="Add Friend" Width="120" Height="40" HorizontalAlignment="Center" VerticalAlignment="Top" 
+        Margin="0,10,0,10" Background="Green" Foreground="White" FontWeight="Bold" Click="ReAddFriendButton_Click">
                                 <Button.Visibility>
                                     <MultiBinding Converter="{StaticResource InvitationMultiBoolToVisibilityConverter}">
                                         <Binding Path="IsFriend" />

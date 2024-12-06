@@ -152,7 +152,7 @@
                     </Style>
                 </ListBox.Resources>
                 <ListBoxItem MouseLeftButtonUp="Home_Click" Content="{StaticResource home_icon}" />
-                <ListBoxItem Content="{StaticResource games_icon}" />
+            
 
                 <ListBoxItem x:Name="searchButton" Content="{StaticResource search_icon}" MouseLeftButtonUp="searchButton_Click" />
 
