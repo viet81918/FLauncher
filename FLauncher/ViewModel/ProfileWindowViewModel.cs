@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace FLauncher.ViewModel
 {
@@ -23,7 +24,7 @@ namespace FLauncher.ViewModel
         private readonly IPublisherRepository _publisherRepository;
         private readonly IUserRepository _userRepository;
         private  FriendService _friendService;
-
+       
 
         public Gamer Gamer { get; }
         public GamePublisher GamePublisher { get; }
