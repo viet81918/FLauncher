@@ -141,16 +141,14 @@
                             <!-- Money -->
                         </Grid.RowDefinitions>
 
-                        <!-- Name -->
-                        <TextBlock FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}" Text="{Binding Gamer.Name}" />
+                        <!-- Gamer's Name -->
+                        <TextBlock FontWeight="SemiBold" Foreground="{StaticResource SecondaryBrush}" Text="{Binding Name}" />
                         <!-- Binding to Name property of Gamer -->
 
-                        <!-- Money -->
+                        <!-- Gamer's Money -->
                         <TextBlock Grid.Row="1" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBrush}" Text="{Binding Money, StringFormat=C}" />
                         <!-- Bind to Money property and format as currency -->
                     </Grid>
-
-
 
                     <!--Friends Icon and Count-->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
@@ -405,6 +403,16 @@
                                                     <Binding Path="IsGamer" />
                                                     <Binding Path="IsDownload" />
                                                     <Binding Path="IsUpdate" />
+                                                </MultiBinding>
+                                            </Button.Visibility>
+                                        </Button>
+                                        <Button Content="Update by Time" Width="120" Height="40" Background="Gray" Foreground="White" FontWeight="Bold" BorderBrush="Transparent" Click="Reinstall_Click">
+                                            <Button.Visibility>
+                                                <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                                    <Binding Path="IsBuy" />
+                                                    <Binding Path="IsGamer" />
+                                                    <Binding Path="IsDownload" />
+                                                    <Binding Path="IsNotUpdate" />
                                                 </MultiBinding>
                                             </Button.Visibility>
                                         </Button>

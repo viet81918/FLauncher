@@ -2,6 +2,7 @@
 using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using Microsoft.IdentityModel.Tokens;
 using SharpCompress;
@@ -26,7 +27,7 @@ namespace FLauncher.Views
         private readonly GamerRepository _gamerRepo;
         private readonly UserRepository _userRepo;
         private readonly FriendRepository _friendRepo;
-        private readonly FriendService _friendService;
+        private  FriendService _friendService;
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
         private readonly INotiRepository _notiRepo;
@@ -157,6 +158,8 @@ namespace FLauncher.Views
                 // Navigate to the GameDetail page and pass the selected game and gamer
                 var gameDetailPage = new GameDetail(clickedGame,_user );
                 gameDetailPage.Show();
+                this.Hide();
+                this.Close();
             }
         }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
@@ -232,6 +235,13 @@ namespace FLauncher.Views
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
             // Create an instance of ProfileWindow and show it
+            if (string.IsNullOrEmpty(SessionManager.LoggedInGamerId))
+            {
+                SessionManager.InitializeSession(_user, _gamerRepo);
+            }
+
+            // Create an instance of FriendService
+            _friendService = new FriendService(_friendRepo, _gamerRepo);
             ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
             this.Hide();

@@ -20,14 +20,14 @@ namespace FLauncher.Views
         private Model.User _user;
         private GamePublisher _gamePublisher = null;
         private readonly INotiRepository _notiRepo;
-        private readonly IFriendRepository _friendRepo;
+        private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
-        
+        private FriendService _friendService;
 
-        private readonly IGamerRepository _gamerRepo;
+        private readonly GamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
         public GameDetail(Game game, Model.User user)
         {
@@ -58,6 +58,7 @@ namespace FLauncher.Views
 
 
         }
+
         private async void InitializeData(Game game, Model.User user)
         {
             _game = game;
@@ -103,7 +104,19 @@ namespace FLauncher.Views
                 DataContext = new GameDetailViewModel(game,genres ,reviews, publisher, updates, isPublish, Achivements, gamers);
             }
         }
+        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Create an instance of ProfileWindow and show it
+          
 
+            _friendService = new FriendService(_friendRepo, _gamerRepo);
+
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
+            profileWindow.Show();
+            this.Hide();
+            this.Close();
+
+        }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
@@ -178,7 +191,7 @@ namespace FLauncher.Views
         }
         private void Uninstall_Click(object sender, RoutedEventArgs e)
         {
-            _gameRepo.Reinstall(_game, _gamer);
+            _gameRepo.Uninstall_Game(_gamer, _game);
         }
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {

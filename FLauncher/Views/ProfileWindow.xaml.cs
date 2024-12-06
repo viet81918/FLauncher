@@ -452,7 +452,7 @@ namespace FLauncher.Views
         public async Task RefreshFriendListAsync()
         {
             // Retrieve the updated list of friends for the current gamer
-            var updatedFriendsList = await _friendRepo.GetListFriendForGamer(_gamer.GamerId);
+            var updatedFriendsList = await _friendRepo.GetListFriendForGamer(SessionManager.LoggedInGamerId);
 
             // Update the ViewModel's friends list
             _viewModel.UpdateFriendsList(updatedFriendsList);

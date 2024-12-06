@@ -58,8 +58,8 @@ namespace FLauncher.Views
                 Position = AxisPosition.Bottom,
                 Title = "Play Time (Minutes)",
                 Minimum = 0,
-                Maximum = 60,
-                MajorStep = 5
+                Maximum = 24,
+                MajorStep = 1
             });
 
             // Configure X-axis (Start Time (Hours))
@@ -68,8 +68,8 @@ namespace FLauncher.Views
                 Position = AxisPosition.Left,
                    Title = "Start Time (Hours)",
                 Minimum = 0,
-                Maximum = 24,
-                MajorStep = 1
+                Maximum = 60,
+                MajorStep = 5
             });
 
             // Start file watcher
@@ -150,7 +150,7 @@ namespace FLauncher.Views
                     var currentTime = DateTime.Now;
                     var timeSinceStart = new TimeSpan(currentTime.Hour, currentTime.Minute, currentTime.Second);
                     var totalSeconds = timeSinceStart.TotalSeconds/3600; // Or use TotalMinutes or TotalHours depending on your needs
-                    lineSeries.Points.Add(new DataPoint(0, totalSeconds)); // Plot total seconds
+                    lineSeries.Points.Add(new DataPoint(totalSeconds,0 )); // Plot total seconds
                     PlotModel.InvalidatePlot(true);
 
                 }
@@ -179,9 +179,9 @@ namespace FLauncher.Views
                             double endTimeHours = endTime.TotalHours;
 
                             // Add the data point to the line series
-                            lineSeries.Points.Add(new DataPoint(0, startTimeHours));
-                            lineSeries.Points.Add(new DataPoint(timePlayedMinutes, endTimeHours));
-                            lineSeries.Points.Add(new DataPoint(0, endTimeHours));
+                            lineSeries.Points.Add(new DataPoint(startTimeHours,0 )); 
+                            lineSeries.Points.Add(new DataPoint(endTimeHours, timePlayedMinutes));
+                            lineSeries.Points.Add(new DataPoint(endTimeHours, 0));
                             PlotModel.InvalidatePlot(true);
                         }
                         else
@@ -231,7 +231,7 @@ namespace FLauncher.Views
                     if (PlotModel.Series[0] is LineSeries lineSeries)
                     {
                         double endTimeHours = endTime.TotalHours; // Convert to hours for Y-axis
-                        lineSeries.Points.Add(new DataPoint(0, endTimeHours)); // X = 0 for no progress in time, Y = updated start time
+                        lineSeries.Points.Add(new DataPoint(endTimeHours, 0)); // X = 0 for no progress in time, Y = updated start time
                         PlotModel.InvalidatePlot(true); // Refresh the chart
                     }
                 } else
@@ -240,7 +240,7 @@ namespace FLauncher.Views
                     if (PlotModel.Series[0] is LineSeries lineSeries)
                     {
                         double currentTimeHours = currentTime.TotalHours; // Convert to hours for Y-axis
-                        lineSeries.Points.Add(new DataPoint(0, currentTimeHours)); // X = 0 for no progress in time, Y = updated start time
+                        lineSeries.Points.Add(new DataPoint(currentTimeHours, 0)); // X = 0 for no progress in time, Y = updated start time
                         PlotModel.InvalidatePlot(true); // Refresh the chart
                     }
 
@@ -257,7 +257,7 @@ namespace FLauncher.Views
                 if (PlotModel.Series[0] is LineSeries lineSeries)
                 {
                     double currentHours = currentStartTime.TotalHours; // Convert to hours for Y-axis
-                    lineSeries.Points.Add(new DataPoint(_timePlayed, currentHours)); // X = elapsed time, Y = current start time
+                    lineSeries.Points.Add(new DataPoint(currentHours, _timePlayed   )); // X = elapsed time, Y = current start time
                     PlotModel.InvalidatePlot(true); // Refresh the chart
                 }
             }
