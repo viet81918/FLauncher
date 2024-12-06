@@ -304,7 +304,13 @@ namespace FLauncher.Views
                 MessageBox.Show("Friend request already exists or could not be sent.", "Request Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
+        
+              private async void MessageWindow_Click(object sender, RoutedEventArgs e)
+        {
+            MessageWindow messageWindow = new MessageWindow(_gamer);
+            messageWindow.Show();
+            this.Close();
+        }
         private async void ReAddFriendButton_Click(object sender, RoutedEventArgs e)
         {
             _gamer = _gamerRepo.GetGamerById(_user.ID);

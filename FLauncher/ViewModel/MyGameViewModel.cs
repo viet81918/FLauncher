@@ -186,6 +186,7 @@ namespace FLauncher.ViewModel
                     UnlockAchivementViewModels.Add(new UnlockAchivementViewModel
                     {
                         Name = achivement.Name,
+                        Description = achivement.Description,
                         UnlockImageLink = achivement.UnlockImageLink,
                         DateUnlockString = unlock.DateUnlockString,
                         AchivmentId = unlock.AchievementId,
