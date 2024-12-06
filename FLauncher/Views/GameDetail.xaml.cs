@@ -1,6 +1,9 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
+using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
+using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -17,35 +20,45 @@ namespace FLauncher.Views
         private Model.User _user;
         private GamePublisher _gamePublisher = null;
         private readonly INotiRepository _notiRepo;
-        private readonly IFriendRepository _friendRepo;
+        private readonly FriendRepository _friendRepo;
         private readonly IGameRepository _gameRepo;
         private readonly IGenresRepository _genreRepo;
         private readonly IReviewRepository _reviewRepo;
         private readonly IPublisherRepository _publisherRepo;
+        private FriendService _friendService;
 
-
-        private readonly IGamerRepository _gamerRepo;
+        private readonly GamerRepository _gamerRepo;
         private readonly IUserRepository _userRepo;
         public GameDetail(Game game, Model.User user)
-
-
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
+            }
             _notiRepo = new NotiRepository();
             _friendRepo = new FriendRepository();
 
             _gameRepo = new GameRepository();
 
             _userRepo = new UserRepository();
-
+            _user = user;
             _genreRepo = new GenreRepository();
             _reviewRepo = new ReviewRepository();
             _publisherRepo = new PublisherRepository();
             _gamerRepo = new GamerRepository();
+
             InitializeData(game, user);
 
 
         }
+
         private async void InitializeData(Game game, Model.User user)
         {
             _game = game;
@@ -74,6 +87,7 @@ namespace FLauncher.Views
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
                 var Unlock = await _gameRepo.GetUnlockAchivementsFromGame(Achivements, _gamer);
                 var UnlockAchivements = await _gameRepo.GetAchivementsFromUnlocks(Unlock);
+              
                 var LockAchivements = await _gameRepo.GetLockAchivement(Achivements, _gamer);
                 var reviewers = await _gamerRepo.GetGamersFromGame(game);
                 var isBuy = await _gameRepo.IsBuyGame(game, _gamer);
@@ -87,10 +101,22 @@ namespace FLauncher.Views
                 var gamers = await _gamerRepo.GetGamersFromGame(game);
                 var Achivements = await _gameRepo.GetAchivesFromGame(_game);
 
-                DataContext = new GameDetailViewModel(game, genres, reviews, publisher, updates, isPublish, Achivements, gamers);
+                DataContext = new GameDetailViewModel(game,genres ,reviews, publisher, updates, isPublish, Achivements, gamers);
             }
         }
+        private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Create an instance of ProfileWindow and show it
+          
 
+            _friendService = new FriendService(_friendRepo, _gamerRepo);
+
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
+            profileWindow.Show();
+            this.Hide();
+            this.Close();
+
+        }
         private void Polygon_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //To move the window on mouse down
@@ -165,8 +191,15 @@ namespace FLauncher.Views
         }
         private void Uninstall_Click(object sender, RoutedEventArgs e)
         {
-            _gameRepo.Reinstall(_game, _gamer);
+            _gameRepo.Uninstall_Game(_gamer, _game);
         }
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            GameDetail seriously  = new GameDetail(_game,_user);
+            seriously.Show();
+            this.Close();
+        }
+
 
         private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -193,11 +226,32 @@ namespace FLauncher.Views
             var gameDetailPage = new TrackingTimePlayed(_gamer, _game);
             gameDetailPage.Show();
         }
+        
 
+
+          private void TrackingPlayers_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new TrackingNumberPlayer(_game);
+            gameDetailPage.Show();
+        }
+        private void Achivement_Click(object sender, RoutedEventArgs e)
+        {
+            var gameDetailPage = new AchivementManagement(_user,_game);
+            gameDetailPage.Show();
+            this.Close();
+        }
         private void Home_Click(object sender, MouseButtonEventArgs e)
         {
             CustomerWindow cus = new CustomerWindow(_user);
             cus.Show();
+            this.Hide();
+            this.Close();
+        }
+        private void MyGame_Click(object sender, RoutedEventArgs e)
+        {
+
+            MyGame myGameWindow = new MyGame(_user);
+            myGameWindow.Show();
             this.Hide();
             this.Close();
         }
@@ -212,7 +266,7 @@ namespace FLauncher.Views
         {
             var CurrentWin = _user;
             string Search_input = SearchTextBox.Text.Trim().ToLower();
-            if (Search_input == "Search name game")
+            if (Search_input == "search name game")
             {
                 Search_input = string.Empty;
             }
@@ -245,6 +299,7 @@ namespace FLauncher.Views
 
             if (result == MessageBoxResult.Yes)
             {
+                SessionManager.ClearSession();
                 DeleteLoginInfoFile();
                 this.Hide();
                 Login login = new Login();
@@ -263,5 +318,24 @@ namespace FLauncher.Views
                 File.Delete(jsonFilePath);
             }
         }
+        private void OnTagClick(object sender, MouseButtonEventArgs e)
+        {
+            List<string> selectedGenre = new List<string>();
+            var tagControl = sender as FLauncher.CC.tags;
+            if (tagControl != null)
+            {
+                var genre = tagControl.DataContext as Genre; // Genre là lớp dữ liệu chứa TypeOfGenre
+                if (genre != null)
+                {
+                     selectedGenre.Add( genre.TypeOfGenre); // Lấy TypeOfGenre
+
+                    // Mở SearchWindow và truyền giá trị TypeOfGenre vào
+                    SearchWindow searchWindow = new SearchWindow(_user,null, selectedGenre,null); 
+                    searchWindow.Show();
+                    this.Close();
+                }
+            }
+        }
+       
     }
 }

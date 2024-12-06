@@ -1,108 +1,176 @@
-﻿using FLauncher.Model;
-using MongoDB.Driver;
 
-namespace FLauncher.DAO
+﻿using FLauncher.DAO;
+using FLauncher.Model;
+using FLauncher.Services;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace FLauncher.Repositories
 {
     public class CategoryDAO : SingletonBase<CategoryDAO>
     {
-        private readonly IMongoCollection<Category> _categoriesCollection;
-        private readonly IMongoCollection<Game> _gameCollection;
+
+        private readonly FlauncherDbContext _dbContext;
+
 
         public CategoryDAO()
         {
-            // MongoDB connection setup
-            var connectionString = "mongodb://localhost:27017"; // Adjust this to your MongoDB connection string
+            var connectionString = "mongodb://localhost:27017/";
             var client = new MongoClient(connectionString);
-            var database = client.GetDatabase("FPT"); // Assuming database name is FPT
-            _gameCollection = database.GetCollection<Game>("Games");
-            _categoriesCollection = database.GetCollection<Category>("Category"); // Assuming collection name is "Category"
+            _dbContext = FlauncherDbContext.Create(client.GetDatabase("FPT"));
         }
-
-        // Get all categories from the MongoDB database
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public async Task<Category> AddCategoryAsync(Gamer gamer, string nameCategories)
         {
-            return await _categoriesCollection.Find(FilterDefinition<Category>.Empty).ToListAsync();
-        }
-
-        // Get a category by its name
-        public async Task<Category> GetCategoryByNameAsync(string categoryName)
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.NameCategories, categoryName);
-            return await _categoriesCollection.Find(filter).FirstOrDefaultAsync();
-        }
-
-        // Add a new category to the database
-        public async Task AddCategoryAsync(string categoryName, string gamerId)
-        {
-            var existingCategory = await GetCategoryByNameAsync(categoryName);
-            if (existingCategory == null)
+            var newCategory = new Category
             {
-                var category = new Category
-                {
-                    NameCategories = categoryName,
-                    GamerId = gamerId
-                };
 
-                await _categoriesCollection.InsertOneAsync(category);
+                Id = ObjectId.GenerateNewId().ToString(),
+                GamerId = gamer.GamerId,
+                NameCategories = nameCategories,
+                GameIds = new List<string>()
+
+            };
+
+            _dbContext.Categories.Add(newCategory);
+            await _dbContext.SaveChangesAsync();
+            return newCategory; 
+        }
+        public async Task AddGameToCategoryAsync(Category category, Game game)
+        {
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category), "Category cannot be null.");
+            }
+
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game), "Game cannot be null.");
+            }
+           
+            // Check if the game already exists in the category
+            if (!category.GameIds.Contains(game.GameID))
+            {
+                
+               category.GameIds.Add(game.GameID);
+               
+                _dbContext.Categories.Update(category);
+                await _dbContext.SaveChangesAsync();
+
+               
+            }
+            else
+            {
+              
             }
         }
-
-        // Delete a category by name
-        public async Task DeleteCategoryAsync(string categoryName)
+        public async Task DeleteCategoryAsync(Category category)
         {
-            var filter = Builders<Category>.Filter.Eq(c => c.NameCategories, categoryName);
-            await _categoriesCollection.DeleteOneAsync(filter);
-        }
-
-        // Check if a category exists in the database by name
-        public async Task<bool> CategoryExistsAsync(string categoryName)
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.NameCategories, categoryName);
-            var count = await _categoriesCollection.CountDocumentsAsync(filter);
-            return count > 0;
-        }
-
-        // Add a game ID to a category's list of games
-        public async Task AddGameToCategoryAsync(string categoryName, string gameId)
-        {
-            var filter = Builders<Category>.Filter.Eq(c => c.NameCategories, categoryName);
-            var update = Builders<Category>.Update.AddToSet(c => c.GameIds, gameId);
-            await _categoriesCollection.UpdateOneAsync(filter, update);
-        }
-
-        public async Task<List<Game>> GetGamesByCategoryAsync(string categoryName)
-        {
-            var category = await _categoriesCollection
-                .Find(c => c.NameCategories == categoryName)
-                .FirstOrDefaultAsync();
-
-
-            if (category != null && category.GameIds != null)
+            if (category == null)
             {
+                throw new ArgumentNullException(nameof(category), "Category cannot be null.");
+            }
+         
+            _dbContext.Categories.Remove(category);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task RemoveGameFromCategoryAsync(Category category, Game game)
+        {
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category), "Category cannot be null.");
+            }
 
-                var games = await _gameCollection
-                .Find(g => category.GameIds.Contains(g.GameID))
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game), "Game cannot be null.");
+            }
+
+            // Check if the game exists in the category
+            if (category.GameIds.Contains(game.GameID))
+            {
+                // Remove the game from the category
+                category.GameIds.Remove(game.GameID);
+
+                // Save changes to the database
+                _dbContext.Categories.Update(category);
+                await _dbContext.SaveChangesAsync();
+
+               
+            }
+            else
+            {
+                MessageBox.Show($"Game  does not exist in category '{category.NameCategories}'.");
+            }
+        }
+        public async Task<IEnumerable<Category>> GetAllCategoriesByGamerAsync(Gamer gamer)
+        {
+            if (string.IsNullOrWhiteSpace(gamer.GamerId))
+            {
+                throw new ArgumentNullException(nameof(gamer.GamerId), "Gamer ID cannot be null or empty.");
+            }
+
+            // Fetch categories where GamerId matches the provided gamerId
+            var categories = await _dbContext.Categories
+                .Where(category => category.GamerId == gamer.GamerId)
                 .ToListAsync();
 
-
-                return games;
+            return categories;
+        }
+        public async Task<IEnumerable<Category>> GetCategoriesByGameAndGamerAsync(Gamer gamer, Game game)
+        {
+            if (string.IsNullOrWhiteSpace(gamer.GamerId))
+            {
+                throw new ArgumentNullException(nameof(gamer.GamerId), "Gamer ID cannot be null or empty.");
             }
 
-            return new List<Game>();
+            if (game == null || string.IsNullOrWhiteSpace(game.GameID))
+            {
+                throw new ArgumentNullException(nameof(game), "Game cannot be null or have an empty ID.");
+            }
+
+            // Fetch categories where GamerId matches the provided gamerId
+            // and the GameId exists in the category's GameIds collection
+            var categories = await _dbContext.Categories
+                .Where(category => category.GamerId == gamer.GamerId && category.GameIds.Contains(game.GameID))
+                .ToListAsync();
+
+            return categories;
         }
 
-
-        public async Task RemoveGameFromCategoryAsync(string categoryName, string gameId)
+        public async Task<IEnumerable<Game>> GetAllGamesFromCategoryAsync(Category Category)
         {
-            // Define the filter to find the category by name
-            var filter = Builders<Category>.Filter.Eq(c => c.NameCategories, categoryName);
+            if (string.IsNullOrWhiteSpace(Category.NameCategories))
+            {
+                throw new ArgumentNullException(nameof(Category.NameCategories), "Category name cannot be null or empty.");
+            }
 
-            // Define the update operation to remove the gameId from the GameIds list
-            var update = Builders<Category>.Update.Pull(c => c.GameIds, gameId);
+            var category = await _dbContext.Categories
+                .FirstOrDefaultAsync(c => c.NameCategories == Category.NameCategories);
 
-            // Update the category document to remove the gameId from the GameIds list
-            await _categoriesCollection.UpdateOneAsync(filter, update);
+            if (category == null)
+            {
+                throw new KeyNotFoundException($"Category with name '{Category.NameCategories}' not found.");
+            }
+
+            // Fetch games based on GameIds in the category
+            var games = await _dbContext.Games
+                .Where(game => category.GameIds.Contains(game.GameID))
+                .ToListAsync();
+
+            return games;
         }
+
+
+
+
 
     }
 }
+

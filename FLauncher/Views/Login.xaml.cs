@@ -1,6 +1,8 @@
 ﻿using FLauncher.Repositories;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -12,6 +14,7 @@ namespace FLauncher.Views
     {
         private readonly IUserRepository _userRepo;
         private readonly IGamerRepository _gamerRepo;
+        private bool isCustomerWindowOpened = false;
         public Login()
         {
             InitializeComponent(); // Make sure this is called first
@@ -33,7 +36,6 @@ namespace FLauncher.Views
             {
                 var json = System.IO.File.ReadAllText(jsonFilePath);
                 var loginInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<Model.AutoLogin>(json);
-                //var ExpirationDate = DateTime.Now.AddMonths(1);
                 if (loginInfo.ExpirationDate >= DateTime.Now)
                 {
                     emailU.email.Text = loginInfo.Email;
@@ -46,10 +48,7 @@ namespace FLauncher.Views
                     System.IO.File.Delete(jsonFilePath); // Xóa tệp nếu hết hạn
                 }
             }
-            else
-            {
-                MessageBox.Show("khong tim thay file loginInfo.json");
-            }
+            
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -74,7 +73,6 @@ namespace FLauncher.Views
 
                 var json = Newtonsoft.Json.JsonConvert.SerializeObject(loginInfo, Formatting.Indented);
                 System.IO.File.WriteAllText(jsonFilePath, json);
-                MessageBox.Show("da luu");
             }
             PerformLogin(enteredUserEmail, enteredPassword);
         }
@@ -122,24 +120,22 @@ namespace FLauncher.Views
 
                 if (user != null)
                 {
-                    // Check the user's role
-                    if (user.Role == 1)
-                    {
-                        return "admin";
-                    }
-                    else if (user.Role == 3)
+                    if (user.Role == 3)
                     {
                         Model.Gamer gamer = _gamerRepo.GetGamerByUser(user);
                         SaveUserInfoToJson(gamer);
                         return "gamer";
                     }
-                    else
+                    else if(user.Role == 2)
                     {
                         return "publisher";
                     }
                 }
-
-                MessageBox.Show("Không tìm thấy người dùng.");
+                else
+                {
+                    // Không tìm thấy người dùng
+                    MessageBox.Show("Không tìm thấy người dùng.");
+                }
                 return null;
             }
             catch (Exception ex)
@@ -182,29 +178,26 @@ namespace FLauncher.Views
         }
 
         
+
         private void PerformLogin(string UserEmail, string UserPassword)
         {
 
-
+            if (isCustomerWindowOpened) return;
             string accountType = CheckLogin(UserEmail, UserPassword);
 
-            // Check the result of CheckLogin
-            if (accountType == "admin")
-            {
-                MessageBox.Show("Đăng nhập thành công với tư cách quản trị viên!");
-                //MainWindow adminWindow = new MainWindow();
-                //adminWindow.Show();
-
-                // Close the Login window
-                this.Close();
-            }
-            else if (accountType == "gamer")
+            if (accountType == "gamer")
             {
                 MessageBox.Show("Đăng nhập thành công với tư cách gamer!");
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
+
+                // Initialize the session for the gamer
+                SessionManager.InitializeSession(loggedInUser, _gamerRepo);
+                Debug.WriteLine($"Session initialized with GamerId: {SessionManager.LoggedInGamerId}");
+
+
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
-
+                isCustomerWindowOpened = true;
                 this.Close();
             }
             else if (accountType == "publisher")
@@ -213,7 +206,7 @@ namespace FLauncher.Views
                 Model.User loggedInUser = _userRepo.GetUserByEmailPass(UserEmail, UserPassword);
                 CustomerWindow customerWindow = new CustomerWindow(loggedInUser);
                 customerWindow.Show();
-
+                isCustomerWindowOpened = true;
                 this.Close();
             }
             else
@@ -229,6 +222,8 @@ namespace FLauncher.Views
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true; // Đảm bảo sự kiện không bị xử lý thêm
         }
+      
+
 
     }
 }

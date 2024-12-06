@@ -3,6 +3,7 @@ using FLauncher.Model;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace FLauncher.ViewModel
 {
@@ -114,12 +115,14 @@ namespace FLauncher.ViewModel
 
             foreach (var unlock in unlockAchivementsData)
             {
+           
                 var achivement = UnlockAchivements.FirstOrDefault(a => a.AchivementId == unlock.AchievementId && a.GameId == unlock.GameId);
                 if (achivement != null)
                 {
                     UnlockAchivementViewModels.Add(new UnlockAchivementViewModel
                     {
                         Name = achivement.Name,
+                        Description = achivement.Description,
                         UnlockImageLink = achivement.UnlockImageLink,
                         DateUnlockString = unlock.DateUnlockString,
                         AchivmentId = unlock.AchievementId,

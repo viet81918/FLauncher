@@ -126,14 +126,14 @@ namespace FLauncher.DAO
                     HttpClientInitializer = credential
                 });
 
-                // 3. Lấy file ID từ link (for direct file download)
+                // 3. Lấy file ID từ link (for direct file   download)
                 string fileId = GetFileIdFromLink(game.GameLink);
                 if (string.IsNullOrEmpty(fileId))
                 {
-                    MessageBox.Show("Không tìm thấy File ID từ link của game.");
+                 
                     return;
                 }
-                MessageBox.Show($"File ID: {fileId}"); // Debug: Log the file ID
+            
 
                 // 4. Tải file .rar xuống
                 string rarFilePath = Path.Combine(saveLocation, game.Name + ".rar");
@@ -157,7 +157,6 @@ namespace FLauncher.DAO
                 // Tính kích thước file sau khi tải xong
                 FileInfo fileInfo = new FileInfo(rarFilePath);
                 double fileSizeInMB = Math.Round(fileInfo.Length / (1024.0 * 1024.0), 2); // Tính kích thước (MB)
-
                 // Notify on successful download
                 MessageBox.Show($"Tải file RAR hoàn tất: {rarFilePath}");
 
@@ -241,7 +240,7 @@ namespace FLauncher.DAO
                 if (File.Exists(rarFilePath))
                 {
                     File.Delete(rarFilePath);
-                    MessageBox.Show($"Đã xóa file RAR: {rarFilePath}");
+                 
                 }
 
                 // Trả về đường dẫn thư mục đã giải nén
@@ -297,22 +296,24 @@ namespace FLauncher.DAO
                 .OrderByDescending(g => g.NumberOfBuyers) // Sắp xếp giảm dần theo NumberOfBuyers
                 .ToListAsync();
         }
-
+        public async Task<Game> GetGameByName(string NameGame)
+        {
+            return await _dbContext.Games.FirstAsync(g => g.Name.Equals(NameGame));
+                
+        }
         public async Task<IEnumerable<Game>> GetGameByInformation(string inputName, List<string> genres, string pubs)
         {
             // lay id game co ten bat dau bang input name ex: gta => gta 1 , 2 ,3 ...
             var GameN = new List<string>();
             if (!string.IsNullOrEmpty(inputName))
             {
-                MessageBox.Show("inputName Game DAO la " + inputName);
+             
                 GameN = await _dbContext.Games
                     .Where(g => g.Name.ToLower().StartsWith(inputName))
                     .Select(n => n.GameID).ToListAsync();
 
-                MessageBox.Show("so luong id trong GameN: " + GameN.Count);
 
                 string NamdautieneG = string.Join(", ", GameN);
-                MessageBox.Show($"danh sach id bame trong GameN: {NamdautieneG}");
             }
 
 
@@ -329,15 +330,12 @@ namespace FLauncher.DAO
                     .Select(group => group.Key) // Lấy ID_Game
                     .ToList();
 
-                MessageBox.Show("so luong id trong GameGenre: " + GameGenre.Count);
                 string aftersacrh = string.Join(", ", GameGenre);
-                MessageBox.Show($"danh sach GameGenre: {aftersacrh}");
             }
 
 
 
-            //lay danh sach gid ame co publisher = pub truyen vao 
-            MessageBox.Show("publisher la " + pubs);
+         
             var pubInStore = await _dbContext.GamePublishers //lay dc id publisher 
                 .Where(p => p.Name.Equals(pubs))
                 .Select(b => b.PublisherId).ToListAsync();
@@ -346,7 +344,7 @@ namespace FLauncher.DAO
                 .Where(s => pubInStore.Contains(s.GamePublisherId))
                 .Select(c => c.GameId).ToListAsync();
 
-            MessageBox.Show("So luong game id trong GameP: " + GameP.Count);
+          
 
             //var GamesValid = GameN.Intersect(GameGenre).Intersect(GameP);
 
@@ -385,7 +383,7 @@ namespace FLauncher.DAO
             {
                 GamesValid = GamesValid.Intersect(GameP).ToList();
             }
-            MessageBox.Show("So luong game id trong GamesValid = " + GamesValid.Count());
+         
 
             var resultG = await _dbContext.Games.Where(f => GamesValid.Contains(f.GameID)).ToListAsync();
 
@@ -395,19 +393,42 @@ namespace FLauncher.DAO
 
         public async Task<IEnumerable<Game>> GetGamesByGamer(Gamer gamer)
         {
-            // Lấy danh sách các GameID mà người chơi đã mua từ bảng Bills
-            var purchasedGameIds = _dbContext.Bills
-                                              .Where(b => b.GamerId == gamer.GamerId)
-                                              .Select(b => b.GameId)
-                                              .ToList();
+            // Get a list of purchased game IDs from the Bills table
+            var purchasedGameIds = await _dbContext.Bills
+                                                    .Where(b => b.GamerId == gamer.GamerId)
+                                                    .Select(b => b.GameId)
+                                                    .ToListAsync();
 
-            // Lấy thông tin các game từ bảng Games dựa trên danh sách GameID đã mua
-            var games = _dbContext.Games
-                                  .Where(g => purchasedGameIds.Contains(g.GameID))
-                                   .ToListAsync();
-            return await games;
+            // Get the corresponding game details from the Games table based on the purchased game IDs
+            var games = await _dbContext.Games
+                                        .Where(g => purchasedGameIds.Contains(g.GameID))
+                                        .ToListAsync();
+
+            return games;
         }
 
+       
+
+
+
+
+
+        public async Task<Game> GetGamesByGameID(String Id)
+        {
+            return await _dbContext.Games.FirstOrDefaultAsync(c => c.GameID == Id);
+        }
+
+        public async Task<IEnumerable<Game>> GetGamesByPublisher(GamePublisher publisher)
+        {
+            var gameByPub = await _dbContext.Publishcations
+                .Where(p => p.GamePublisherId == publisher.PublisherId)
+                .Select(p => p.GameId).ToListAsync();
+
+            var listGame = await _dbContext.Games
+                .Where(g => gameByPub.Contains(g.GameID)).ToListAsync();
+          
+            return listGame;
+        }
         public async Task PlayGame(Game game, Gamer gamer)
         {
             try
@@ -475,13 +496,13 @@ namespace FLauncher.DAO
                     MessageBox.Show("Không tìm thấy File ID từ link của game.");
                     return;
                 }
+             
 
                 // Step 3: Delete the existing file in Google Drive (if needed)
                 DeleteFile(service, fileId);
-
                 // Step 4: Upload the new file
                 string uploadedFileId = UploadFile(service, selectedFilePath, Path.GetFileName(selectedFilePath));
-
+               
                 // Step 5: If the upload was successful, update the link in the database
                 if (!string.IsNullOrEmpty(uploadedFileId))
                 {
@@ -502,13 +523,14 @@ namespace FLauncher.DAO
         {
             try
             {
+                MessageBox.Show("Đang Xóa Game cũ ...");
                 service.Files.Delete(fileId).Execute();
-
-                MessageBox.Show("Đã xóa file cũ khỏi Google Drive.");
+                MessageBox.Show("Đã xóa Game cũ ...");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi xóa file cũ: {ex.Message}");
+                MessageBox.Show("Có Vấn đề ở link file cũ");
+                return;
             }
             if (DoesFileExist(service, fileId))
             {
@@ -610,66 +632,7 @@ namespace FLauncher.DAO
                 return null;
             }
         }
-        public async Task<IEnumerable<Achivement>> GetAchivementFromGame(Game game)
-        {
-
-            return await _dbContext.Achivements.Where(c => c.GameId == game.GameID).ToListAsync();
-        }
-        public async Task<IEnumerable<UnlockAchivement>> GetUnlockAchivements(IEnumerable<Achivement> achivements, Gamer gamer)
-        {
-            // Get the AchievementId and GameId from the list of achievements
-            var achievementIds = achivements.Select(a => a.AchivementId).Distinct();
-            var gameIds = achivements.Select(a => a.GameId).Distinct();
-
-            // Query the UnlockAchivements based on multiple AchievementId and GameId
-            return await _dbContext.UnlockAchivements
-                .Where(c => c.GamerId == gamer.GamerId &&
-                            achievementIds.Contains(c.AchievementId) &&
-                            gameIds.Contains(c.GameId))
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Achivement>> GetLockAchivement(IEnumerable<Achivement> achivements, Gamer gamer)
-        {
-            // Lấy danh sách AchievementId từ danh sách achievements
-            var achievementIds = achivements.Select(a => a.AchivementId).Distinct();
-            var gameIds = achivements.Select(a => a.GameId).Distinct();
-
-            // Lấy danh sách các UnlockAchivement đã được gamer unlock
-            var unlockedAchievementIds = await _dbContext.UnlockAchivements
-                .Where(ua => ua.GamerId == gamer.GamerId &&
-                             achievementIds.Contains(ua.AchievementId) &&
-                             gameIds.Contains(ua.GameId))
-                .Select(ua => ua.AchievementId)
-                .Distinct()
-                .ToListAsync();
-
-            // Lấy danh sách các Achivement chưa được unlock (lock achievement)
-            var lockedAchievements = await _dbContext.Achivements
-                .Where(a => achievementIds.Contains(a.AchivementId) &&
-                            gameIds.Contains(a.GameId) &&
-                            !unlockedAchievementIds.Contains(a.AchivementId))
-                .ToListAsync();
-
-            return lockedAchievements;
-        }
-
-        public async Task<IEnumerable<Achivement>> GetAchivementsFromUnlocks(IEnumerable<UnlockAchivement> unlockAchivements)
-        {
-            // Lấy danh sách AchievementId và GameId từ unlockAchivements
-            var achievementIds = unlockAchivements.Select(x => x.AchievementId).Distinct();
-            var gameIds = unlockAchivements.Select(x => x.GameId).Distinct(); // Đổi tên từ gameId thành gameIds
-
-            // Truy vấn danh sách Achivements dựa vào AchievementId và GameId
-            var result = await _dbContext.Achivements
-                .Where(a => achievementIds.Contains(a.AchivementId) && gameIds.Contains(a.GameId))
-                .ToListAsync();
-
-            return result;
-        }
-        public async Task<Achivement> GetAchivementFromUnlock(UnlockAchivement unlock)
-        {
-            return await _dbContext.Achivements.FirstOrDefaultAsync(c => c.AchivementId == unlock.AchievementId);
-        }
+       
         public async Task Uninstall_Game(Gamer gamer, Game game)
         {
             // Assuming _dbContext is your database context for MongoDB or any other repository context

@@ -1,6 +1,7 @@
 ﻿using FLauncher.Model;
 using FLauncher.Repositories;
 using FLauncher.Services;
+using FLauncher.Utilities;
 using FLauncher.ViewModel;
 using FLauncher.Views;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,18 @@ namespace FLauncher
         public CustomerWindow(User user)
         {
             InitializeComponent();
+            if (user.Role == 2) // Giả sử 1 là Publisher
+            {
+                MessageButon.Visibility = Visibility.Collapsed; // Ẩn
+                profileButton.Visibility = Visibility.Collapsed;
+
+            }
+            else if (user.Role == 3) // Giả sử 2 là Gamer
+            {
+                MessageButon.Visibility = Visibility.Visible; // Hiện
+                profileButton.Visibility = Visibility.Visible;
+            }
+
             _user = user;
             _gamerRepo = new GamerRepository();
             _notiRepo = new NotiRepository();
@@ -46,38 +59,32 @@ namespace FLauncher
             var filterControl = FindName("filterControl") as FLauncher.CC.filterItems;
             if (filterControl != null)
             {
-                MessageBox.Show("Da thay file genre filter");
                 // Lắng nghe sự kiện GenreSelected
                 filterControl.selectedGenre += OnGenreSelected;
             }
-            else { MessageBox.Show("ko thay genre filter"); }
+            else { MessageBox.Show("không tìm thấy genre filter"); }
 
             // Tìm đối tượng filterItems được khai báo trong XAML : Publiser
             var filterPubControl = FindName("filterPublisherControl") as FLauncher.CC.filterItemsPub;
             if (filterPubControl != null)
             {
-                MessageBox.Show("Da thay file publisher filter");
                 filterPubControl.selectedPub += OnPubSelected;
             }
-            else { MessageBox.Show("ko thay publisher filter"); }
+            else { MessageBox.Show("không tìm thấy publisher filter"); }
 
         }
         // Xử lý khi một danh sach genre va pub được chọn
         private void OnGenreSelected(List<string> genre)
         {
             // Xử lý logic với giá trị genre được chọn
-            MessageBox.Show($"Genre được chọn: {genre}");
             selectedGenre = genre;
             string selectedGenresText = string.Join(", ", selectedGenre);
-            MessageBox.Show($"Các genre được chọn: {selectedGenresText}");
         }
         private void OnPubSelected(string publisher)
         {
             // Xử lý logic với giá trị publisher được chọn
-            MessageBox.Show($"Publisher được chọn: {publisher}");
             selectedPub = publisher;
             string selectedPubsText = string.Join(", ", selectedPub);
-            MessageBox.Show($"Các publisher được chọn: {selectedPubsText}");
         }
 
         private async void InitializeData(User user)
@@ -91,13 +98,14 @@ namespace FLauncher
                 _gamer = _gamerRepo.GetGamerByUser(user); // Assuming GetGamerByUserAsync() is async
                 var unreadNotifications = await _notiRepo.GetUnreadNotiforGamer(_gamer); // Assuming async
                 var friendInvitations = await _friendRepo.GetFriendInvitationsForGamer(_gamer); // Assuming async
-
-                DataContext = new CustomerWindowViewModel(_gamer, unreadNotifications, friendInvitations, topGames, genres);
+                var topPublishersData = await _publisherRepo.GetTopPublishersAsync();
+                DataContext = new CustomerWindowViewModel(topPublishersData, _gamer, unreadNotifications, friendInvitations, topGames, genres);
             }
             else if (user.Role == 2) // Role 2 - Publisher
             {
                 _gamePublisher = _publisherRepo.GetPublisherByUser(user); // Assuming async
-                DataContext = new CustomerWindowViewModel(_gamePublisher, topGames, genres);
+                var topPublishersData = await _publisherRepo.GetTopPublishersAsync();
+                DataContext = new CustomerWindowViewModel(topPublishersData, _gamePublisher, topGames, genres);
             }
         }
 
@@ -126,6 +134,9 @@ namespace FLauncher
                 // Navigate to the GameDetail page and pass the selected game and gamer
                 var gameDetailPage = new GameDetail(clickedGame, currentUser);
                 gameDetailPage.Show();
+
+                this.Hide();
+                this.Close();
             }
         }
 
@@ -174,6 +185,7 @@ namespace FLauncher
 
             if (result == MessageBoxResult.Yes)
             {
+                SessionManager.ClearSession();
                 DeleteLoginInfoFile();
                 this.Hide();
                 Login login = new Login();
@@ -192,17 +204,28 @@ namespace FLauncher
                 File.Delete(jsonFilePath);
             }
         }
+
+
+
         private void ProfileIcon_Click(object sender, MouseButtonEventArgs e)
         {
-            // Create an instance of ProfileWindow and show it
+            // Only initialize the session if it's not already initialized (to avoid redundant calls)
+            if (string.IsNullOrEmpty(SessionManager.LoggedInGamerId))
+            {
+                SessionManager.InitializeSession(_user, _gamerRepo);
+            }
+
+            // Create an instance of FriendService
             _friendService = new FriendService(_friendRepo, _gamerRepo);
 
-            ProfileWindow profileWindow = new ProfileWindow(_gamer, _friendService);
+            // Pass the _user object to ProfileWindow
+            ProfileWindow profileWindow = new ProfileWindow(_user, _friendService);
             profileWindow.Show();
+
             this.Hide();
             this.Close();
-            // Optionally, close the current window (MainWindow)
-            // this.Close();
+
+            
         }
         private void searchButton_Click(object sendedr, MouseButtonEventArgs e)
         {
@@ -230,12 +253,10 @@ namespace FLauncher
             if (!selectedGenre.IsNullOrEmpty())
             {
                 string selectedGenresText = string.Join(", ", selectedGenre);
-                MessageBox.Show($"Các genre được chọn truyen toi SEARCH button: {selectedGenresText}");
             }
             if (!selectedPub.IsNullOrEmpty())
             {
                 string selectedPubsText = string.Join(", ", selectedPub);
-                MessageBox.Show($"Các publisher được chọn truyen toi SEARCH button: {selectedPubsText}");
             }
 
             SearchWindow search = new SearchWindow(CurrentWin, Search_input, selectedGenre, selectedPub);
@@ -251,6 +272,24 @@ namespace FLauncher
             myGameWindow.Show();
             this.Hide();
             this.Close();
+        }
+        private void OnItemPubClick(object sender, MouseButtonEventArgs e)
+        {
+            string selectPublisher = string.Empty;
+            var ItemPub = sender as FLauncher.CC.Item;
+            if (ItemPub != null)
+            {
+                var pubs = ItemPub.DataContext as GamePublisher; // Genre là lớp dữ liệu chứa TypeOfGenre
+                if (pubs != null)
+                {
+                    selectPublisher = pubs.Name; // Lấy TypeOfGenre
+
+                    // Mở SearchWindow và truyền giá trị TypeOfGenre vào
+                    SearchWindow searchWindow = new SearchWindow(_user, null, null, selectPublisher);
+                    searchWindow.Show();
+                    this.Close();
+                }
+            }
         }
     }
 }

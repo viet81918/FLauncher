@@ -22,7 +22,7 @@ namespace FLauncher.Model
         public string Description { get; set; }
 
 
-        [BsonElement("Game_Id")]
+        [BsonElement("ID_Game")]
         public string GameId { get; set; }
         [BsonElement("Trigger")]
         public string Trigger { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace FLauncher.CC
 {
@@ -22,6 +23,6 @@ namespace FLauncher.CC
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(tags));
 
-
+        
     }
 }

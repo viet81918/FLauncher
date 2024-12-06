@@ -26,14 +26,7 @@ namespace FLauncher.Model
         public string Content { get; set; }
 
         [BsonElement("Time")]
-        public DateTime TimeString { get; set; } // Stores as string from MongoDB
-        /*
-        [BsonIgnore]
-        public DateTime Time
-        {
-            get => DateTime.Parse(TimeString); // Converts the string to DateTime when accessed
-            set => TimeString = value.ToString("yyyy-MM-dd HH:mm:ss"); // Converts DateTime to string
-        }*/
+        public DateTime TimeString { get; set; } // Stores as string from MongoDB      
         [BsonIgnore]
         public bool IsSenderCurrentUser { get; set; }
     }

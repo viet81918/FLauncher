@@ -30,31 +30,41 @@ namespace FLauncher.Services
         }
 
 
-        public bool SendFriendRequest(string requestId, string acceptId)
+        public async Task<bool> SendFriendRequest(string requestId, string acceptId)
         {
-            // Synchronously fetch the existing friend request
-            var existingRequest = _friendRepository.GetFriendRequest(requestId, acceptId).Result; // Blocking call
+            // Asynchronously fetch the existing friend request
+            var existingRequest = await _friendRepository.GetFriendRequest(requestId, acceptId);
 
             if (existingRequest != null)
             {
+                Debug.WriteLine($"Friend request already exists: RequestId={requestId}, AcceptId={acceptId}");
                 return false; // Request already exists
             }
 
             // Create the friend request
             var friendRequest = new Friend
             {
-                Id = ObjectId.GenerateNewId().ToString(), // Sinh một ObjectId mới
+                Id = ObjectId.GenerateNewId().ToString(),
                 RequestId = requestId,
                 AcceptId = acceptId,
                 InvitationTime = DateTime.Now,
                 IsAccept = null
             };
 
-            // Add the new friend request synchronously
-            _friendRepository.AddFriendRequest(friendRequest).Wait(); // Blocking call
-
-            return true;
+            // Asynchronously add the new friend request
+            try
+            {
+                await _friendRepository.AddFriendRequest(friendRequest);
+                Debug.WriteLine("Friend request added successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error adding friend request: {ex.Message}");
+                return false;
+            }
         }
+
 
 
         public async Task AcceptFriendRequest(string requestId, string acceptId) =>

@@ -31,26 +31,27 @@ namespace FLauncher.ViewModel
                 }
             }
         }
+        public ObservableCollection<Gamer> SelectedFriend { get; }
+        
+
         public string Name => Gamer?.Name ?? GamePublisher?.Name;
         public double Money => Gamer?.Money ?? GamePublisher?.Money ?? 0.0;
 
 
-        public MessageWindowViewModel(Gamer gamer, List<Gamer> friends, List<Model.Message> messages)
+        public MessageWindowViewModel(Gamer gamer, List<Gamer> friends, List<Model.Message> messages,  Gamer selectedFriend = null)
         {
             Gamer = gamer;
             Friends = new ObservableCollection<Gamer>(friends);
             Messages = new ObservableCollection<Model.Message>(messages);
+            SelectedFriend = new ObservableCollection<Gamer>();
+
+            if (selectedFriend != null)
+            {
+                SelectedFriend.Add(selectedFriend);
+            }
         }
 
-        //chat
-        //public void LoadMessages(List<Model.Message> messages)
-        //{
-        //    Messages.Clear();
-        //    foreach (var message in messages)
-        //    {
-        //        Messages.Add(message);
-        //    }
-        //}
+        
 
         // Property changed event to notify UI
         public event PropertyChangedEventHandler PropertyChanged;
@@ -59,6 +60,17 @@ namespace FLauncher.ViewModel
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void UpdateMessages(List<Model.Message> newMessages)
+        {
+            Messages.Clear(); // Làm mới danh sách tin nhắn
+            foreach (var message in newMessages)
+            {
+                Messages.Add(message);
+            }
+
+            OnPropertyChanged(nameof(Messages));
         }
     }
 }
