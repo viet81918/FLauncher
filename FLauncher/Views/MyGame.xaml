@@ -688,8 +688,9 @@
                                                         <!-- Icon Achievement -->
                                                         <Image Source="{Binding UnlockImageLink}" Width="100" Height="100" Stretch="Uniform" />
                                                         <!-- Tên Achievement -->
-                                                        <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
+                                                        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
                                                         <!-- Thời gian Unlock -->
+                                                        <TextBlock Text="{Binding Description}" FontSize="14" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
                                                         <TextBlock Text="{Binding DateUnlockString}" FontSize="12" Foreground="DarkGray" TextAlignment="Center" />
                                                     </StackPanel>
                                                 </Border>
