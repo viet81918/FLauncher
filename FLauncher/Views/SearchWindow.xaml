@@ -14,7 +14,8 @@
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
-        FontSize="15">
+        FontSize="15"
+        PreviewMouseDown="Window_PreviewMouseDown">
     <Grid
     Margin="5"
         Effect="{StaticResource BottomShadowEffect}"

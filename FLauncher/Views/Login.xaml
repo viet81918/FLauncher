@@ -9,7 +9,7 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         WindowStartupLocation="CenterScreen"
-        Height="Auto"
+        Height="800"
         Width="Auto"
         Title="LoginPage"
         Loaded="Window_Loaded">
