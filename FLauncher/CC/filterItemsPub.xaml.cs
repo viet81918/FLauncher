@@ -39,5 +39,7 @@ namespace FLauncher.CC
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(filterItemsPub));
+
+        public bool IsMouseOver => ListItems.IsMouseOver;
     }
 }
