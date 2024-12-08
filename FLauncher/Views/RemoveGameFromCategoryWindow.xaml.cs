@@ -1,5 +1,6 @@
 ﻿using FLauncher.DAO;
 using FLauncher.Model;
+using FLauncher.Repositories;
 using System.Collections.ObjectModel;
 using System.Windows;
 
@@ -48,7 +49,7 @@ namespace FLauncher.Views
             // Loop through each category and find the one containing the selected game
             foreach (var category in _categories)
             {
-                var gamesInCategory = await _categoryDAO.GetGamesByCategoryAsync(category.NameCategories);
+                var gamesInCategory = await _categoryDAO.GetAllGamesFromCategoryAsync(category);
                 if (gamesInCategory.Any(game => game.GameID == _selectedGame.GameID))
                 {
                     return category;
@@ -61,12 +62,12 @@ namespace FLauncher.Views
         // Handler for the "Remove" button
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            var selectedCategory = CategoriesListBox.SelectedItem as string; // Get the selected category
+            var selectedCategory = CategoriesListBox.SelectedItem as Category; // Get the selected category
 
-            if (!string.IsNullOrWhiteSpace(selectedCategory) && _selectedGame != null)
+            if (selectedCategory != null  && _selectedGame != null)
             {
                 // Remove the selected game from the selected category
-                await _categoryDAO.RemoveGameFromCategoryAsync(selectedCategory, _selectedGame.GameID.ToString());
+                await _categoryDAO.RemoveGameFromCategoryAsync(selectedCategory, _selectedGame);
 
                 MessageBox.Show($"Game '{_selectedGame.Name}' has been removed from category '{selectedCategory}'", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 DialogResult = true;
