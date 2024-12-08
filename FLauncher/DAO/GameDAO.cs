@@ -496,13 +496,13 @@ namespace FLauncher.DAO
                     MessageBox.Show("Không tìm thấy File ID từ link của game.");
                     return;
                 }
+             
 
                 // Step 3: Delete the existing file in Google Drive (if needed)
                 DeleteFile(service, fileId);
-
                 // Step 4: Upload the new file
                 string uploadedFileId = UploadFile(service, selectedFilePath, Path.GetFileName(selectedFilePath));
-
+               
                 // Step 5: If the upload was successful, update the link in the database
                 if (!string.IsNullOrEmpty(uploadedFileId))
                 {
@@ -523,11 +523,14 @@ namespace FLauncher.DAO
         {
             try
             {
+                MessageBox.Show("Đang Xóa Game cũ ...");
                 service.Files.Delete(fileId).Execute();
-
+                MessageBox.Show("Đã xóa Game cũ ...");
             }
             catch (Exception ex)
             {
+                MessageBox.Show("Có Vấn đề ở link file cũ");
+                return;
             }
             if (DoesFileExist(service, fileId))
             {

@@ -117,14 +117,7 @@
 
                 <!--#region Menu-->
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="40,0">
-                    <RadioButton Content="Games" IsChecked="True" Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Apps" Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Movies" Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Music" Style="{StaticResource TopNavigationStyle}" />
-                    <RadioButton Content="Comics" Style="{StaticResource TopNavigationStyle}" />
-                </StackPanel>
-
+              
                 <!--#endregion-->
 
                 <!--#region SearchBox-->
@@ -217,7 +210,7 @@
                 </ListBox.Resources>
                 <ListBoxItem Content="{StaticResource home_icon}" MouseLeftButtonUp="Home_Click" />
                 <ListBoxItem Content="{StaticResource games_icon}" MouseLeftButtonUp="MyGame_Click" />
-                <ListBoxItem x:Name="profileButton" Content="{StaticResource profile_icon}" />
+                <ListBoxItem x:Name="profileButton" Content="{StaticResource profile_icon}" MouseLeftButtonUp="ProfileIcon_Click" />
 
                 <ListBoxItem x:Name="searchButton" Content="{StaticResource search_icon}" MouseLeftButtonUp="searchButton_Click" />
 
@@ -354,6 +347,16 @@
                                             <Binding Path="IsGamer" />
                                             <Binding Path="IsDownload" />
                                             <Binding Path="IsUpdate" />
+                                        </MultiBinding>
+                                    </Button.Visibility>
+                                </Button>
+                                <Button Content="Update Game By Time" Width="120" Height="40" Background="Gray" Foreground="White" FontWeight="Bold" BorderBrush="Transparent" Click="ReinstallGame_click">
+                                    <Button.Visibility>
+                                        <MultiBinding Converter="{StaticResource MultiBoolToVisibilityConverter}">
+                                            <Binding Path="IsBuy" />
+                                            <Binding Path="IsGamer" />
+                                            <Binding Path="IsDownload" />
+                                            <Binding Path="IsNotUpdate" />
                                         </MultiBinding>
                                     </Button.Visibility>
                                 </Button>
@@ -620,8 +623,9 @@
                                                 <!-- Icon Achievement -->
                                                 <Image Source="{Binding UnlockImageLink}" Width="100" Height="100" Stretch="Uniform" />
                                                 <!-- Tên Achievement -->
-                                                <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
+                                                <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
                                                 <!-- Thời gian Unlock -->
+                                                <TextBlock Text="{Binding Description}" FontSize="14" FontWeight="Bold" Foreground="Black" TextAlignment="Center" Margin="0,5,0,0" />
                                                 <TextBlock Text="{Binding DateUnlockString}" FontSize="12" Foreground="DarkGray" TextAlignment="Center" />
                                             </StackPanel>
                                         </Border>
