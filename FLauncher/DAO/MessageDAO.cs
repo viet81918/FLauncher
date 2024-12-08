@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FLauncher.DAO
 {
@@ -39,25 +40,7 @@ namespace FLauncher.DAO
             return messages;
         }
 
-        /*
-        public List<Message> GetMessages(string senderId, string receiverId)
-        {
-            // Lấy tất cả tin nhắn giữa người gửi và người nhận
-            return _dbContext.Messages
-                .Where(m => (m.IdSender == senderId && m.IdReceiver == receiverId) ||
-                            (m.IdSender == receiverId && m.IdReceiver == senderId))
-                .OrderBy(m => m.TimeString) // Sắp xếp theo thời gian
-                .ToList();
-        }
-        /*
-         public List<Message> GetMessages(Gamer gamer)
-        {
-            return _dbContext.Messages
-                .Where(m => m.IdSender == gamer.Id || m.IdReceiver == gamer.Id) // Lọc các tin nhắn có IdSender hoặc IdReceiver là Id của gamer
-                .OrderBy(m => m.TimeString) // Sắp xếp theo thời gian
-                .ToList();
-        }
-         */
+        
 
         public void SendMessage(Message message)
         {
