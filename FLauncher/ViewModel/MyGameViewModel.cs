@@ -10,8 +10,6 @@ namespace FLauncher.ViewModel
 {
     public class MyGameViewModel : INotifyPropertyChanged
     {
-        private readonly CategoryDAO _categoryDAO; // Injecting CategoryDAO
-
         public Gamer Gamer { get; }
         public GamePublisher Publisher { get; }
         public int UnreadNotificationCount => UnreadNotifications?.Count ?? 0;
@@ -24,6 +22,7 @@ namespace FLauncher.ViewModel
         public double Money => Gamer?.Money ?? 0.0;
         public int TotalPlayingHours { get; set; }
         public ObservableCollection<Game> MyGames { get; }
+
 
         private GamePublisher _gamePublisher;
 
@@ -80,23 +79,19 @@ namespace FLauncher.ViewModel
         public bool IsUpdate { get; set; }
         public bool IsNotUpdate { get; set; }
 
-
         public MyGameViewModel(Gamer gamer, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, IEnumerable<Game> myGames, IEnumerable<Category> categories)
-
         {
-            _categoryDAO = categoryDAO;
             Gamer = gamer;
             UnreadNotifications = new ObservableCollection<Notification>(unreadNotifications);
             FriendInvitations = new ObservableCollection<Friend>(friendInvitations);
             MyGames = new ObservableCollection<Game>(myGames);
             Categories = new ObservableCollection<Category>(categories);
 
-
         }
         /*data publisher*/
         public MyGameViewModel(GamePublisher gamerPub, IEnumerable<Game> myGames)
         {
-            GamePublisher = gamerPub;           
+            GamePublisher = gamerPub;
             MyGames = new ObservableCollection<Game>(myGames);
         }
         public MyGameViewModel(Game game, IEnumerable<Genre> genres, IEnumerable<Review> reviews, GamePublisher GamePublisher, IEnumerable<Update> updates, bool isPublished, IEnumerable<Achivement> Achivements, IEnumerable<Gamer> reviewers, IEnumerable<Game> myGames)
@@ -137,18 +132,37 @@ namespace FLauncher.ViewModel
         public MyGameViewModel(Game game, Gamer gamer, IEnumerable<Genre> genres, IEnumerable<Review> reviews, IEnumerable<Notification> unreadNotifications, IEnumerable<Friend> friendInvitations, GamePublisher publisher, IEnumerable<Update> updates, IEnumerable<Gamer> friendwiththesamegame, IEnumerable<Achivement> UnlockAchivements, IEnumerable<Achivement> Achivements, IEnumerable<Achivement> LockAchivements, IEnumerable<UnlockAchivement> unlockAchivementsData, IEnumerable<Gamer> reviewers, bool isBuy, bool isDownload, bool isUpdate, IEnumerable<Game> myGames, IEnumerable<Category> categories)
         {
             Categories = new ObservableCollection<Category>(categories);
-
             MyGames = new ObservableCollection<Game>(myGames);
             IsGamer = true;
             IsPublisher = false;
             IsBuy = isBuy;
 
-            IsNotBuy = !IsBuy;
+            if (IsBuy == true)
+            {
+                IsNotBuy = false;
+            }
+            else
+            {
+                IsNotBuy = true;
+            }
             IsDownload = isDownload;
-            IsNotDown = !IsDownload;
+            if (IsDownload == true)
+            {
+                IsNotDown = false;
+            }
+            else
+            {
+                IsNotDown = true;
+            }
             IsUpdate = isUpdate;
-            IsNotUpdate = !IsUpdate;
-
+            if (IsUpdate == true)
+            {
+                IsNotUpdate = false;
+            }
+            else
+            {
+                IsNotUpdate = true;
+            }
             Game = game;
             Gamer = gamer;
             Genres = new ObservableCollection<Genre>(genres);
@@ -160,8 +174,10 @@ namespace FLauncher.ViewModel
             UnlockAchivement = new ObservableCollection<Achivement>(UnlockAchivements);
             Achivement = new ObservableCollection<Achivement>(Achivements);
             LockAchivement = new ObservableCollection<Achivement>(LockAchivements);
-
+            // Load the GamePublisher asynchronously
+            // Tạo danh sách ViewModel cho UnlockAchivements
             UnlockAchivementViewModels = new ObservableCollection<UnlockAchivementViewModel>();
+
             foreach (var unlock in unlockAchivementsData)
             {
                 var achivement = UnlockAchivements.FirstOrDefault(a => a.AchivementId == unlock.AchievementId && a.GameId == unlock.GameId);
@@ -179,7 +195,6 @@ namespace FLauncher.ViewModel
                     });
                 }
             }
-
             ReviewGamerViewModels = new ObservableCollection<ReviewGamerViewModel>();
             foreach (var review in reviews)
             {
@@ -195,97 +210,13 @@ namespace FLauncher.ViewModel
                     });
                 }
             }
-
             LoadGamePublisher(game);
-            LoadCategories();
+
         }
 
-        // Load categories from the database using CategoryDAO
-        private async void LoadCategories()
-        {
-            var categories = await _categoryDAO.GetAllCategoriesAsync();
-            Categories.Clear(); // Clear existing categories to avoid duplication.
-
-            foreach (var category in categories)
-            {
-                // Fetch games for each category.
-                category.GameIds = (await _categoryDAO.GetGamesByCategoryAsync(category.NameCategories))
-                                    .Select(g => g.GameID)
-                                    .ToList();
-
-                Categories.Add(category); // Add the category to the ObservableCollection.
-            }
-        }
-
-
-
-
-        // Add a new category
-        public async Task AddCategoryAsync(string categoryName)
-        {
-            if (!string.IsNullOrWhiteSpace(categoryName) && !Categories.Any(c => c.NameCategories == categoryName))
-            {
-                var newCategory = new Category
-                {
-                    NameCategories = categoryName,
-                    GamerId = Gamer?.GamerId
-                };
-
-                await _categoryDAO.AddCategoryAsync(categoryName, Gamer?.GamerId);
-                Categories.Add(newCategory); // Add the new category to the ObservableCollection.
-            }
-        }
-
-
-        // Delete a category
-        public async Task DeleteCategoryAsync(string categoryName)
-        {
-            var category = Categories.FirstOrDefault(c => c.NameCategories == categoryName);
-            if (category != null)
-            {
-                await _categoryDAO.DeleteCategoryAsync(categoryName);
-                Categories.Remove(category); // Remove the category from the ObservableCollection.
-            }
-        }
-
-
-
-
-        // Add a game to a category
-        public async Task AddGameToCategoryAsync(string categoryName, string gameId)
-        {
-            var category = Categories.FirstOrDefault(c => c.NameCategories == categoryName);
-            if (category != null && !category.GameIds.Contains(gameId))
-            {
-                await _categoryDAO.AddGameToCategoryAsync(categoryName, gameId);
-                category.GameIds.Add(gameId); // Update the GameIds in the ObservableCollection.
-
-                // Optionally: Trigger UI update if needed.
-                var index = Categories.IndexOf(category);
-                Categories[index] = category;
-            }
-        }
-
-
-        // Remove a game from a category
-        public async Task RemoveGameFromCategoryAsync(string categoryName, string gameId)
-        {
-            var category = Categories.FirstOrDefault(c => c.NameCategories == categoryName);
-            if (category != null && category.GameIds.Contains(gameId))
-            {
-                await _categoryDAO.RemoveGameFromCategoryAsync(categoryName, gameId);
-                category.GameIds.Remove(gameId); // Update the GameIds in the ObservableCollection.
-
-                // Optionally: Trigger UI update if needed.
-                var index = Categories.IndexOf(category);
-                Categories[index] = category;
-            }
-        }
-
-
-        // Load the publisher data for the game
         private async void LoadGamePublisher(Game game)
         {
+            // Assuming GetPublisherByGame is a method that returns Task<GamePublisher>
             GamePublisher = await PublisherDAO.Instance.GetPublisherByGame(game);
         }
         public async void RefreshCategories()
@@ -304,15 +235,15 @@ namespace FLauncher.ViewModel
             }
         }
 
-        #region INotifyPropertyChanged Implementation
+        #region INotifyPropertyChanged implimentation
         public event PropertyChangedEventHandler PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }
+
 }
