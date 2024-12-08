@@ -52,6 +52,6 @@ namespace FLauncher.CC
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(filterItems));
 
-
+        public bool IsMouseOver => ListItems.IsMouseOver;
     }
 }

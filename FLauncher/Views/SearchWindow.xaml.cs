@@ -262,5 +262,17 @@ namespace FLauncher.Views
             this.Hide();
             this.Close();
         }
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Đóng Expander nếu không click vào vùng của Expander
+            if (filterControl.ListItems.IsExpanded && !filterControl.IsMouseOver)
+            {
+                filterControl.ListItems.IsExpanded = false;
+            }
+            if (filterPublisherControl.ListItems.IsExpanded && !filterPublisherControl.IsMouseOver)
+            {
+                filterPublisherControl.ListItems.IsExpanded = false;
+            }
+        }
     }
 }

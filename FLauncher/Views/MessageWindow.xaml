@@ -476,7 +476,12 @@
 
 
                 </Grid>
+                <Rectangle 
+                Width="2" Height="auto"
+                HorizontalAlignment="Left"
+                Fill="Wheat"/>
 
+                
             </Grid>
         </Grid>
     </Grid>
